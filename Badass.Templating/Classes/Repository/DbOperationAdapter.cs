@@ -1,4 +1,5 @@
 ﻿using Badass.Model;
+using Badass.Templating.Classes.Adapters;
 
 namespace Badass.Templating.Classes.Repository
 {

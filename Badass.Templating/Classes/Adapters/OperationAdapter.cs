@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Badass.Model;
 using System.Linq;
+using Badass.Model;
 using Badass.Templating.DatabaseFunctions;
 using Serilog;
 
-namespace Badass.Templating.Classes
+namespace Badass.Templating.Classes.Adapters
 {
     public class OperationAdapter
     {
@@ -348,6 +348,21 @@ namespace Badass.Templating.Classes
         public bool ApiHooks
         {
             get { return _op.Attributes?.apiHooks == true || _type.Attributes?.apiHooks == "all" || _type.Attributes?.apiHooks == "modify" && (_op.ChangesData || _op.CreatesNew); }
+        }
+        
+        public ClientCustomTypeModel CustomType
+        {
+            get
+            {
+                if (UsesModel)
+                {
+                    return new ClientCustomTypeModel(this);
+                }
+
+                // this doesn't support multiple custom result types as parameters
+                var customParam = Parameters.Single(p => p.IsCustomTypeOrCustomArray);
+                return new ClientCustomTypeModel(customParam.CustomType);
+            }
         }
     }
 }

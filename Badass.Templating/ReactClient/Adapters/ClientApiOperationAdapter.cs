@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
 using Badass.Templating.Classes;
+using Badass.Templating.Classes.Adapters;
 
 namespace Badass.Templating.ReactClient.Adapters
 {
@@ -14,20 +15,7 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public bool HasCustomType => UsesModel || Parameters.Any(p => p.IsCustomTypeOrCustomArray);
 
-        public ClientCustomTypeModel CustomType
-        {
-            get
-            {
-                if (UsesModel)
-                {
-                    return new ClientCustomTypeModel(this);
-                }
 
-                // this doesn't support multiple custom result types as parameters
-                var customParam = Parameters.Single(p => p.IsCustomTypeOrCustomArray);
-                return new ClientCustomTypeModel(customParam.CustomType);
-            }
-        }
 
         public bool UsesCustomType
         {

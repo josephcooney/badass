@@ -2,7 +2,7 @@
   "profiles": {
     "Generator.Console": {
       "commandName": "Project",
-      "commandLineArgs": "-u -react -c aed --no-policy --no-test-repo -x hangfire -del --test-data 10"
+      "commandLineArgs": "-u -react -c survey"
     }
   }
 }

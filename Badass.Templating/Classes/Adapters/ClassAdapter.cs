@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
+using Badass.Templating.Classes.Adapters;
 using Badass.Templating.DatabaseFunctions;
 
 namespace Badass.Templating.Classes

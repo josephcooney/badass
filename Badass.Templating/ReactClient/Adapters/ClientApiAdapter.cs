@@ -2,6 +2,7 @@
 using System.Linq;
 using Badass.Model;
 using Badass.Templating.Classes;
+using Badass.Templating.Classes.Adapters;
 using Badass.Templating.DatabaseFunctions;
 using Badass.Templating.DatabaseFunctions.Adapters;
 

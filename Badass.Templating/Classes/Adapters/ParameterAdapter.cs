@@ -63,6 +63,21 @@ namespace Badass.Templating.Classes
             }
         }
 
+        public string ApiResolvedClrType
+        {
+            get
+            {
+                if (IsCustomType)
+                {
+                    return Util.CSharpNameFromName(_parameter.ProviderTypeName) + "Model";
+                }
+                else
+                {
+                    return ResolvedClrType;
+                }
+            }
+        }
+
         public string ResolvedTypescriptType
         {
             get

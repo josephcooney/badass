@@ -89,6 +89,8 @@
     <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectPagedForDisplayByForeignKey.handlebars" />
     <None Remove="TestData\TestData.handlebars" />
     <EmbeddedResource Include="TestData\TestData.handlebars" />
+    <None Remove="Classes\WebApi\ApiAttachmentRequestModel.handlebars" />
+    <EmbeddedResource Include="Classes\WebApi\ApiAttachmentRequestModel.handlebars" />
   </ItemGroup>
 
   <ItemGroup>

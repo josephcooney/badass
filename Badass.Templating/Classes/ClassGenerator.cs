@@ -176,6 +176,11 @@ namespace Badass.Templating.Classes
                             {
                                 var file = new CodeFile { Name = Util.CSharpNameFromName(op.Name) + "Model.cs", Contents = GenerateApiModel(op) };
                                 files.Add(file);
+                            } else if (op.ChangesData && op.RelatedType.IsAttachment)
+                            {
+                                // generate special model for attachments, since the 
+                                var file = new CodeFile { Name = Util.CSharpNameFromName(op.Name) + "Model.cs", Contents = GenerateAttachmentApiModel(op) };
+                                files.Add(file);
                             }
                         }
                     }
@@ -261,6 +266,11 @@ namespace Badass.Templating.Classes
         private string GenerateApiModel(OperationAdapter operation)
         {
             return Util.GetCompiledTemplate("ApiRequestModel")(operation);
+        }
+        
+        private string GenerateAttachmentApiModel(OperationAdapter operation)
+        {
+            return Util.GetCompiledTemplate("ApiAttachmentRequestModel")(operation.CustomType);
         }
 
         private string GenerateEditViewModel(ApplicationType applicationType, Domain domain)

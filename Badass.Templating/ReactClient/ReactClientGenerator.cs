@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
 using Badass.Templating.Classes;
+using Badass.Templating.Classes.Adapters;
 using Badass.Templating.ReactClient.Adapters;
 using Serilog;
 
