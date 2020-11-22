@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="NewProject\main.dart.colorfragment.handlebars" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="NewProject\main.dart.colorfragment.handlebars" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Svg" Version="3.1.1" />
+    <PackageReference Include="System.IO.Abstractions" Version="12.2.19" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Badass.Model\Badass.Model.csproj" />
+    <ProjectReference Include="..\Badass.ProjectGeneration\Badass.ProjectGeneration.csproj" />
+    <ProjectReference Include="..\Badass.Templating\Badass.Templating.csproj" />
+  </ItemGroup>
+
+</Project>
