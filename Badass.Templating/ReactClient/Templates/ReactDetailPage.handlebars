@@ -198,7 +198,7 @@ export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}Detai
 
 	{{#each DirectlyRelatedDetails}}
 	async get{{cs_name Name}}Details(id: {{LinkingFieldTsType}}) {
-		await this.{{cml_case Name}}Api.selectForDisplayBy{{cs_name LinkingFieldName}}(id).then(data => {
+		await this.{{cml_case Name}}Api.selectForDisplayBy{{cs_name LinkingFieldBareName}}(id).then(data => {
 			var responseBody = data.parsedBody;
 			if (responseBody) {
 				this.setState({ loading{{cs_name Name}}: false, {{cml_case Name}}Data: responseBody  });

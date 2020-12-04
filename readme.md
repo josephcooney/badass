@@ -7,6 +7,7 @@ Badass is a command-line code generation tool written in .net core.
 - You should be able to opt out of re-generating particular files.
 
 ## Command-Line Arguments ##
+`-h|-?|--help` show help
 
 ## Configuration ##
 Badass uses a combination of command-line arguments and configuration to control its behaviour. Longer, infrequently changing, and more tedious to type settings like paths and database connection strings should be stored config. 
