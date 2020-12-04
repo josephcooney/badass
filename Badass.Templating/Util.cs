@@ -123,8 +123,16 @@ namespace Badass.Templating
                 if (parameters[0] is string)
                 {
                     string name = (string)parameters[0];
-                    var formatted = CSharpNameFromName(name);
-                    writer.Write(formatted);
+                    try
+                    {
+                        var formatted = CSharpNameFromName(name);
+                        writer.Write(formatted);
+                    }
+                    catch (Exception ex)
+                    {
+                        writer.Write($"Error Formatting CS Name: {name}");
+                        Log.Error("Error Formatting CSharp Name", ex);
+                    }
                     return;
                 }
                 writer.Write(parameters[0] + "/* expected string */");
@@ -325,6 +333,16 @@ namespace Badass.Templating
             return name.Replace('_', '-');
         }
 
+        public static string BareName(string itemName, string typeName)
+        {
+            if (typeName != null)
+            {
+                return itemName.Replace(typeName, "").Trim('_').Replace("__", "_");
+            }
+
+            return null;
+        }
+        
         private static bool IsPascalCase(string name)
         {
             //this is very naive

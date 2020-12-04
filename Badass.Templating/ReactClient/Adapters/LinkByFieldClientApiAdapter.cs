@@ -15,6 +15,9 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public string LinkingFieldName => _linkingField.Name;
 
+        public string LinkingFieldBareName => Util.BareName(_linkingField.Name, _type.Name);
+
+
         public string LinkingFieldTsType => Util.GetTypeScriptTypeForClrType(_linkingField.ClrType);
 
         public override SimpleType SelectAllType
