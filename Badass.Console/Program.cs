@@ -115,7 +115,8 @@ namespace Badass.Console
                 { "del", "delete generated files before re-generating", d => s.DeleteGeneratedFiles = d != null},
                 { "flutter", "Generate a Flutter client for application", f => {if (f != null) s.ClientAppTypes.Add(ClientAppUIType.Flutter); } },
                 { "tmplt=", "Template project directory", t => { if (t != null) { s.NewAppSettings.TemplateProjectDirectory = t; } }},
-                { "no-policy", "Globally disable generation of security policies", p => { if (p != null) s.GenerateSecurityPolicies = false; }  }
+                { "no-policy", "Globally disable generation of security policies", p => { if (p != null) s.GenerateSecurityPolicies = false; }  },
+                { "x|exclude=", "Exclude schema", x => s.ExcludedSchemas.Add(x) }
             };
 
             var extra = os.Parse(args);

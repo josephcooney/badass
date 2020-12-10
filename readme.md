@@ -1,10 +1,24 @@
 ﻿# Badass #
-Badass is a command-line code generation tool written in .net core. 
+Badass is a database-centric command-line code generation tool written in .net core. 
 
 ## Main Ideas ##
+- Use all the schema information from a relational database
 - Generated code should look as nice as human-written code.
 - You should be able to re-generate your code multiple times.
 - You should be able to opt out of re-generating particular files.
+- Use sane conventions for naming and structure over configuration. 
+
+## What Does Badass Generate ##
+Badass attempts to generate a 'full stack' of an application once the database schema is defined. Generating a full application is usually infeasible because some parts of an application will be particular to that application. Badass tries to create a good base to customise from. It generates:
+- database functions and types for function results
+- database policies for controlling entity access
+- C# 'repository' wrappers for database functions
+- C# controllers that call through to repositories
+- typescript client API for calling C# controllers
+- React components for displaying, editing, and deleting entities.
+
+## Databases ##
+Relational databases provide a rich source of machine-readable information about the entities and their relationships in a domain. Badass uses this, with some augmentation via attributes, to generate the basics of an application. Badass is currently very postgres-centric, but could be enhanced to support other databases in the future.
 
 ## Command-Line Arguments ##
 `-h|-?|--help` show help

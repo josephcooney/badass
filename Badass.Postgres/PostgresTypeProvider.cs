@@ -78,12 +78,12 @@ namespace Badass.Postgres
         public Domain GetDomain(Settings settings)
         {
             var domain = new Domain(settings, this);
-            domain.Types.AddRange(GetTypes());
+            domain.Types.AddRange(GetTypes(settings.ExcludedSchemas));
 
             return domain;
         }
 
-        private List<ApplicationType> GetTypes()
+        private List<ApplicationType> GetTypes(List<string> excluededSchemas)
         {
             var types = new List<ApplicationType>();
 
@@ -99,33 +99,39 @@ namespace Badass.Postgres
                     var name = row["table_name"].ToString();
                     var t = new ApplicationType(name, ns);
 
-                    using (var cmd = new NpgsqlCommand($"select * from {ns}.\"{name}\"", cn))
+                    if (!excluededSchemas.Contains(ns))
                     {
-                        using (var reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
+                        using (var cmd = new NpgsqlCommand($"select * from {ns}.\"{name}\"", cn))
                         {
-                            var tableInfo = reader.GetSchemaTable();
-                            foreach (DataRow fieldRow in tableInfo.Rows)
+                            using (var reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
                             {
-                                var fieldName = SanitizeFieldName(fieldRow["ColumnName"].ToString());
-                                var order = int.Parse(fieldRow["ColumnOrdinal"].ToString());
-                                var providerTypeName = fieldRow["DataTypeName"].ToString();
-                                var size = int.Parse(fieldRow["ColumnSize"].ToString());
-                                var clrType = (System.Type)fieldRow["DataType"];
+                                var tableInfo = reader.GetSchemaTable();
+                                foreach (DataRow fieldRow in tableInfo.Rows)
+                                {
+                                    var fieldName = SanitizeFieldName(fieldRow["ColumnName"].ToString());
+                                    var order = int.Parse(fieldRow["ColumnOrdinal"].ToString());
+                                    var providerTypeName = fieldRow["DataTypeName"].ToString();
+                                    var size = int.Parse(fieldRow["ColumnSize"].ToString());
+                                    var clrType = (System.Type)fieldRow["DataType"];
 
-                                // AllowDbNull doesn't seem to be accurate for postgres
-                                // IsIdentity also doesn't seem accurate, however it does accord with what information_schema.columns contains for that table 
+                                    // AllowDbNull doesn't seem to be accurate for postgres
+                                    // IsIdentity also doesn't seem accurate, however it does accord with what information_schema.columns contains for that table 
 
-                                t.Fields.Add(new Field(t) { Name = fieldName, Order = order, Size = GetFieldSize(size), ProviderTypeName = providerTypeName, ClrType = clrType});
+                                    t.Fields.Add(new Field(t) { Name = fieldName, Order = order, Size = GetFieldSize(size), ProviderTypeName = providerTypeName, ClrType = clrType});
+                                }
                             }
                         }
-                    }
                     
-                    GetAdditionalFieldInfoFromInformationSchema(catalog, ns, name, cn, t);
-                    GetPrimaryKeyInfoFromInformationSchema(catalog, ns, name, cn, t);
-                    GetUniqueConstraintsFromInformationSchema(catalog, ns, name, cn, t);
+                        GetAdditionalFieldInfoFromInformationSchema(catalog, ns, name, cn, t);
+                        GetPrimaryKeyInfoFromInformationSchema(catalog, ns, name, cn, t);
+                        GetUniqueConstraintsFromInformationSchema(catalog, ns, name, cn, t);
 
-                    types.Add(t);
-
+                        types.Add(t);
+                    }
+                    else
+                    {
+                        Log.Debug("{Schema}.{TableName} was excluded because the schema is being excluded", ns, name);
+                    }
                 }
 
                 GetTypeAttributes(types);
@@ -186,29 +192,37 @@ namespace Badass.Postgres
                         try
                         {
                             var ns = reader["schema"].ToString();
-                            var resultType = reader["result_type"].ToString();
-
-                            var op = new Operation {Name = name, Namespace = ns};
-                            var description = GetField<string>(reader, "description");
-
-                            PopulateOperationAttributes(op, description);
-
-                            if (getAllDetails)
+                            if (!domain.ExcludedSchemas.Contains(ns))
                             {
-                                var parameters = reader["argument_types"].ToString();
-                                if (!string.IsNullOrEmpty(parameters))
+                                var resultType = reader["result_type"].ToString();
+
+                                var op = new Operation {Name = name, Namespace = ns};
+                                var description = GetField<string>(reader, "description");
+
+                                PopulateOperationAttributes(op, description);
+
+                                if (getAllDetails)
                                 {
-                                    op.Parameters.AddRange(ReadParameters(parameters, domain));
-                                    if (op.Attributes?.applicationtype != null)
+                                    var parameters = reader["argument_types"].ToString();
+                                    if (!string.IsNullOrEmpty(parameters))
                                     {
-                                        UpdateParameterNullabilityFromApplicationType(op, domain);
+                                        op.Parameters.AddRange(ReadParameters(parameters, domain));
+                                        if (op.Attributes?.applicationtype != null)
+                                        {
+                                            UpdateParameterNullabilityFromApplicationType(op, domain);
+                                        }
                                     }
+
+                                    op.Returns = GetReturnForOperation(resultType, domain, op);
                                 }
 
-                                op.Returns = GetReturnForOperation(resultType, domain, op);
+                                domain.Operations.Add(op);
+                            }
+                            else
+                            {
+                                Log.Debug("{Schema}.{OperationName} is being excluded because of the schema", ns, name);
                             }
 
-                            domain.Operations.Add(op);
                         }
                         catch (Exception ex)
                         {
