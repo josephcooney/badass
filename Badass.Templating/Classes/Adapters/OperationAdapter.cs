@@ -14,8 +14,8 @@ namespace Badass.Templating.Classes
         public const string HttpDeleteOperation = "Delete";
         public const string HttpPutOperation = "Put";
 
-        private readonly Operation _op;
-        private readonly Domain _domain;
+        protected readonly Operation _op;
+        protected readonly Domain _domain;
         private readonly ApplicationType _type;
 
         public OperationAdapter(Operation op, Domain domain, ApplicationType type)

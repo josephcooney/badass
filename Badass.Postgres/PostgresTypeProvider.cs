@@ -297,6 +297,18 @@ namespace Badass.Postgres
             return GetNpgsqlDbTypeFromPostgresType(dbTypeName).ToString();
         }
 
+        // postgres has a name length limit of 63 bytes. This assumes you're not using unicode characters for db entity names
+        private const int NameLengthLimit = 63;
+        public string GetSqlName(string entityName)
+        {
+            if (entityName.Length > NameLengthLimit)
+            {
+                return entityName.Substring(0, NameLengthLimit);
+            }
+
+            return entityName;
+        }
+
         public static NpgsqlDbType GetNpgsqlDbTypeFromPostgresType(string postgresTypeName)
         {
             if (_postgresNpgSqlTypes.ContainsKey(postgresTypeName))
@@ -940,7 +952,7 @@ namespace Badass.Postgres
         
         private void DropGeneratedOperation(Operation op, StringBuilder sb)
         {
-            var cmdText = $"DROP FUNCTION IF EXISTS {op.Namespace}.{op.Name};";
+            var cmdText = $"DROP FUNCTION IF EXISTS {op.Namespace}.{GetSqlName(op.Name)};";
             sb.AppendLine(cmdText);
             ExecuteCommandText(cmdText);
         }

@@ -38,7 +38,7 @@ namespace {{cs_name Namespace}}.Data.Repository
         public {{{Returns}}} {{cs_name BareName}}({{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
         {
             using (var cn = base.CreateConnection(_connectionString))
-			using (var cmd = new NpgsqlCommand("{{Name}}", cn))
+			using (var cmd = new NpgsqlCommand("{{SqlName}}", cn))
 			{
 				cmd.CommandType = CommandType.StoredProcedure;
 
@@ -72,7 +72,7 @@ namespace {{cs_name Namespace}}.Data.Repository
 		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}Async({{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
         {
             using (var cn = base.CreateConnection(_connectionString))
-			using (var cmd = new NpgsqlCommand("{{Name}}", cn))
+			using (var cmd = new NpgsqlCommand("{{SqlName}}", cn))
 			{
 				cmd.CommandType = CommandType.StoredProcedure;
 

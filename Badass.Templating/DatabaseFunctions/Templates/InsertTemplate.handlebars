@@ -45,4 +45,4 @@ GRANT EXECUTE ON FUNCTION {{FunctionName}} ({{#each InsertInputFields}} {{Provid
 
 
 COMMENT ON FUNCTION {{FunctionName}} ({{#each InsertInputFields}} {{ProviderTypeName}}{{#unless @last}},{{/unless}} {{/each}})
-    IS '{"applicationtype":"{{Name}}", "generated":true, "changesData":true, "friendlyName":"Add", "createsNew":true {{#if NoAddUI}},"ui":false, "api":false {{/if}} }';
+    IS '{"applicationtype":"{{Name}}", "generated":true, "changesData":true, "friendlyName":"Add", "fullName":"{{FunctionName}}", "createsNew":true {{#if NoAddUI}},"ui":false, "api":false {{/if}} }';

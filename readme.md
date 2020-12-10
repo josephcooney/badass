@@ -85,6 +85,7 @@ Attributes are set as a JSON text string 'comment' on the respective database en
 - api: true|false - when set to false suppresses the generation of anything relating to this operation at the API layer. Defaults to true;
 - apiHooks: true|false - when set to true custom 'before' and 'after' methods are called prior to the generated API code being called. Defaults to false.
 - single_result: true|false - when set to true it causes the generated repository and API operations to return singular items instead of lists. Defaults to false.
+- fullName: string - used to get around the 63 byte length limit of postgres entities. The pattern of <entity>_<operation> often leads to names greater than 63 characters.
 
 ### Field Level ### 
 - largeContent : true|false - Signals to UI generators when set to true that a particular field should be displayed with more screen area. Defaults to false.
