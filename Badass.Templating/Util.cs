@@ -390,18 +390,6 @@ namespace Badass.Templating
             return name;
         }
 
-        public static Type GetClrTypeFromPostgresType(string postgresTypeName)
-        {
-            if (_postgresClrTypes.ContainsKey(postgresTypeName))
-            {
-                return _postgresClrTypes[postgresTypeName];
-            }
-
-            return null;
-        }
-
-
-
         public static string GetTypeScriptTypeForClrType(System.Type clrType)
         {
             var type = System.Nullable.GetUnderlyingType(clrType) ?? clrType;
@@ -430,7 +418,7 @@ namespace Badass.Templating
 
         private static ITypeProvider _typeProvider;
         
-        private static Dictionary<string, System.Type> _postgresClrTypes;
+        
 
         
 
@@ -440,58 +428,6 @@ namespace Badass.Templating
 
         static Util()
         {
-            // from here https://www.npgsql.org/doc/types/basic.html
-            _postgresClrTypes = new Dictionary<string, System.Type>
-            {
-                ["boolean"] = typeof(bool),
-                ["smallint"] = typeof(short),
-                ["integer"] = typeof(int),
-                ["bigint"] = typeof(long),
-                ["real"] = typeof(float),
-                ["double precision"] = typeof(double),
-                ["numeric"] = typeof(decimal),
-                ["money"] = typeof(decimal),
-                ["text"] = typeof(string),
-                ["character varying"] = typeof(string),
-                ["character"] = typeof(string),
-                ["citext"] = typeof(string),
-                ["json"] = typeof(string),
-                ["jsonb"] = typeof(string),
-                ["xml"] = typeof(string),
-                ["point"] = typeof(NpgsqlPoint),
-                ["lseg"] = typeof(NpgsqlLSeg),
-                ["path"] = typeof(NpgsqlPath),
-                ["polygon"] = typeof(NpgsqlPolygon),
-                ["line"] = typeof(NpgsqlLine),
-                ["circle"] = typeof(NpgsqlCircle),
-                ["box"] = typeof(NpgsqlBox),
-                ["bit(1)"] = typeof(bool),
-                ["bit(n)"] = typeof(BitArray),
-                ["bit varying"] = typeof(BitArray),
-                ["hstore"] = typeof(IDictionary<string, string>),
-                ["uuid"] = typeof(Guid),
-                ["cidr"] = typeof(ValueTuple<IPAddress, int>),
-                ["inet"] = typeof(IPAddress),
-                ["macaddr"] = typeof(PhysicalAddress),
-                ["tsquery"] = typeof(NpgsqlTsQuery),
-                ["tsvector"] = typeof(NpgsqlTsVector),
-                ["date"] = typeof(DateTime),
-                ["interval"] = typeof(TimeSpan),
-                ["timestamp"] = typeof(DateTime),
-                ["timestamp without time zone"] = typeof(DateTime),
-                ["timestamp with time zone"] = typeof(DateTime),
-                ["time"] = typeof(TimeSpan),
-                ["time with time zone"] = typeof(DateTimeOffset),
-                ["bytea"] = typeof(byte[]),
-                ["oid"] = typeof(uint),
-                ["xid"] = typeof(uint),
-                ["cid"] = typeof(uint),
-                ["oidvector"] = typeof(uint[]),
-
-            };
-
-            
-
             _typeScriptTypes = new Dictionary<Type, string>()
             {
                 [typeof(string)] = "string",

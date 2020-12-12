@@ -3,46 +3,6 @@ using System.Linq;
 
 namespace Badass.Model
 {
-    public class SimpleType
-    {
-        public const string DefaultNamespace = "public";
-
-        public SimpleType(string name, string ns)
-        {
-            Name = name;
-            Namespace = ns;
-            Fields = new List<Field>();
-        }
-
-        public string Name { get; }
-
-        public string Namespace { get; }
-
-        public List<Field> Fields { get; }
-
-        // TODO - this assumes the first text field is the best "summary" of a thing
-        // which may not be the case. We could use some attributes to control which field(s) make up the 
-        // "summary" for a related type
-        public Field DisplayField => Fields.OrderBy(f => f.Rank).FirstOrDefault(f => f.ClrType == typeof(string));
-
-        public dynamic Attributes { get; set; }
-    }
-
-    public class ResultType : SimpleType
-    {
-        public ResultType(string name, string ns, ApplicationType relatedType) : base(name, ns)
-        {
-            Operations = new List<Operation>();
-            RelatedType = relatedType;
-        }
-
-        public ApplicationType RelatedType { get; }
-        
-        public List<Operation> Operations { get; }
-
-        public bool Ignore => Operations.All(op => op.Ignore);
-    }
-
     public class ApplicationType : SimpleType
     {
         public ApplicationType(string name, string ns) : base(name, ns)
