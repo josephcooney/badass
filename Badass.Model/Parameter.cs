@@ -1,4 +1,5 @@
 ﻿using System;
+using Serilog;
 
 namespace Badass.Model
 {
@@ -25,7 +26,17 @@ namespace Badass.Model
 
         public virtual Field RelatedTypeField { get; set; }
 
-        public bool IsNullable => ClrTypeIsNullable(ClrType);
+        public bool IsNullable
+        {
+            get
+            {
+                if (ClrType == null)
+                {
+                    Log.Error("Parameter {ParameterName} does not have a CLR type", Name);
+                }
+                return ClrTypeIsNullable(ClrType);      
+            }
+        } 
 
         public virtual int? Size => RelatedTypeField?.Size;
 

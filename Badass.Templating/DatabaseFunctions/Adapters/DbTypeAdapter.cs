@@ -145,7 +145,7 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         {
             get
             {
-                var fields = InsertTypeFields;
+                var fields = new List<IPseudoField>();
                 if (UserIdField != null)
                 {
                     fields.Add(UserIdField);
@@ -157,7 +157,9 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                 return fields.OrderBy(f => f.Order).ToList();
             }
         }
-        
+
+        public bool HasInsertInputFields => InsertInputFields.Any();
+
         public List<IPseudoField> InsertTypeFields
         {
             get
@@ -402,6 +404,10 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                 return null; // TODO
             }
         }
+
+        public string NewRecordParamterName => Name + "_to_add";
+
+        public string NewTypeName => Name + "_new";
 
         private bool GenerateLinkToOwershipType(List<Field> fields, ApplicationType type)
         {

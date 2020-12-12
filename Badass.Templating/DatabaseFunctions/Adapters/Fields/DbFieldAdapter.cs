@@ -38,7 +38,12 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                     {
                         return GetSearchFieldsAsTsVector();
                     }
-                    return _parent.FunctionName + "." + _field.Name;
+
+                    if (_field.IsTrackingUser)
+                    {
+                        return _parent.FunctionName + "." + _field.Name;    
+                    }
+                    return _parent.NewRecordParamterName + "." + _field.Name;
                 }
 
                 if (_parent.OperationType == OperationType.Update)
