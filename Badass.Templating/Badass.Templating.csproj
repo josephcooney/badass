@@ -71,6 +71,8 @@
     <EmbeddedResource Include="ReactClient\Templates\ReactConfirmDeletePage.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\ReactDetailPage.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\ReactListAllEntitiesPage.handlebars" />
+    <None Remove="DatabaseFunctions\Templates\InsertType.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\InsertType.handlebars" />
   </ItemGroup>
 
   <ItemGroup>

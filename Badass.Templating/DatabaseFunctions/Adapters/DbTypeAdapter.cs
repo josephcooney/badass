@@ -145,7 +145,7 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         {
             get
             {
-                var fields = UserEditableFields.Where(f => f.Add).ToList();
+                var fields = InsertTypeFields;
                 if (UserIdField != null)
                 {
                     fields.Add(UserIdField);
@@ -154,6 +154,15 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                 {
                     fields.Add(CreatedByField);
                 }
+                return fields.OrderBy(f => f.Order).ToList();
+            }
+        }
+        
+        public List<IPseudoField> InsertTypeFields
+        {
+            get
+            {
+                var fields = UserEditableFields.Where(f => f.Add).ToList();
                 return fields.OrderBy(f => f.Order).ToList();
             }
         }

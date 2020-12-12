@@ -38,6 +38,8 @@ namespace Badass.Templating.DatabaseFunctions
                         files.Add(GenerateResultType(type, domain));
                     }
 
+                    files.Add(GenerateInsertType(type, domain));
+                    
                     files.Add(GenerateInsertFunction(type, domain));
 
                     files.Add(GenerateSelectAllFunction(type, domain));
@@ -185,6 +187,12 @@ namespace Badass.Templating.DatabaseFunctions
         {
             var adapter = new DbTypeAdapter(applicationType, "result", OperationType.None, domain);
             return GenerateTemplateFromAdapter(adapter, "ResultType");
+        }
+        
+        private CodeFile GenerateInsertType(ApplicationType applicationType, Domain domain)
+        {
+            var adapter = new DbTypeAdapter(applicationType, "new", OperationType.Insert, domain);
+            return GenerateTemplateFromAdapter(adapter, "InsertType");
         }
 
         private CodeFile GenerateSelectAllForDisplayFunction(ApplicationType applicationType, Domain domain)
