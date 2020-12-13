@@ -5,14 +5,14 @@ namespace Badass.Templating.ReactClient.Adapters
 {
     public class ClientApiInsertUpdateAdapter : ClientDetailAdapter
     {
-        private readonly OperationAdapter _operation;
+        private readonly ClientApiOperationAdapter _operation;
 
-        public ClientApiInsertUpdateAdapter(SimpleType type, Domain domain, OperationAdapter operation) : base(type, domain)
+        public ClientApiInsertUpdateAdapter(ApplicationType type, Domain domain, ClientApiOperationAdapter operation) : base(type, domain)
         {
             _operation = operation;
         }
 
-        public OperationAdapter CurrentOperation => _operation;
+        public ClientApiOperationAdapter CurrentOperation => _operation;
 
         public string OperationName => Util.CSharpNameFromName(_operation.BareName);
 

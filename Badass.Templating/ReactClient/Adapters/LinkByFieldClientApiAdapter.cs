@@ -8,7 +8,7 @@ namespace Badass.Templating.ReactClient.Adapters
     {
         private readonly Field _linkingField;
 
-        public LinkByFieldClientApiAdapter(SimpleType type, Domain domain, Field linkingField) : base(type, domain)
+        public LinkByFieldClientApiAdapter(ApplicationType type, Domain domain, Field linkingField) : base(type, domain)
         {
             _linkingField = linkingField;
         }

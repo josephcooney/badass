@@ -30,6 +30,8 @@ namespace Badass.Templating.Classes
             }
         }
 
+        public Operation UnderlyingOperation => _op;
+        
         public string Name => _op.Name;
 
         public string BareName => _op.BareName;
@@ -53,12 +55,12 @@ namespace Badass.Templating.Classes
 
         public List<ParameterAdapter> Parameters => _op.Parameters.Select(p => new ParameterAdapter(_domain, p)).ToList();
 
-        public List<ParameterAdapter> UserProvidedParameters
+        public virtual List<ParameterAdapter> UserProvidedParameters
         {
             get { return _op.UserProvidedParameters.Select(p => new ParameterAdapter(_domain, p)).ToList(); }
         }
 
-        public List<ParameterAdapter> UserEditableParameters
+        public virtual List<ParameterAdapter> UserEditableParameters
         {
             get { return UserProvidedParameters.Where(p => p.UserEditable).OrderBy(p => p.RelatedTypeField?.Rank).ToList(); }
         }

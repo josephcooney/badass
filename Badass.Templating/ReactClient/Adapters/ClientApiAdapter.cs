@@ -11,8 +11,11 @@ namespace Badass.Templating.ReactClient.Adapters
     {
         private List<DisplayFieldAdapter> _displayFields;
 
-        public ClientApiAdapter(SimpleType type, Domain domain) : base(type, domain)
+        private ApplicationType _applicationType;
+        
+        public ClientApiAdapter(ApplicationType type, Domain domain) : base(type, domain)
         {
+            _applicationType = type;
         }
 
         public List<SimpleType> DistinctOperationReturnTypes
@@ -129,9 +132,11 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public override List<OperationAdapter> Operations => base.Operations.Where(o => o.GenerateApi).ToList();
 
-        public List<OperationAdapter> OperationsWithUI => Operations.Where(o => o.GenerateUI).ToList();
+        public List<ClientApiOperationAdapter> ApiOperations => Operations.Select(o => new ClientApiOperationAdapter(o.UnderlyingOperation, _domain, _applicationType)).ToList();
+        
+        public List<ClientApiOperationAdapter> OperationsWithUI => ApiOperations.Where(o => o.GenerateUI).ToList();
 
-        public List<OperationAdapter> OperationsWithUIThatChangeData => Operations.Where(o => o.GenerateUI && o.ChangesData).ToList();
+        public List<ClientApiOperationAdapter> OperationsWithUIThatChangeData => ApiOperations.Where(o => o.GenerateUI && o.ChangesData).ToList();
 
         public List<OperationAdapter> AddOperations => OperationsThatChangeData.Where(o => o.CreatesNew).ToList();
 
