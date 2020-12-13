@@ -12,6 +12,11 @@ import { {{cs_name Name}}Validate } from './{{cml_case Name}}Validate';
 {{#if CurrentOperation.UsesModel}}
 import { {{cs_name Name}}{{OperationName}}Model } from "./{{cs_name Name}}{{OperationName}}Model";
 {{/if}}
+{{#each CurrentOperation.UserProvidedParameters}}
+{{#if IsCustomType}}
+import { {{ResolvedTypescriptType}} } from './{{ResolvedTypescriptType}}'
+{{/if}}
+{{/each}}
 {{#if IsUpdate}}
 {{#if HasSelectAllType}}
 import { {{cs_name SelectAllType.Name}} } from './{{cs_name SelectAllType.Name}}';

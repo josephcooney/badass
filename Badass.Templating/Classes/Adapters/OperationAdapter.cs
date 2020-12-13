@@ -245,7 +245,25 @@ namespace Badass.Templating.Classes
         {
             get
             {
-                return this.UserProvidedParameters.Where(p => p.RelatedTypeField != null && p.RelatedTypeField.ReferencesType != null).Select(p => p.RelatedTypeField.ReferencesType).Distinct()
+                var referenceTypes = UserProvidedParameters
+                    .Where(p => p.RelatedTypeField?.ReferencesType != null)
+                    .Select(p => p.RelatedTypeField.ReferencesType).ToList();
+
+                foreach (var parameter in Parameters)
+                {
+                    if (parameter.IsCustomType)
+                    {
+                        foreach (var field in parameter.CustomType.Fields)
+                        {
+                            if (field.ReferencesType != null)
+                            {
+                                referenceTypes.Add(field.ReferencesType);
+                            }
+                        }
+                    }
+                }
+                
+                return referenceTypes.Distinct()
                     .Select(t => new ClassAdapter(t, _domain)).ToList();
             }
         }
