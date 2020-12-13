@@ -56,6 +56,19 @@ namespace Badass.Templating.Classes
             }
         }
 
+        public string ResolvedTypescriptType
+        {
+            get
+            {
+                if (!IsCustomType)
+                {
+                    return Util.GetTypeScriptTypeForClrType(_parameter.ClrType);
+                }
+
+                return Util.CSharpNameFromName(_parameter.ProviderTypeName);
+            }
+        }
+
         public bool IsCustomType => ClrType == typeof(ResultType);
     }
 }
