@@ -11,5 +11,7 @@
         bool IsUuid { get; }
         bool Add { get; }
         bool Edit { get; }
+        
+        bool IsUserEditable { get; }
     }
 }

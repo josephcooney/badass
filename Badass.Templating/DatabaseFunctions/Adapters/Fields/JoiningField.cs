@@ -29,6 +29,8 @@ namespace Badass.Templating.DatabaseFunctions.Adapters.Fields
         public bool Add => _field.Add;
         public bool Edit => _field.Edit;
 
+        public bool IsUserEditable => _field.IsUserEditable();
+
         public string PrimaryAlias => _alias;
     }
 }

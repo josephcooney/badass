@@ -38,7 +38,10 @@ namespace Badass.Templating.DatabaseFunctions
                         files.Add(GenerateResultType(type, domain));
                     }
 
-                    files.Add(GenerateInsertType(type, domain));
+                    if (adapter.UsesCustomInsertType)
+                    {
+                        files.Add(GenerateInsertType(type, domain));
+                    }
                     
                     files.Add(GenerateInsertFunction(type, domain));
 

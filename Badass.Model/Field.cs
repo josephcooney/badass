@@ -52,11 +52,12 @@ namespace Badass.Model
 
         public string ProviderTypeName { get; set; }
 
+        // TODO - convert this to a property
         public bool IsUserEditable()
         {
             return !IsIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
         }
-
+        
         public bool IsTrackingDate => IsDate && (Name == CreatedFieldName || Name == ModifiedFieldName || Name == SoftDeleteFieldName);
 
         public bool IsTrackingUser => ((ReferencesType != null && ReferencesType.IsSecurityPrincipal) && (Name.StartsWith(CreatedFieldName) || Name.StartsWith(ModifiedFieldName) || (Type is ApplicationType && ((ApplicationType)Type).DeleteType == DeleteType.Soft && Name.StartsWith(DeletedFieldName))));

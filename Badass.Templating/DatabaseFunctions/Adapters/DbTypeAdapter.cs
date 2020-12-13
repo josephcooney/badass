@@ -146,6 +146,12 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
             get
             {
                 var fields = new List<IPseudoField>();
+                if (!UsesCustomInsertType)
+                {
+                    // in this case there should probably only be 1 field.
+                    // If there were more we would be using a custom insert type
+                    fields.AddRange(InsertTypeFields);
+                }
                 if (UserIdField != null)
                 {
                     fields.Add(UserIdField);
@@ -408,6 +414,14 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         public string NewRecordParamterName => Name + "_to_add";
 
         public string NewTypeName => Name + "_new";
+
+        public bool UsesCustomInsertType
+        {
+            get
+            {
+                return Fields.Count(f => f.IsUserEditable) > 1;
+            }
+        }
 
         private bool GenerateLinkToOwershipType(List<Field> fields, ApplicationType type)
         {
