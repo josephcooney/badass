@@ -1,5 +1,6 @@
 ﻿using Badass.Model;
 using Badass.Templating.DatabaseFunctions.Adapters;
+using FluentAssertions;
 using Xunit;
 
 namespace Badass.Tests.DbGenerationTests.Aliasing
@@ -19,7 +20,7 @@ namespace Badass.Tests.DbGenerationTests.Aliasing
         [Fact]
         public void An_Alias_Is_Created()
         {
-            Assert.Equal("f", alias);
+            alias.Should().Be("f");
         }
     }
 }

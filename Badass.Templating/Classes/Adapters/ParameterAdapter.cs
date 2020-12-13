@@ -47,14 +47,15 @@ namespace Badass.Templating.Classes
         {
             get
             {
-                var type = _parameter.ClrType;
-                if (type != typeof(ResultType))
+                if (!IsCustomType)
                 {
-                    return Util.FormatClrType(type);
+                    return Util.FormatClrType(_parameter.ClrType);
                 }
 
                 return Util.CSharpNameFromName(_parameter.ProviderTypeName);
             }
         }
+
+        public bool IsCustomType => ClrType == typeof(ResultType);
     }
 }
