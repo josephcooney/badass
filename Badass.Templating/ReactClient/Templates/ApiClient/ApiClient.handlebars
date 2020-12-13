@@ -55,9 +55,17 @@ export class {{cs_name Name}}ApiClient {
 		return result;
 	{{else}}
 	public async {{cml_case BareName}}({{#each UserProvidedParameters}}{{cml_case Name}} : {{ResolvedTypescriptType}} | null {{#unless @last}}, {{/unless}}{{/each}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>  { 
-		var uri = `api/{{kb_case ../Name}}/{{cs_name BareName}}?{{#each UserProvidedParameters}}{{cml_case Name}}=${({{cml_case Name}})}{{#unless @last}}&{{/unless}}{{/each}}`;
+    {{#if ProvideDataByUri}}
+        var uri = `api/{{kb_case ../Name}}/{{cs_name BareName}}?{{#each UserProvidedParameters}}{{cml_case Name}}=${({{cml_case Name}})}{{#unless @last}}&{{/unless}}{{/each}}`;
+    {{else}}
+        var uri = 'api/{{kb_case ../Name}}/{{cs_name BareName}}';
+    {{/if}}
 		console.log("calling {{Name}} on " + uri);
-		var result = await {{ts_fix_http HttpMethod}}<{{TypeScriptReturn}}>(uri);
+    {{#if ProvideDataByUri}}
+        var result = await {{ts_fix_http HttpMethod}}<{{TypeScriptReturn}}>(uri);
+    {{else}}
+        var result = await {{ts_fix_http HttpMethod}}<{{TypeScriptReturn}}>(uri, {{#each UserProvidedParameters}}{{cml_case Name}}{{/each}});
+    {{/if}}    
 		{{#if IsStructuredResult}}
 		{{#if ResultHasAnyDateFields}}
 		if (result.parsedBody) {

@@ -239,6 +239,8 @@ namespace Badass.Templating.Classes
 
         public string FriendlyName => _op.FriendlyName;
 
+        public bool ProvideDataByUri => HttpMethod == HttpGetOperation || HttpMethod == HttpDeleteOperation;
+
         public List<ClassAdapter> ParameterReferenceTypes
         {
             get
