@@ -58,6 +58,15 @@ namespace Badass.Templating.ReactClient
                                 var file = new CodeFile { Name = Util.CSharpNameFromName(op.SimpleReturnType.Name) + ".ts", Contents = GenerateClientApiResultType(op.SimpleReturnType), RelativePath = path, Template = TemplateNames.ApiClientResult };
                                 files.Add(file);
                             }
+
+                            foreach (var p in op.Parameters)
+                            {
+                                if (p.IsCustomType)
+                                {
+                                    var file = new CodeFile { Name = Util.CSharpNameFromName(p.CustomType.Name) + ".ts", Contents = GenerateClientApiResultType(p.CustomType), RelativePath = path, Template = TemplateNames.ApiClientResult };
+                                    files.Add(file);
+                                }
+                            }
                         }
                     }
                 }

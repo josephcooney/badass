@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Badass.Model;
 
 namespace Badass.Templating.Classes
@@ -70,5 +71,18 @@ namespace Badass.Templating.Classes
         }
 
         public bool IsCustomType => ClrType == typeof(ResultType);
+
+        public ResultType CustomType
+        {
+            get
+            {
+                if (IsCustomType)
+                {
+                    return _domain.ResultTypes.Single(rt => rt.Name == _parameter.ProviderTypeName);
+                }
+
+                return null;
+            }
+        }
     }
 }
