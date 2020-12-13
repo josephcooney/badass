@@ -42,5 +42,19 @@ namespace Badass.Templating.Classes
                                                                        _parameter.RelatedTypeField.IsUserEditable());
             }
         }
+
+        public string ResolvedClrType
+        {
+            get
+            {
+                var type = _parameter.ClrType;
+                if (type != typeof(ResultType))
+                {
+                    return Util.FormatClrType(type);
+                }
+
+                return Util.CSharpNameFromName(_parameter.ProviderTypeName);
+            }
+        }
     }
 }

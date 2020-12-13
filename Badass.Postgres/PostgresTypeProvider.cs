@@ -142,10 +142,6 @@ namespace Badass.Postgres
             {
                 return _postgresClrTypes[postgresTypeName];
             }
-
-            // TODO - return SimpleType?
-            
-            Log.Warning("Unable to determine CLR type for {TypeName}", postgresTypeName);
             
             return null;
         }
@@ -273,7 +269,7 @@ namespace Badass.Postgres
                                     var parameters = reader["argument_types"].ToString();
                                     if (!string.IsNullOrEmpty(parameters))
                                     {
-                                        op.Parameters.AddRange(ReadParameters(parameters, domain));
+                                        op.Parameters.AddRange(ReadParameters(parameters, domain, op));
                                         if (op.Attributes?.applicationtype != null)
                                         {
                                             UpdateParameterNullabilityFromApplicationType(op, domain);
@@ -1195,7 +1191,7 @@ namespace Badass.Postgres
                         else
                         {
                             // get return type info from postgres meta-data
-                            var customReturnType = ReadCustomTypeInformation(typeName, domain, operation);
+                            var customReturnType = ReadCustomOperationReturn(typeName, domain, operation);
                             if (customReturnType == null)
                             {
                                 // error
@@ -1216,7 +1212,13 @@ namespace Badass.Postgres
 
         }
 
-        private OperationReturn ReadCustomTypeInformation(string typeName, Domain domain, Operation operation)
+        private OperationReturn ReadCustomOperationReturn(string typeName, Domain domain, Operation operation)
+        {
+            var result = ReadCustomOperationType(typeName, domain, operation);
+            return new OperationReturn {ReturnType = ReturnType.CustomType, SimpleReturnType = result};
+        }
+
+        private ResultType ReadCustomOperationType(string typeName, Domain domain, Operation operation)
         {
             using (var cn = new NpgsqlConnection(_connectionString))
             using (var cmd = new NpgsqlCommand(TypeQuery, cn))
@@ -1251,7 +1253,7 @@ namespace Badass.Postgres
                         result.Fields.Add(fld);
                     }
 
-                    if (operation.Attributes.applicationtype != null)
+                    if (operation.Attributes?.applicationtype != null)
                     {
                         UpdateResultFieldPropertiesFromApplicationType(operation, result, domain);
                     }
@@ -1259,12 +1261,10 @@ namespace Badass.Postgres
                     result.Operations.Add(operation);
                     domain.ResultTypes.Add(result);
 
-                    return new OperationReturn {ReturnType = ReturnType.CustomType, SimpleReturnType = result};
+                    return result;
                 }
             }
         }
-
-        
         
         private static Tuple<string, int> ParseTypeAndSize(string providerTypeRaw)
         {
@@ -1442,13 +1442,13 @@ namespace Badass.Postgres
 
 
 
-        private IEnumerable<Parameter> ReadParameters(string parameters, Domain domain)
+        private IEnumerable<Parameter> ReadParameters(string parameters, Domain domain, Operation operation)
         {
             var p = new List<Parameter>();
 
             if (parameters.IndexOf(',') < 0)
             {
-                var prm = ReadSingleParameter(parameters, domain);
+                var prm = ReadSingleParameter(parameters, domain, operation);
                 prm.Order = 0;
                 p.Add(prm);
             }
@@ -1458,7 +1458,7 @@ namespace Badass.Postgres
                 var index = 0;
                 foreach (var s in split)
                 {
-                    var prm = ReadSingleParameter(s.Trim(), domain);
+                    var prm = ReadSingleParameter(s.Trim(), domain, operation);
                     prm.Order = index;
                     p.Add(prm);
                     index++;
@@ -1468,10 +1468,23 @@ namespace Badass.Postgres
             return p;
         }
 
-        private Parameter ReadSingleParameter(string p, Domain domain)
+        private Parameter ReadSingleParameter(string p, Domain domain, Operation operation)
         {
             var n = GetFieldNameAndType(p);
-            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type, ClrType = GetClrTypeFromPostgresType(n.Type) };
+            var type = GetClrTypeFromPostgresType(n.Type);
+            if (type == null)
+            {
+                var resultType = ReadCustomOperationType(n.Type, domain, operation);
+                if (resultType != null)
+                {
+                    type = typeof(ResultType);
+                }
+                else
+                {
+                    Log.Warning("Unable to determine CLR type for {TypeName}", n.Type);
+                }
+            }
+            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type, ClrType = type };
             return parameter;
         }
 

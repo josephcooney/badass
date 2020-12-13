@@ -51,7 +51,7 @@ namespace Badass.Templating.Classes
 
         public bool HasParameters => _op.Parameters.Any();
 
-        public List<Parameter> Parameters => _op.Parameters;
+        public List<ParameterAdapter> Parameters => _op.Parameters.Select(p => new ParameterAdapter(_domain, p)).ToList();
 
         public List<ParameterAdapter> UserProvidedParameters
         {

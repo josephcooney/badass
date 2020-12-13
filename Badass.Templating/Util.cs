@@ -3,13 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Badass.Model;
 using HandlebarsDotNet;
-using NpgsqlTypes;
 using Serilog;
 
 namespace Badass.Templating
@@ -69,39 +66,9 @@ namespace Badass.Templating
                     return;
                 }
 
-                System.Type originalType = (System.Type) parameters[0];
-
-                var type = System.Nullable.GetUnderlyingType(originalType) ?? originalType;
-                
-
-                var shortName = TypeMapping.GetCSharpShortTypeName(type);
-                if (shortName != null)
-                {
-                    if (originalType != type)
-                    {
-                        shortName += "?";
-                    }
-
-                    writer.Write(shortName);
-                    return;
-                }
-
-                if (type.Namespace == "System")
-                {
-                    if (originalType != type)
-                    {
-                        writer.Write(type.Name + "?");
-                    }
-                    else
-                    {
-                        writer.Write(type.Name);
-                    }
-
-                    return;
-                }
-
-                writer.Write(type.ToString());
-
+                var originalType = (System.Type) parameters[0];
+                var result = FormatClrType(originalType);
+                writer.Write(result);
             });
 
             Handlebars.RegisterHelper("escape_sql_keyword", (writer, context, parameters) =>
@@ -300,6 +267,36 @@ namespace Badass.Templating
             });
         }
 
+        public static string FormatClrType(Type originalType)
+        {
+            var type = Nullable.GetUnderlyingType(originalType) ?? originalType;
+
+            var shortName = TypeMapping.GetCSharpShortTypeName(type);
+            if (shortName != null)
+            {
+                if (originalType != type)
+                {
+                    shortName += "?";
+                }
+
+                return shortName;
+            }
+
+            if (type.Namespace == "System")
+            {
+                if (originalType != type)
+                {
+                    return type.Name + "?";
+                }
+                else
+                {
+                    return type.Name;
+                }
+            }
+
+            return type.ToString();
+        }
+
         public static string EscapeSqlReservedWord(string name)
         {
             return _typeProvider.EscapeReservedWord(name);
@@ -417,10 +414,6 @@ namespace Badass.Templating
         }
 
         private static ITypeProvider _typeProvider;
-        
-        
-
-        
 
         private static Dictionary<System.Type, string> _typeScriptTypes;
 
