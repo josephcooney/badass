@@ -70,10 +70,20 @@ export interface I{{cs_name Name}}{{OperationNameFriendly}}Props {
 	match?: any;
 	{{/if}}
     {{#each CurrentOperation.UserEditableParameters}}
-        {{#if RelatedTypeField.HasReferenceType}}
-            {{#unless RelatedTypeField.ReferencesType.IsReferenceData}}
+        {{#if IsCustomType}}
+            {{#each CustomType.Fields}}
+                {{#if HasReferenceType}}
+                    {{#unless ReferencesType.IsReferenceData}}
     {{cml_case Name}} : {{ResolvedTypescriptType}} | null;
-            {{/unless}}
+                    {{/unless}}
+                {{/if}}
+            {{/each}}
+        {{else}}
+            {{#if RelatedTypeField.HasReferenceType}}
+                {{#unless RelatedTypeField.ReferencesType.IsReferenceData}}
+    {{cml_case Name}} : {{ResolvedTypescriptType}} | null;
+                {{/unless}}
+            {{/if}}            
         {{/if}}
     {{/each}}
 }
