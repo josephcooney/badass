@@ -104,5 +104,7 @@ namespace Badass.Model
         public bool Add => Attributes?.add != null ? Attributes.add : true;
 
         public bool Edit => Attributes?.edit != null ? Attributes.edit : true;
+
+        public bool IsInt => ClrType == typeof(int);
     }
 }

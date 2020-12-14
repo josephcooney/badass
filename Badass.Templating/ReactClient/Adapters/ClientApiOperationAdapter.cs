@@ -28,6 +28,28 @@ namespace Badass.Templating.ReactClient.Adapters
                 return new ClientCustomTypeModel(customParam.CustomType);
             }
         }
+
+        public bool UsesCustomType
+        {
+            get
+            {
+                return UsesModel || Parameters.Any(p => p.IsCustomType);
+            }
+        }
+
+        public List<Field> EditableLinkingFields
+        {
+            get
+            {
+                var fields = UserEditableParameters
+                    .Where(p => p.RelatedTypeField != null && p.RelatedTypeField.HasReferenceType &&
+                                !p.RelatedTypeField.ReferencesType.IsReferenceData).Select(p => p.RelatedTypeField).ToList();
+                
+                fields.AddRange(UserEditableParameters.Where(p => p.IsCustomType).SelectMany(p => p.CustomType.Fields.Where(f => f.HasReferenceType && !f.ReferencesType.IsReferenceData)));
+
+                return fields;
+            }
+        }
     }
 
     public class ClientCustomTypeModel

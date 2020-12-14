@@ -69,22 +69,8 @@ export interface I{{cs_name Name}}{{OperationNameFriendly}}Props {
 	id?: {{get_ts_type IdentityField.ClrType}} | null;
 	match?: any;
 	{{/if}}
-    {{#each CurrentOperation.UserEditableParameters}}
-        {{#if IsCustomType}}
-            {{#each CustomType.Fields}}
-                {{#if HasReferenceType}}
-                    {{#unless ReferencesType.IsReferenceData}}
-    {{cml_case Name}} : {{ResolvedTypescriptType}} | null;
-                    {{/unless}}
-                {{/if}}
-            {{/each}}
-        {{else}}
-            {{#if RelatedTypeField.HasReferenceType}}
-                {{#unless RelatedTypeField.ReferencesType.IsReferenceData}}
-    {{cml_case Name}} : {{ResolvedTypescriptType}} | null;
-                {{/unless}}
-            {{/if}}            
-        {{/if}}
+    {{#each CurrentOperation.EditableLinkingFields}}
+    {{cml_case Name}} : {{get_ts_type ClrType}} | null;
     {{/each}}
 }
 
@@ -141,7 +127,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
                 {{cml_case Name}}: null,
                         {{/if}}    
                     {{/each}}   
-            },        
+            },
                 {{else}}
              {{cml_case Name}}: null,
                 {{/if}}
@@ -165,30 +151,26 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 		}
 	}
 
-	{{#each CurrentOperation.UserEditableParameters}}
-    {{#if RelatedTypeField.HasReferenceType}}
-	{{#unless RelatedTypeField.ReferencesType.IsReferenceData}}
-	get {{cml_case Name}}() : {{get_ts_type ClrType}} | null {
-		if (this.props.{{cml_case Name}}){
-			return this.props.{{cml_case Name}};
-		}	
+    {{#each CurrentOperation.EditableLinkingFields}}
+    get {{cml_case Name}}() : {{get_ts_type ClrType}} | null {
+        if (this.props.{{cml_case Name}}){
+            return this.props.{{cml_case Name}};
+        }
 
-		if (this.props.location.state && this.props.location.state.linkedType == "{{cml_case RelatedTypeField.ReferencesType.Name}}") {
+        if (this.props.location.state && this.props.location.state.linkedType == "{{cml_case ReferencesType.Name}}") {
             return this.props.location.state.linkedId;
         }
 
-		if (this.qry.{{cml_case Name}} && !Array.isArray(this.qry.{{cml_case Name}})) {
-			{{#if IsInt}}
+        if (this.qry.{{cml_case Name}} && !Array.isArray(this.qry.{{cml_case Name}})) {
+        {{#if IsInt}}
             return parseInt(this.qry.{{cml_case Name}});
-			{{else}}
+        {{else}}
             return this.qry.{{cml_case Name}};
-			{{/if}}
-		}
+        {{/if}}
+        }
 
-		return null;
-	}
-	{{/unless}}
-	{{/if}}
+        return null;
+    }
 	{{/each}}
 
 	{{#if IsUpdate}}
@@ -257,8 +239,10 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
     }
 	{{else}}
     handleSubmit(fields : any) {
-		{{#if CurrentOperation.UsesModel}}
+        {{#if CurrentOperation.UsesCustomType}}
         console.log(fields);
+        {{/if}}
+		{{#if CurrentOperation.UsesModel}}
 		this.api.{{cml_case OperationName}}(fields).then(data => {
         {{else}}
 		this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserProvidedParameters}}fields.{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
