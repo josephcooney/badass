@@ -48,7 +48,7 @@ namespace Badass.Model
         {
             get
             {
-                return ClrType == typeof(string) && (RelatedTypeField?.Size > 500 || RelatedTypeField?.Attributes?.largeContent == true);
+                return RelatedTypeField?.IsLargeTextContent == true;
             }
         }
 

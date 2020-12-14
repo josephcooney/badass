@@ -94,6 +94,14 @@ namespace Badass.Model
             }
         }
 
+        public bool IsLargeTextContent
+        {
+            get
+            {
+                return ClrType == typeof(string) && (Size > 500 || Attributes?.largeContent == true);
+            }
+        }
+        
         public bool IsColor => Attributes?.type == ColorFieldType;
 
         public int Rank => Attributes?.rank != null ? (int)Attributes?.rank : RankOffset + Order;

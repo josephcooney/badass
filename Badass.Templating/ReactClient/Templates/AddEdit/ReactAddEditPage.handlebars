@@ -300,7 +300,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
     render() {
         return (
 		<AnimateIn>
-		<Formik {{#if IsUpdate}}enableReinitialize{{/if}} {{#if CurrentOperation.UsesModel}}initialValues={this.state.data}{{else}}initialValues={this.state}{{/if}} onSubmit={this.handleSubmit} validate={this.validate}
+		<Formik {{#if IsUpdate}}enableReinitialize{{/if}} initialValues={ {{CurrentOperation.StatePath}} } onSubmit={this.handleSubmit} validate={this.validate}
             render={({ errors, status, touched, setFieldValue, values }) => (
 			<div>
                 {this.renderTitle()}
@@ -321,11 +321,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 							<label className="col-sm-2 col-form-label" htmlFor="{{cml_case Name}}">{{hmn}}{{#if RelatedTypeField.IsRequired}}<span className='required-indicator'>*</span>{{/if}}</label>
 							<div className="col-sm-10">
 							{{#if RelatedTypeField.HasReferenceType}}
-                                {{#if ../CurrentOperation.UsesModel}}
-							<Field id="{{cml_case Name}}" name="{{cml_case Name}}" component={ {{cs_name RelatedTypeField.ReferencesType.Name}}Select } value={this.state.data.{{cml_case Name}} } className={(errors.{{cml_case Name}} && touched.{{cml_case Name}} ? 'invalid-select' : '')} {{#unless RelatedTypeField.ReferencesType.IsReferenceData}} readonly={this.{{cml_case Name}} != null} {{/unless}} />
-                                {{else}}
-							<Field id="{{cml_case Name}}" name="{{cml_case Name}}" component={ {{cs_name RelatedTypeField.ReferencesType.Name}}Select } value={this.state.{{cml_case Name}} } className={(errors.{{cml_case Name}} && touched.{{cml_case Name}} ? 'invalid-select' : '')} {{#unless RelatedTypeField.ReferencesType.IsReferenceData}} readonly={this.{{cml_case Name}} != null} {{/unless}} />
-                                {{/if}}
+							<Field id="{{cml_case Name}}" name="{{cml_case Name}}" component={ {{cs_name RelatedTypeField.ReferencesType.Name}}Select } value={ {{../CurrentOperation.StatePath}}.{{cml_case Name}} } className={(errors.{{cml_case Name}} && touched.{{cml_case Name}} ? 'invalid-select' : '')} {{#unless RelatedTypeField.ReferencesType.IsReferenceData}} readonly={this.{{cml_case Name}} != null} {{/unless}} />
 							{{else}}
 								{{#if IsDateTime}}
 								<DatePicker id="{{cml_case Name}}" name="{{cml_case Name}}" className={'form-control' + (errors.{{cml_case Name}} && touched.{{cml_case Name}} ? ' is-invalid' : '')} selected={ values.{{cml_case Name}} } onChange={(date, dateString) =>

@@ -50,6 +50,8 @@ namespace Badass.Templating.ReactClient.Adapters
                 return fields;
             }
         }
+
+        public string StatePath => UsesModel ? "this.state.data" : "this.state";
     }
 
     public class ClientCustomTypeModel
