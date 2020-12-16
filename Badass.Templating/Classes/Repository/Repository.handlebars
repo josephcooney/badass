@@ -119,11 +119,15 @@ namespace {{cs_name Namespace}}.Data.Repository
 			{{#if IsJson}}
 			cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, (object){{cml_case Name}} ?? DBNull.Value);
 			{{else}}
-				{{#if IsNullable}}
-			SetParameterValue({{cml_case Name}}, cmd, "{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}});
-				{{else}}
-			cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, {{cml_case Name}});
-				{{/if}}
+                {{#if IsCustomType}}
+            cmd.Parameters.Add(new NpgsqlParameter{ParameterName = "{{Name}}", Value = {{cml_case Name}} });
+                {{else}}
+                    {{#if IsNullable}}
+            SetParameterValue({{cml_case Name}}, cmd, "{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}});
+                    {{else}}
+            cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, {{cml_case Name}});
+                    {{/if}}
+                {{/if}}
 			{{/if}}
 			{{/each}}
 			{{/if}}
