@@ -23,7 +23,7 @@ namespace Badass.Templating.Classes
 
         public override Field RelatedTypeField => _parameter.RelatedTypeField;
 
-        public bool IsColor => _parameter.RelatedTypeField?.Attributes?.type == Field.ColorFieldType;
+        public bool IsColor => _parameter.RelatedTypeField.IsColor;
 
         public bool HasSize => _parameter.Size != null;
 

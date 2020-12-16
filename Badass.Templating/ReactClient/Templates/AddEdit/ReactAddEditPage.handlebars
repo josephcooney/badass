@@ -307,49 +307,49 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 				{{#if IsUpdate}} { this.state.loading ? <Loading /> : null } {{/if}}
 				{ this.state.error ? <ErrorControl message={this.state.message ? this.state.message : ""} /> : null }
                 <Form autoComplete="off">                        
-					{{#each CurrentOperation.UserEditableParameters}}											
+					{{#each CurrentOperation.UserInputFields}}											
 						{{#if IsBoolean}}
 						<div className="form-group row form-check col-sm-10 offset-sm-2">								
-							<Field type="checkbox" id="{{cml_case Name}}" name="{{cml_case Name}}" className={'form-check-input' + (errors.{{cml_case Name}} && touched.{{cml_case Name}} ? ' is-invalid' : '')} checked={ values.{{cml_case Name}} } onChange={(e:any) => {
-								setFieldValue('{{cml_case Name}}', e.target.checked);
+							<Field type="checkbox" id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" className={'form-check-input' + (errors.{{cml_case NameWithPath}} && touched.{{cml_case NameWithPath}} ? ' is-invalid' : '')} checked={ values.{{cml_case NameWithPath}} } onChange={(e:any) => {
+								setFieldValue('{{cml_case NameWithPath}}', e.target.checked);
                             }}/>
-							<label className="form-check-label" htmlFor="{{cml_case Name}}">{{#if RelatedTypeField.IsRequired}}<span className='required-indicator'>*</span>{{/if}}{{hmn}}</label>
-							<ErrorMessage name="{{cml_case Name}}" component="div" className="invalid-feedback" />
+							<label className="form-check-label" htmlFor="{{cml_case NameWithPath}}">{{#if Field.IsRequired}}<span className='required-indicator'>*</span>{{/if}}{{hmn}}</label>
+							<ErrorMessage name="{{cml_case NameWithPath}}" component="div" className="invalid-feedback" />
 						</div>
 						{{else}}
 						<div className="form-group row">
-							<label className="col-sm-2 col-form-label" htmlFor="{{cml_case Name}}">{{hmn}}{{#if RelatedTypeField.IsRequired}}<span className='required-indicator'>*</span>{{/if}}</label>
+							<label className="col-sm-2 col-form-label" htmlFor="{{cml_case NameWithPath}}">{{hmn Name}}{{#if Field.IsRequired}}<span className='required-indicator'>*</span>{{/if}}</label>
 							<div className="col-sm-10">
-							{{#if RelatedTypeField.HasReferenceType}}
-							<Field id="{{cml_case Name}}" name="{{cml_case Name}}" component={ {{cs_name RelatedTypeField.ReferencesType.Name}}Select } value={ {{../CurrentOperation.StatePath}}.{{cml_case Name}} } className={(errors.{{cml_case Name}} && touched.{{cml_case Name}} ? 'invalid-select' : '')} {{#unless RelatedTypeField.ReferencesType.IsReferenceData}} readonly={this.{{cml_case Name}} != null} {{/unless}} />
+							{{#if Field.HasReferenceType}}
+							<Field id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" component={ {{cs_name Field.ReferencesType.Name}}Select } value={ {{../CurrentOperation.StatePath}}.{{cml_case NameWithPath}} } className={(errors.{{cml_case NameWithPath}} && touched.{{cml_case NameWithPath}} ? 'invalid-select' : '')} {{#unless Field.ReferencesType.IsReferenceData}} readonly={this.{{cml_case NameWithPath}} != null} {{/unless}} />
 							{{else}}
 								{{#if IsDateTime}}
-								<DatePicker id="{{cml_case Name}}" name="{{cml_case Name}}" className={'form-control' + (errors.{{cml_case Name}} && touched.{{cml_case Name}} ? ' is-invalid' : '')} selected={ values.{{cml_case Name}} } onChange={(date, dateString) =>
-                                    setFieldValue("{{cml_case Name}}", date)
+								<DatePicker id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" className={'form-control' + (errors.{{cml_case NameWithPath}} && touched.{{cml_case NameWithPath}} ? ' is-invalid' : '')} selected={ values.{{cml_case NameWithPath}} } onChange={(date, dateString) =>
+                                    setFieldValue("{{cml_case NameWithPath}}", date)
                                 } />
 								{{else}}
 									{{#if IsLargeTextContent}}
-								<Field id="{{cml_case Name}}" name="{{cml_case Name}}" component="textarea" className={'form-control' + (errors.{{cml_case Name}} && touched.{{cml_case Name}} ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />  
+								<Field id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" component="textarea" className={'form-control' + (errors.{{cml_case NameWithPath}} && touched.{{cml_case NameWithPath}} ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />  
 									{{else}}
 									{{#if IsFile}}
-								<input type="file" id="{{cml_case Name}}" name="{{cml_case Name}}" className={'form-control' + (errors.contents && touched.contents ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" onChange={(event: any) => {
+								<input type="file" id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" className={'form-control' + (errors.contents && touched.contents ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" onChange={(event: any) => {
                                     setFieldValue("contents", event.currentTarget.files[0]);
                                 }} />  
 									{{else}}
 										{{#if IsRating}}
-								<RatingInput name="{{cml_case Name}}" />
+								<RatingInput name="{{cml_case NameWithPath}}" />
 										{{else}}
                                             {{#if IsColor}}
-								<Field id="{{cml_case Name}}" name="{{cml_case Name}}" type="color" className={'form-control' + (errors.{{cml_case Name}} && touched.{{cml_case Name}} ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />                                
+								<Field id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" type="color" className={'form-control' + (errors.{{cml_case NameWithPath}} && touched.{{cml_case NameWithPath}} ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />                                
 										    {{else}}
-								<Field id="{{cml_case Name}}" name="{{cml_case Name}}" type="{{input_type ClrType}}" className={'form-control' + (errors.{{cml_case Name}} && touched.{{cml_case Name}} ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />                                
+								<Field id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" type="{{input_type ClrType}}" className={'form-control' + (errors.{{cml_case NameWithPath}} && touched.{{cml_case NameWithPath}} ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />                                
                                             {{/if}}    
                                         {{/if}}
 									{{/if}}
 									{{/if}}
 								{{/if}}
 							{{/if}}
-							<ErrorMessage name="{{cml_case Name}}" component="div" className="invalid-feedback" />
+							<ErrorMessage name="{{cml_case NameWithPath}}" component="div" className="invalid-feedback" />
 							</div>
 						</div>
 						{{/if}}						

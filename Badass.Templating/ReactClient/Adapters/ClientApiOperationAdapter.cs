@@ -52,31 +52,57 @@ namespace Badass.Templating.ReactClient.Adapters
         }
 
         public string StatePath => UsesModel ? "this.state.data" : "this.state";
+
+        public List<UserInputFieldModel> UserInputFields {
+            get
+            {
+                var fields = new List<UserInputFieldModel>();
+                foreach (var parameter in UserEditableParameters)
+                {
+                    if (parameter.IsCustomType)
+                    {
+                        foreach (var field in parameter.CustomType.Fields)
+                        {
+                            // this only handles 1 level of nesting of fields
+                            fields.Add(new UserInputFieldModel()
+                                {Field = field, Name = field.Name, RelativeStatePath = parameter.Name + "."});
+                        }
+                    }
+                    else
+                    {
+                        fields.Add(new UserInputFieldModel{Field = parameter.RelatedTypeField, Name = parameter.Name, Parameter = parameter});
+                    }
+                }
+
+                return fields;
+            }
+        }
     }
 
-    public class ClientCustomTypeModel
+    public class UserInputFieldModel
     {
-        public ClientCustomTypeModel(OperationAdapter operation)
-        {
-            Name = operation.Name + "Model";
-            Fields = operation.UserProvidedParameters.Select(p => new SimpleField {Name = p.Name, ClrType = p.ClrType}).ToList();
-        }
-
-        public ClientCustomTypeModel(ResultType resultType)
-        {
-            Name = resultType.Name;
-            Fields = resultType.Fields.Select(f => new SimpleField() {ClrType = f.ClrType, Name = f.Name}).ToList();
-        }
+        public Field Field { get; set; }
         
-        public string Name { get;  }
+        public Parameter Parameter { get; set; }
         
-        public List<SimpleField> Fields { get;  }
-    }
-
-    public class SimpleField
-    {
+        public string RelativeStatePath { get; set; }
+        
         public string Name { get; set; }
-        
-        public Type ClrType { get; set; }
-    } 
+
+        public string NameWithPath => RelativeStatePath + Name;
+
+        public bool IsBoolean => Field?.IsBoolean ?? Parameter.IsBoolean;
+
+        public bool IsDateTime => Field?.IsDate ?? Parameter.IsDateTime;
+
+        public bool IsLargeTextContent => Field?.IsLargeTextContent ?? Parameter.IsLargeTextContent;
+
+        public bool IsFile => Field?.IsFile ?? Parameter.IsFile;
+
+        public bool IsRating => Field?.IsRating ?? Parameter.IsRating;
+
+        public bool IsColor => Field?.IsColor ?? false;
+
+        public Type ClrType => Field?.ClrType ?? Parameter.ClrType;
+    }
 }
