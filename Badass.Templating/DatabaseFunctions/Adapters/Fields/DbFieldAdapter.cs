@@ -43,6 +43,12 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                     {
                         return _parent.FunctionName + "." + _field.Name;    
                     }
+
+                    if (_parent.UserEditableFields.Count == 1)
+                    {
+                        return _parent.FunctionName + "." + _field.Name;
+                    }
+                    
                     return _parent.NewRecordParamterName + "." + _field.Name;
                 }
 
