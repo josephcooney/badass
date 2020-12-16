@@ -51,7 +51,7 @@ namespace {{cs_name Namespace}}.Controllers
 		}
 		{{else}}
 		[Http{{HttpMethod}}("[action]")]
-		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}({{#each UserProvidedParameters}}{{ResolvedClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
+		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}({{#each UserProvidedParameters}}{{#unless ../ProvideDataByUri}}[FromBody]{{/unless}}{{ResolvedClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
 		{
 			var requestUserId = _userService.GetUserId(HttpContext.User);
 			{{#if ApiHooks}}
