@@ -321,7 +321,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 							<label className="col-sm-2 col-form-label" htmlFor="{{cml_case NameWithPath}}">{{hmn Name}}{{#if Field.IsRequired}}<span className='required-indicator'>*</span>{{/if}}</label>
 							<div className="col-sm-10">
 							{{#if Field.HasReferenceType}}
-							<Field id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" component={ {{cs_name Field.ReferencesType.Name}}Select } value={ {{../CurrentOperation.StatePath}}.{{cml_case NameWithPath}} } className={(getIn(errors,'{{cml_case NameWithPath}}') && getIn(touched, '{{cml_case NameWithPath}}') ? 'invalid-select' : '')} {{#unless Field.ReferencesType.IsReferenceData}} readonly={this.{{cml_case NameWithPath}} != null} {{/unless}} />
+							<Field id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" component={ {{cs_name Field.ReferencesType.Name}}Select } value={ {{../CurrentOperation.StatePath}}.{{cml_case NameWithPath}} } className={(getIn(errors,'{{cml_case NameWithPath}}') && getIn(touched, '{{cml_case NameWithPath}}') ? 'invalid-select' : '')} {{#unless Field.ReferencesType.IsReferenceData}} readonly={this.{{cml_case Name}} != null} {{/unless}} />
 							{{else}}
 								{{#if IsDateTime}}
 								<DatePicker id="{{cml_case NameWithPath}}" name="{{cml_case NameWithPath}}" className={'form-control' + (getIn(errors, '{{cml_case NameWithPath}}') && getIn(touched, '{{cml_case NameWithPath}}') ? ' is-invalid' : '')} selected={ values.{{cml_case NameWithPath}} } onChange={(date, dateString) =>
