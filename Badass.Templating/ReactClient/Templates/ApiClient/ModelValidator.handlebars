@@ -48,7 +48,7 @@ export class {{cs_name Name}}Validate {
                         {{else}}
             if (!state.{{cml_case ../Name}} || !state.{{cml_case ../Name}}.{{cml_case Name}}) {
                         {{/if}}
-                errors = setIn(errors, 'state.{{cml_case ../Name}}.{{cml_case Name}}', '{{hmn Name}} is required');   
+                errors = setIn(errors, '{{cml_case ../Name}}.{{cml_case Name}}', '{{hmn Name}} is required');   
             }            
                     {{/if}} 
                 {{/each}}
