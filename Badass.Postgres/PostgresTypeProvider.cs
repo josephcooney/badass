@@ -23,7 +23,7 @@ namespace Badass.Postgres
     {
         private readonly string _connectionString;
         private static Dictionary<string, NpgsqlDbType> _postgresNpgSqlTypes;
-        private static Dictionary<string, System.Type> _postgresClrTypes;
+        
 
         static PostgresTypeProvider()
         {
@@ -72,55 +72,7 @@ namespace Badass.Postgres
                 ["oidvector"] = NpgsqlDbType.Oidvector,
             };
             
-            // from here https://www.npgsql.org/doc/types/basic.html
-            _postgresClrTypes = new Dictionary<string, System.Type>
-            {
-                ["boolean"] = typeof(bool),
-                ["smallint"] = typeof(short),
-                ["integer"] = typeof(int),
-                ["bigint"] = typeof(long),
-                ["real"] = typeof(float),
-                ["double precision"] = typeof(double),
-                ["numeric"] = typeof(decimal),
-                ["money"] = typeof(decimal),
-                ["text"] = typeof(string),
-                ["character varying"] = typeof(string),
-                ["character"] = typeof(string),
-                ["citext"] = typeof(string),
-                ["json"] = typeof(string),
-                ["jsonb"] = typeof(string),
-                ["xml"] = typeof(string),
-                ["point"] = typeof(NpgsqlPoint),
-                ["lseg"] = typeof(NpgsqlLSeg),
-                ["path"] = typeof(NpgsqlPath),
-                ["polygon"] = typeof(NpgsqlPolygon),
-                ["line"] = typeof(NpgsqlLine),
-                ["circle"] = typeof(NpgsqlCircle),
-                ["box"] = typeof(NpgsqlBox),
-                ["bit(1)"] = typeof(bool),
-                ["bit(n)"] = typeof(BitArray),
-                ["bit varying"] = typeof(BitArray),
-                ["hstore"] = typeof(IDictionary<string, string>),
-                ["uuid"] = typeof(Guid),
-                ["cidr"] = typeof(ValueTuple<IPAddress, int>),
-                ["inet"] = typeof(IPAddress),
-                ["macaddr"] = typeof(PhysicalAddress),
-                ["tsquery"] = typeof(NpgsqlTsQuery),
-                ["tsvector"] = typeof(NpgsqlTsVector),
-                ["date"] = typeof(DateTime),
-                ["interval"] = typeof(TimeSpan),
-                ["timestamp"] = typeof(DateTime),
-                ["timestamp without time zone"] = typeof(DateTime),
-                ["timestamp with time zone"] = typeof(DateTime),
-                ["time"] = typeof(TimeSpan),
-                ["time with time zone"] = typeof(DateTimeOffset),
-                ["bytea"] = typeof(byte[]),
-                ["oid"] = typeof(uint),
-                ["xid"] = typeof(uint),
-                ["cid"] = typeof(uint),
-                ["oidvector"] = typeof(uint[]),
-
-            };
+            
         }
         
         public PostgresTypeProvider(string connectionString)
@@ -134,16 +86,6 @@ namespace Badass.Postgres
             domain.Types.AddRange(GetTypes(settings.ExcludedSchemas));
 
             return domain;
-        }
-
-        public Type GetClrTypeFromPostgresType(string postgresTypeName)
-        {
-            if (_postgresClrTypes.ContainsKey(postgresTypeName))
-            {
-                return _postgresClrTypes[postgresTypeName];
-            }
-            
-            return null;
         }
         
         private List<ApplicationType> GetTypes(List<string> excluededSchemas)
@@ -1142,7 +1084,9 @@ namespace Badass.Postgres
 
         private OperationReturn GetReturnForOperation(string resultType, Domain domain, Operation operation)
         {
-            if (resultType == "void")
+            var pgType = new PostgresType(resultType);
+            
+            if (pgType.IsVoid)
             {
                 return new OperationReturn {ReturnType = ReturnType.None};
             }
@@ -1203,13 +1147,12 @@ namespace Badass.Postgres
                     }
                 }
             }
-
+            
             return new OperationReturn
             {
                 ReturnType = ReturnType.Singular,
-                SingularReturnType = GetClrTypeFromPostgresType(resultType)
+                ClrReturnType = pgType.ClrType
             };
-
         }
 
         private OperationReturn ReadCustomOperationReturn(string typeName, Domain domain, Operation operation)
@@ -1247,7 +1190,8 @@ namespace Badass.Postgres
                         {
                             fld.ProviderTypeName = providerTypeRaw;
                         }
-                        fld.ClrType = GetClrTypeFromPostgresType(fld.ProviderTypeName);
+
+                        fld.ClrType = new PostgresType(fld.ProviderTypeName).ClrType;
                         
                         fld.Order = GetField<short>(reader, "ordinal_position");
                         result.Fields.Add(fld);
@@ -1298,7 +1242,7 @@ namespace Badass.Postgres
                     var n = GetFieldNameAndType(s);
                     fields.Add(new Field(null)
                     {
-                        Name = n.Name, ProviderTypeName = n.Type, ClrType = GetClrTypeFromPostgresType(n.Type),
+                        Name = n.Name, ProviderTypeName = n.Type.Name, ClrType = n.Type.ClrType,
                         Order = index
                     });
                     index++;
@@ -1471,18 +1415,18 @@ namespace Badass.Postgres
         private Parameter ReadSingleParameter(string p, Domain domain, Operation operation)
         {
             var n = GetFieldNameAndType(p);
-            var type = GetClrTypeFromPostgresType(n.Type);
+            var type = n.Type.ClrType;
             if (type == null)
             {
-                var resultType = domain.ResultTypes.SingleOrDefault(rt => rt.Name == n.Type && rt.Namespace == operation.Namespace);
+                var resultType = domain.ResultTypes.SingleOrDefault(rt => rt.Name == n.Type.Name && rt.Namespace == operation.Namespace);
                 if (resultType == null)
                 {
-                    resultType = ReadCustomOperationType(n.Type, domain, operation);
+                    resultType = ReadCustomOperationType(n.Type.Name, domain, operation);
                 }
                 
                 if (resultType != null)
                 {
-                    if (n.IsArray)
+                    if (n.Type.IsArray)
                     {
                         type = typeof(List<ResultType>);
                     }
@@ -1497,7 +1441,7 @@ namespace Badass.Postgres
                 }  
             }
             
-            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type, ClrType = type };
+            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type.Name, ClrType = type };
             return parameter;
         }
 
@@ -1507,14 +1451,8 @@ namespace Badass.Postgres
             value = value.Trim();
             var space = value.IndexOf(' ');
             var name = SanitizeFieldName(value.Substring(0, space));
-            var type = value.Substring(space + 1);
-            var isArray = false;
-            if (type.EndsWith("[]"))
-            {
-                isArray = true;
-                type = type.Replace("[]", "");
-            }
-            return new NameAndType {Name = name, Type = type, IsArray = isArray};
+            var pgType = new PostgresType(value.Substring(space + 1));
+            return new NameAndType {Name = name, Type = pgType };
         }
 
         private static void GetAdditionalFieldInfoFromInformationSchema(string catalog, string ns, string name,
@@ -1924,8 +1862,7 @@ cols AS (
     public class NameAndType
     {
         public string Name;
-        public string Type;
-        public bool IsArray;
+        public PostgresType Type;
     }
 
 }

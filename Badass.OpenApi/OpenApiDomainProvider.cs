@@ -258,7 +258,7 @@ namespace Badass.OpenApi
                     case JsonObjectType.Boolean:
                     case JsonObjectType.String:
                         domainOp.Returns = new OperationReturn
-                            {ReturnType = ReturnType.Singular, SingularReturnType = GetClrTypeForJsonSchemaType(successResponse.Schema.Type)};
+                            {ReturnType = ReturnType.Singular, ClrReturnType = GetClrTypeForJsonSchemaType(successResponse.Schema.Type)};
                         break;
                     
                     default:

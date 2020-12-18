@@ -71,7 +71,7 @@ namespace Badass.Templating.Classes
             {
                 if (_op.Returns.ReturnType == ReturnType.Singular)
                 {
-                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.SingularReturnType);
+                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType);
                 }
 
                 if (_op.Returns.ReturnType == ReturnType.ApplicationType || _op.Returns.ReturnType == ReturnType.CustomType)
@@ -94,13 +94,13 @@ namespace Badass.Templating.Classes
 
                 if (_op.Returns.ReturnType == ReturnType.Singular)
                 {
-                    if (_op.Returns.SingularReturnType == null)
+                    if (_op.Returns.ClrReturnType == null)
                     {
                         Log.Error("Singular return type for operation {OperationName} was not defined.", _op.Name);
                         throw new InvalidOperationException($"Scalar return type for operation {_op.Name} was not defined");
                     }
                     
-                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.SingularReturnType);
+                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType);
                 }
 
                 if (_op.Returns.ReturnType == ReturnType.ApplicationType || _op.Returns.ReturnType == ReturnType.CustomType)
@@ -131,7 +131,7 @@ namespace Badass.Templating.Classes
 
                 if (_op.Returns?.ReturnType == ReturnType.Singular)
                 {
-                    return Util.GetTypeScriptTypeForClrType(_op.Returns.SingularReturnType);
+                    return Util.GetTypeScriptTypeForClrType(_op.Returns.ClrReturnType);
                 }
 
                 if (_op.Returns?.ReturnType == ReturnType.ApplicationType || _op.Returns?.ReturnType == ReturnType.CustomType)

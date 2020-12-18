@@ -123,7 +123,7 @@ namespace Badass.Model
 
         public SimpleType SimpleReturnType { get; set; }
 
-        public System.Type SingularReturnType { get; set; }
+        public System.Type ClrReturnType { get; set; }
     }
 
     public enum ReturnType
