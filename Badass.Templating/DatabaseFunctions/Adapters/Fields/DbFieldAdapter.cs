@@ -48,6 +48,11 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                     {
                         return _parent.FunctionName + "." + _field.Name;
                     }
+
+                    if (_parent.AddMany)
+                    {
+                        return _parent.AddManyArrayItemVariableName + "." + _field.Name;
+                    }
                     
                     return _parent.NewRecordParamterName + "." + _field.Name;
                 }

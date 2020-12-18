@@ -141,7 +141,7 @@ namespace Badass.Templating.DatabaseFunctions
 
         private CodeFile GenerateUpdateFunction(DbTypeAdapter adapter)
         {
-            return GenerateTemplateFromAdapter(adapter, "UpdateTemplate");
+            return GenerateTemplateFromAdapter(adapter, DbTemplates.Update);
         }
 
         private CodeFile GenerateSelectByRelatedTypeFunction(ApplicationType type, Field field, Domain domain)
@@ -171,7 +171,14 @@ namespace Badass.Templating.DatabaseFunctions
         private CodeFile GenerateInsertFunction(ApplicationType applicationType, Domain domain)
         {
             var adapter = new DbTypeAdapter(applicationType, "insert", OperationType.Insert, domain);
-            return GenerateTemplateFromAdapter(adapter, "InsertTemplate");
+            if (adapter.AddMany)
+            {
+                return GenerateTemplateFromAdapter(adapter, DbTemplates.InsertMany);
+            }
+            else
+            {
+                return GenerateTemplateFromAdapter(adapter, DbTemplates.Insert);
+            }
         }
 
         private CodeFile GenerateSelectAllFunction(ApplicationType applicationType, Domain domain)
@@ -219,7 +226,7 @@ namespace Badass.Templating.DatabaseFunctions
         private CodeFile GenerateSoftDeleteFunction(ApplicationType type, Domain domain)
         {
             var adapter = new DbTypeAdapter(type, DeleteOperationName, OperationType.Delete, domain);
-            return GenerateTemplateFromAdapter(adapter, "DeleteSoftTemplate");
+            return GenerateTemplateFromAdapter(adapter, DbTemplates.DeleteSoft);
         }
 
         private CodeFile GenerateSecurityPoicy(ApplicationType type, Domain domain)
@@ -228,9 +235,18 @@ namespace Badass.Templating.DatabaseFunctions
             return new CodeFile
             {
                 Name = type.Name + "_policy" + SqlExtension,
-                Contents = Util.GetCompiledTemplate("SecurityPolicyTemplate")(adapter),
+                Contents = Util.GetCompiledTemplate(DbTemplates.SecurityPolicy)(adapter),
                 RelativePath = type.Name
             };
+        }
+
+        private static class DbTemplates
+        {
+            public const string Insert = "InsertTemplate";
+            public const string InsertMany = "InsertManyTemplate";
+            public const string Update = "UpdateTemplate";
+            public const string SecurityPolicy = "SecurityPolicyTemplate";
+            public const string DeleteSoft = "DeleteSoftTemplate";
         }
     }
 }

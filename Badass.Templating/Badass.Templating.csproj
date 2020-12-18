@@ -73,6 +73,8 @@
     <EmbeddedResource Include="ReactClient\Templates\ReactListAllEntitiesPage.handlebars" />
     <None Remove="DatabaseFunctions\Templates\InsertType.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\InsertType.handlebars" />
+    <None Remove="DatabaseFunctions\Templates\InsertBulkTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\InsertManyTemplate.handlebars" />
   </ItemGroup>
 
   <ItemGroup>

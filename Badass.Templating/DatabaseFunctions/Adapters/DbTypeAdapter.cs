@@ -413,6 +413,8 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
 
         public string NewRecordParamterName => Name + "_to_add";
 
+        public string AddManyArrayItemVariableName => "item";
+
         public string NewTypeName => Name + "_new";
 
         public bool UsesCustomInsertType
@@ -422,6 +424,8 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                 return Fields.Count(f => f.IsUserEditable) > 1;
             }
         }
+
+        public bool AddMany => _applicationType.Attributes?.addMany == true;
 
         private bool GenerateLinkToOwershipType(List<Field> fields, ApplicationType type)
         {
