@@ -91,6 +91,8 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public string NameWithPath => RelativeStatePath + Name;
 
+        public string NameWithPathSafe => NameWithPath.Replace(".", "?.");
+
         public bool IsBoolean => Field?.IsBoolean ?? Parameter.IsBoolean;
 
         public bool IsDateTime => Field?.IsDate ?? Parameter.IsDateTime;
