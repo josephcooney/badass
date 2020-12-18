@@ -1474,16 +1474,29 @@ namespace Badass.Postgres
             var type = GetClrTypeFromPostgresType(n.Type);
             if (type == null)
             {
-                var resultType = ReadCustomOperationType(n.Type, domain, operation);
+                var resultType = domain.ResultTypes.SingleOrDefault(rt => rt.Name == n.Type && rt.Namespace == operation.Namespace);
+                if (resultType == null)
+                {
+                    resultType = ReadCustomOperationType(n.Type, domain, operation);
+                }
+                
                 if (resultType != null)
                 {
-                    type = typeof(ResultType);
+                    if (n.IsArray)
+                    {
+                        type = typeof(List<ResultType>);
+                    }
+                    else
+                    {
+                        type = typeof(ResultType);
+                    }
                 }
                 else
                 {
                     Log.Warning("Unable to determine CLR type for {TypeName}", n.Type);
-                }
+                }  
             }
+            
             var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type, ClrType = type };
             return parameter;
         }
@@ -1495,7 +1508,13 @@ namespace Badass.Postgres
             var space = value.IndexOf(' ');
             var name = SanitizeFieldName(value.Substring(0, space));
             var type = value.Substring(space + 1);
-            return new NameAndType {Name = name, Type = type};
+            var isArray = false;
+            if (type.EndsWith("[]"))
+            {
+                isArray = true;
+                type = type.Replace("[]", "");
+            }
+            return new NameAndType {Name = name, Type = type, IsArray = isArray};
         }
 
         private static void GetAdditionalFieldInfoFromInformationSchema(string catalog, string ns, string name,
@@ -1906,6 +1925,7 @@ cols AS (
     {
         public string Name;
         public string Type;
+        public bool IsArray;
     }
 
 }
