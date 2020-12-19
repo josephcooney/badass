@@ -250,7 +250,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 		{{#if CurrentOperation.UsesModel}}
 		this.api.{{cml_case OperationName}}(fields).then(data => {
         {{else}}
-		this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserProvidedParameters}}fields.{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
+            this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserProvidedParameters}}{{#if IsCustomArrayType}}[fields.{{cml_case Name}}]{{else}}fields.{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
 		{{/if}}
 			{{#if AssociateViaLink}}
 			if (data.parsedBody) {
