@@ -299,7 +299,15 @@ namespace Badass.Postgres
 
         public string GetCsDbTypeFromDbType(string dbTypeName)
         {
-            return GetNpgsqlDbTypeFromPostgresType(dbTypeName).ToString();
+            var result = GetNpgsqlDbTypeFromPostgresType(dbTypeName);
+
+            if (result == NpgsqlDbType.TimestampTz)
+            {
+                // the capitalisation of Tz keeps getting messed up, and emitted as TZ because they both have the same enum value
+                return "TimestampTz"; 
+            }
+
+            return result.ToString();
         }
 
         // postgres has a name length limit of 63 bytes. This assumes you're not using unicode characters for db entity names
