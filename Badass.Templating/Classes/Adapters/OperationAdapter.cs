@@ -258,7 +258,7 @@ namespace Badass.Templating.Classes
 
                 foreach (var parameter in Parameters)
                 {
-                    if (parameter.IsCustomType)
+                    if (parameter.IsCustomTypeOrCustomArray)
                     {
                         foreach (var field in parameter.CustomType.Fields)
                         {
