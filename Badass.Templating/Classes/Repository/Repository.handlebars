@@ -119,7 +119,7 @@ namespace {{cs_name Namespace}}.Data.Repository
 			{{#if IsJson}}
 			cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, (object){{cml_case Name}} ?? DBNull.Value);
 			{{else}}
-                {{#if IsCustomType}}
+                {{#if IsCustomTypeOrCustomArray}}
             cmd.Parameters.Add(new NpgsqlParameter{ParameterName = "{{Name}}", Value = {{cml_case Name}} });
                 {{else}}
                     {{#if IsNullable}}

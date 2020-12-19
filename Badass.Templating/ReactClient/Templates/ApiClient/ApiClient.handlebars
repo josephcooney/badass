@@ -5,8 +5,8 @@ import { get, post, postForm, del, fixJsonDate, fixNullableJsonDate, IHttpRespon
 import { {{cs_name Name}}Model } from './{{cs_name Name}}Model'
 {{/if}}
 {{#each UserProvidedParameters}}
-{{#if IsCustomType}}
-import { {{ResolvedTypescriptType}} } from './{{ResolvedTypescriptType}}'
+{{#if IsCustomTypeOrCustomArray}}
+import { {{ResolvedTypescriptTypeUnderlying}} } from './{{ResolvedTypescriptTypeUnderlying}}'
 {{/if}}    
 {{/each}}    
 {{/each}}

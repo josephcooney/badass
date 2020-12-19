@@ -24,7 +24,7 @@ namespace Badass.Templating.ReactClient.Adapters
                 }
 
                 // this doesn't support multiple custom result types as parameters
-                var customParam = Parameters.Single(p => p.IsCustomType);
+                var customParam = Parameters.Single(p => p.IsCustomTypeOrCustomArray);
                 return new ClientCustomTypeModel(customParam.CustomType);
             }
         }
@@ -33,7 +33,7 @@ namespace Badass.Templating.ReactClient.Adapters
         {
             get
             {
-                return UsesModel || Parameters.Any(p => p.IsCustomType);
+                return UsesModel || Parameters.Any(p => p.IsCustomTypeOrCustomArray);
             }
         }
 
@@ -45,7 +45,7 @@ namespace Badass.Templating.ReactClient.Adapters
                     .Where(p => p.RelatedTypeField != null && p.RelatedTypeField.HasReferenceType &&
                                 !p.RelatedTypeField.ReferencesType.IsReferenceData).Select(p => p.RelatedTypeField).ToList();
                 
-                fields.AddRange(UserEditableParameters.Where(p => p.IsCustomType).SelectMany(p => p.CustomType.Fields.Where(f => f.HasReferenceType && !f.ReferencesType.IsReferenceData)));
+                fields.AddRange(UserEditableParameters.Where(p => p.IsCustomTypeOrCustomArray).SelectMany(p => p.CustomType.Fields.Where(f => f.HasReferenceType && !f.ReferencesType.IsReferenceData)));
 
                 return fields;
             }
@@ -59,7 +59,7 @@ namespace Badass.Templating.ReactClient.Adapters
                 var fields = new List<UserInputFieldModel>();
                 foreach (var parameter in UserEditableParameters)
                 {
-                    if (parameter.IsCustomType)
+                    if (parameter.IsCustomTypeOrCustomArray)
                     {
                         foreach (var field in parameter.CustomType.Fields)
                         {

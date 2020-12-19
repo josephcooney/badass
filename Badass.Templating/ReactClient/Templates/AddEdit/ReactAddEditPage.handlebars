@@ -13,8 +13,8 @@ import { {{cs_name Name}}Validate } from './{{cml_case Name}}Validate';
 import { {{cs_name Name}}{{OperationName}}Model } from "./{{cs_name Name}}{{OperationName}}Model";
 {{/if}}
 {{#each CurrentOperation.UserProvidedParameters}}
-{{#if IsCustomType}}
-import { {{ResolvedTypescriptType}} } from './{{ResolvedTypescriptType}}'
+{{#if IsCustomTypeOrCustomArray}}
+import { {{ResolvedTypescriptTypeUnderlying}} } from './{{ResolvedTypescriptTypeUnderlying}}'
 {{/if}}
 {{/each}}
 {{#if IsUpdate}}
@@ -114,7 +114,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 			{{cml_case Name}}: null,
 			{{/unless}}
 			{{else}}
-                {{#if IsCustomType}}
+                {{#if IsCustomTypeOrCustomArray}}
             {{cml_case Name}}: {
                     {{#each CustomType.Fields}}
                         {{#if HasReferenceType}}

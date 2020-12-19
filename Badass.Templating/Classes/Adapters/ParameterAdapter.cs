@@ -67,12 +67,30 @@ namespace Badass.Templating.Classes
         {
             get
             {
-                if (!IsCustomType)
+                if (IsCustomType)
                 {
-                    return Util.GetTypeScriptTypeForClrType(_parameter.ClrType);
+                    return Util.CSharpNameFromName(_parameter.ProviderTypeName);                    
                 }
                 
-                return Util.CSharpNameFromName(_parameter.ProviderTypeName);
+                if (IsCustomArrayType)
+                {
+                    return $"{Util.CSharpNameFromName(_parameter.ProviderTypeName)}[]";
+                }
+                
+                return Util.GetTypeScriptTypeForClrType(_parameter.ClrType);
+            }
+        }
+
+        public string ResolvedTypescriptTypeUnderlying
+        {
+            get
+            {
+                if (IsCustomTypeOrCustomArray)
+                {
+                    return Util.CSharpNameFromName(_parameter.ProviderTypeName);                    
+                }
+                
+                return Util.GetTypeScriptTypeForClrType(_parameter.ClrType);
             }
         }
 
@@ -80,11 +98,13 @@ namespace Badass.Templating.Classes
 
         public bool IsCustomArrayType => ClrType == typeof(List<ResultType>);
 
+        public bool IsCustomTypeOrCustomArray => IsCustomType || IsCustomArrayType;
+        
         public ResultType CustomType
         {
             get
             {
-                if (IsCustomType)
+                if (IsCustomTypeOrCustomArray)
                 {
                     return _domain.ResultTypes.Single(rt => rt.Name == _parameter.ProviderTypeName);
                 }
