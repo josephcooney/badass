@@ -41,11 +41,6 @@ namespace Badass.Templating.ReactClient.Adapters
         {
             get
             {
-                if (_op.Name == "loader_shovel_equipment_movement_insert")
-                {
-                    Console.WriteLine("here");
-                }
-                
                 var fields = UserEditableParameters
                     .Where(p => p.RelatedTypeField != null && p.RelatedTypeField.HasReferenceType &&
                                 !p.RelatedTypeField.ReferencesType.IsReferenceData).Select(p => p.RelatedTypeField).ToList();
