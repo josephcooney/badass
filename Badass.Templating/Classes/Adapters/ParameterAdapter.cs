@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
 
@@ -48,12 +49,17 @@ namespace Badass.Templating.Classes
         {
             get
             {
-                if (!IsCustomType)
+                if (IsCustomType)
                 {
-                    return Util.FormatClrType(_parameter.ClrType);
+                    return Util.CSharpNameFromName(_parameter.ProviderTypeName);
                 }
 
-                return Util.CSharpNameFromName(_parameter.ProviderTypeName);
+                if (IsCustomArrayType)
+                {
+                    return $"List<{Util.CSharpNameFromName(_parameter.ProviderTypeName)}>";
+                }
+                
+                return Util.FormatClrType(_parameter.ClrType);
             }
         }
 
@@ -65,12 +71,14 @@ namespace Badass.Templating.Classes
                 {
                     return Util.GetTypeScriptTypeForClrType(_parameter.ClrType);
                 }
-
+                
                 return Util.CSharpNameFromName(_parameter.ProviderTypeName);
             }
         }
 
         public bool IsCustomType => ClrType == typeof(ResultType);
+
+        public bool IsCustomArrayType => ClrType == typeof(List<ResultType>);
 
         public ResultType CustomType
         {

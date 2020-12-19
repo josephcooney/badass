@@ -99,6 +99,11 @@ namespace Badass.Templating.Classes
                         Log.Error("Singular return type for operation {OperationName} was not defined.", _op.Name);
                         throw new InvalidOperationException($"Scalar return type for operation {_op.Name} was not defined");
                     }
+
+                    if (_op.Returns.ClrReturnType.IsArray)
+                    {
+                        return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType.GetElementType()) + "[]";
+                    }
                     
                     return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType);
                 }
