@@ -2,6 +2,7 @@
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using Serilog;
 using {{cs_name DefaultNamespace}}.Data.Model;
 
 namespace {{cs_name DefaultNamespace}}.Data.Repository
@@ -27,6 +28,7 @@ namespace {{cs_name DefaultNamespace}}.Data.Repository
 
         private void RegisterCustomTypes()
         {
+            Log.Information("Registering custom Postgres types.");
             {{#each CustomTypes}}
             NpgsqlConnection.GlobalTypeMapper.MapComposite<{{cs_name Name}}>("{{Name}}");    
             {{/each}}

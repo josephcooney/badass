@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using NpgsqlTypes;
 
 namespace {{cs_name Namespace}}.Data.Model 
 {
@@ -10,6 +11,7 @@ namespace {{cs_name Namespace}}.Data.Model
 		{{#each Fields}}
 
             [DisplayName("{{hmn}}")]{{#if HasSize}}[MaxLength({{Size}})]{{/if}}{{#if IsRequired}}[Required]{{/if}}
+            [PgName("{{Name}}")]
             public {{format_clr_type ClrType}} {{cs_name Name}} {get; set;}
 
 		{{/each}}
