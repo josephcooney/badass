@@ -52,11 +52,12 @@ namespace Badass.Model
 
         public string ProviderTypeName { get; set; }
 
+        // TODO - convert this to a property
         public bool IsUserEditable()
         {
             return !IsIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
         }
-
+        
         public bool IsTrackingDate => IsDate && (Name == CreatedFieldName || Name == ModifiedFieldName || Name == SoftDeleteFieldName);
 
         public bool IsTrackingUser => ((ReferencesType != null && ReferencesType.IsSecurityPrincipal) && (Name.StartsWith(CreatedFieldName) || Name.StartsWith(ModifiedFieldName) || (Type is ApplicationType && ((ApplicationType)Type).DeleteType == DeleteType.Soft && Name.StartsWith(DeletedFieldName))));
@@ -93,6 +94,14 @@ namespace Badass.Model
             }
         }
 
+        public bool IsLargeTextContent
+        {
+            get
+            {
+                return ClrType == typeof(string) && (Size > 500 || Attributes?.largeContent == true);
+            }
+        }
+        
         public bool IsColor => Attributes?.type == ColorFieldType;
 
         public int Rank => Attributes?.rank != null ? (int)Attributes?.rank : RankOffset + Order;
@@ -103,5 +112,7 @@ namespace Badass.Model
         public bool Add => Attributes?.add != null ? Attributes.add : true;
 
         public bool Edit => Attributes?.edit != null ? Attributes.edit : true;
+
+        public bool IsInt => ClrType == typeof(int);
     }
 }

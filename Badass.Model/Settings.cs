@@ -15,6 +15,7 @@ namespace Badass.Model
             ConfigurationFile = "codegen.json";
             ClientAppTypes = new List<ClientAppUIType>();
             GenerateSecurityPolicies = true;
+            ExcludedSchemas = new List<string>();
         }
 
         public string ConfigurationFile
@@ -51,6 +52,8 @@ namespace Badass.Model
         public List<ClientAppUIType> ClientAppTypes { get; set; }
         
         public bool GenerateSecurityPolicies { get; set; }
+        
+        public List<string> ExcludedSchemas { get; set; }
     }
 
     public class NewAppSettings 

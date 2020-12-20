@@ -7,7 +7,7 @@ namespace Badass.Templating.ReactClient.Adapters
 {
     public class ClientDetailAdapter : ClientApiAdapter
     {
-        public ClientDetailAdapter(SimpleType type, Domain domain) : base(type, domain)
+        public ClientDetailAdapter(ApplicationType type, Domain domain) : base(type, domain)
         {
         }
 

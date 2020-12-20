@@ -36,6 +36,7 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         public bool IsUuid => _field.ClrType == typeof(Guid);
         public bool Add => _field.Add;
         public bool Edit => _field.Edit;
+        public bool IsUserEditable => _field.IsUserEditable();
 
         public string PrimaryAlias => _alias;
     }

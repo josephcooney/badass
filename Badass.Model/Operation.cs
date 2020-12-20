@@ -1,18 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using Serilog;
 
 namespace Badass.Model
 {
     public class Operation
     {
+        private string _nameInternal;
+        
         public Operation()
         {
             Parameters = new List<Parameter>();
         }
 
         public string Namespace { get; set; }
+        
+        public string Name
+        {
+            get
+            {
+                var fullName = Attributes?.fullName?.ToString();
+                if (!string.IsNullOrEmpty(fullName))
+                {
+                    return fullName;
+                }
 
-        public string Name { get; set; }
+                return _nameInternal;
+            }
+            set
+            {
+                _nameInternal = value;
+            }
+        }
 
         public dynamic Attributes { get; set; }
 
@@ -45,7 +65,9 @@ namespace Badass.Model
             {
                 if (RelatedType != null)
                 {
-                    return Name.Replace(RelatedType.Name, "").Trim('_').Replace("__", "_");
+                    var bareName = Name.Replace(RelatedType.Name, "").Trim('_').Replace("__", "_");
+                    Log.Debug("Bare Name of {BareName} was determined for operation {Operation} with related type {RelatedTypeName}", bareName, Name, RelatedType.Name);
+                    return bareName;
                 }
 
                 return null;
@@ -101,7 +123,7 @@ namespace Badass.Model
 
         public SimpleType SimpleReturnType { get; set; }
 
-        public System.Type SingularReturnType { get; set; }
+        public System.Type ClrReturnType { get; set; }
     }
 
     public enum ReturnType

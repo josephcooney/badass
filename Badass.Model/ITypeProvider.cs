@@ -16,5 +16,7 @@ namespace Badass.Model
         string EscapeReservedWord(string name);
 
         public string GetCsDbTypeFromDbType(string dbTypeName);
+
+        public string GetSqlName(string entityName);
     }
 }

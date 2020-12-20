@@ -145,7 +145,13 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         {
             get
             {
-                var fields = UserEditableFields.Where(f => f.Add).ToList();
+                var fields = new List<IPseudoField>();
+                if (!UsesCustomInsertType)
+                {
+                    // in this case there should probably only be 1 field.
+                    // If there were more we would be using a custom insert type
+                    fields.AddRange(InsertTypeFields);
+                }
                 if (UserIdField != null)
                 {
                     fields.Add(UserIdField);
@@ -154,6 +160,17 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                 {
                     fields.Add(CreatedByField);
                 }
+                return fields.OrderBy(f => f.Order).ToList();
+            }
+        }
+
+        public bool HasInsertInputFields => InsertInputFields.Any();
+
+        public List<IPseudoField> InsertTypeFields
+        {
+            get
+            {
+                var fields = UserEditableFields.Where(f => f.Add).ToList();
                 return fields.OrderBy(f => f.Order).ToList();
             }
         }
@@ -393,6 +410,22 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                 return null; // TODO
             }
         }
+
+        public string NewRecordParamterName => Name + "_to_add";
+
+        public string AddManyArrayItemVariableName => "item";
+
+        public string NewTypeName => Name + "_new";
+
+        public bool UsesCustomInsertType
+        {
+            get
+            {
+                return Fields.Count(f => f.IsUserEditable) > 1;
+            }
+        }
+
+        public bool AddMany => _applicationType.Attributes?.addMany == true;
 
         private bool GenerateLinkToOwershipType(List<Field> fields, ApplicationType type)
         {

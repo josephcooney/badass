@@ -21,5 +21,6 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         public bool IsUuid => false;
         public bool Add => true;
         public bool Edit => true;
+        public bool IsUserEditable => false;
     }
 }

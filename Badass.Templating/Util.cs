@@ -3,13 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Badass.Model;
 using HandlebarsDotNet;
-using NpgsqlTypes;
 using Serilog;
 
 namespace Badass.Templating
@@ -69,39 +66,9 @@ namespace Badass.Templating
                     return;
                 }
 
-                System.Type originalType = (System.Type) parameters[0];
-
-                var type = System.Nullable.GetUnderlyingType(originalType) ?? originalType;
-                
-
-                var shortName = TypeMapping.GetCSharpShortTypeName(type);
-                if (shortName != null)
-                {
-                    if (originalType != type)
-                    {
-                        shortName += "?";
-                    }
-
-                    writer.Write(shortName);
-                    return;
-                }
-
-                if (type.Namespace == "System")
-                {
-                    if (originalType != type)
-                    {
-                        writer.Write(type.Name + "?");
-                    }
-                    else
-                    {
-                        writer.Write(type.Name);
-                    }
-
-                    return;
-                }
-
-                writer.Write(type.ToString());
-
+                var originalType = (System.Type) parameters[0];
+                var result = FormatClrType(originalType);
+                writer.Write(result);
             });
 
             Handlebars.RegisterHelper("escape_sql_keyword", (writer, context, parameters) =>
@@ -300,6 +267,36 @@ namespace Badass.Templating
             });
         }
 
+        public static string FormatClrType(Type originalType)
+        {
+            var type = Nullable.GetUnderlyingType(originalType) ?? originalType;
+
+            var shortName = TypeMapping.GetCSharpShortTypeName(type);
+            if (shortName != null)
+            {
+                if (originalType != type)
+                {
+                    shortName += "?";
+                }
+
+                return shortName;
+            }
+
+            if (type.Namespace == "System")
+            {
+                if (originalType != type)
+                {
+                    return type.Name + "?";
+                }
+                else
+                {
+                    return type.Name;
+                }
+            }
+
+            return type.ToString();
+        }
+
         public static string EscapeSqlReservedWord(string name)
         {
             return _typeProvider.EscapeReservedWord(name);
@@ -390,18 +387,6 @@ namespace Badass.Templating
             return name;
         }
 
-        public static Type GetClrTypeFromPostgresType(string postgresTypeName)
-        {
-            if (_postgresClrTypes.ContainsKey(postgresTypeName))
-            {
-                return _postgresClrTypes[postgresTypeName];
-            }
-
-            return null;
-        }
-
-
-
         public static string GetTypeScriptTypeForClrType(System.Type clrType)
         {
             var type = System.Nullable.GetUnderlyingType(clrType) ?? clrType;
@@ -429,10 +414,6 @@ namespace Badass.Templating
         }
 
         private static ITypeProvider _typeProvider;
-        
-        private static Dictionary<string, System.Type> _postgresClrTypes;
-
-        
 
         private static Dictionary<System.Type, string> _typeScriptTypes;
 
@@ -440,58 +421,6 @@ namespace Badass.Templating
 
         static Util()
         {
-            // from here https://www.npgsql.org/doc/types/basic.html
-            _postgresClrTypes = new Dictionary<string, System.Type>
-            {
-                ["boolean"] = typeof(bool),
-                ["smallint"] = typeof(short),
-                ["integer"] = typeof(int),
-                ["bigint"] = typeof(long),
-                ["real"] = typeof(float),
-                ["double precision"] = typeof(double),
-                ["numeric"] = typeof(decimal),
-                ["money"] = typeof(decimal),
-                ["text"] = typeof(string),
-                ["character varying"] = typeof(string),
-                ["character"] = typeof(string),
-                ["citext"] = typeof(string),
-                ["json"] = typeof(string),
-                ["jsonb"] = typeof(string),
-                ["xml"] = typeof(string),
-                ["point"] = typeof(NpgsqlPoint),
-                ["lseg"] = typeof(NpgsqlLSeg),
-                ["path"] = typeof(NpgsqlPath),
-                ["polygon"] = typeof(NpgsqlPolygon),
-                ["line"] = typeof(NpgsqlLine),
-                ["circle"] = typeof(NpgsqlCircle),
-                ["box"] = typeof(NpgsqlBox),
-                ["bit(1)"] = typeof(bool),
-                ["bit(n)"] = typeof(BitArray),
-                ["bit varying"] = typeof(BitArray),
-                ["hstore"] = typeof(IDictionary<string, string>),
-                ["uuid"] = typeof(Guid),
-                ["cidr"] = typeof(ValueTuple<IPAddress, int>),
-                ["inet"] = typeof(IPAddress),
-                ["macaddr"] = typeof(PhysicalAddress),
-                ["tsquery"] = typeof(NpgsqlTsQuery),
-                ["tsvector"] = typeof(NpgsqlTsVector),
-                ["date"] = typeof(DateTime),
-                ["interval"] = typeof(TimeSpan),
-                ["timestamp"] = typeof(DateTime),
-                ["timestamp without time zone"] = typeof(DateTime),
-                ["timestamp with time zone"] = typeof(DateTime),
-                ["time"] = typeof(TimeSpan),
-                ["time with time zone"] = typeof(DateTimeOffset),
-                ["bytea"] = typeof(byte[]),
-                ["oid"] = typeof(uint),
-                ["xid"] = typeof(uint),
-                ["cid"] = typeof(uint),
-                ["oidvector"] = typeof(uint[]),
-
-            };
-
-            
-
             _typeScriptTypes = new Dictionary<Type, string>()
             {
                 [typeof(string)] = "string",

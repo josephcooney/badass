@@ -38,7 +38,23 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
                     {
                         return GetSearchFieldsAsTsVector();
                     }
-                    return _parent.FunctionName + "." + _field.Name;
+
+                    if (_field.IsTrackingUser)
+                    {
+                        return _parent.FunctionName + "." + _field.Name;    
+                    }
+
+                    if (_parent.UserEditableFields.Count == 1)
+                    {
+                        return _parent.FunctionName + "." + _field.Name;
+                    }
+
+                    if (_parent.AddMany)
+                    {
+                        return _parent.AddManyArrayItemVariableName + "." + _field.Name;
+                    }
+                    
+                    return _parent.NewRecordParamterName + "." + _field.Name;
                 }
 
                 if (_parent.OperationType == OperationType.Update)
@@ -90,6 +106,8 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         public bool IsUuid => _field.ClrType == typeof(Guid);
         public bool Add => _field.Add;
         public bool Edit => _field.Edit;
+
+        public bool IsUserEditable => _field.IsUserEditable();
 
         public bool HasSize => _field.Size != null;
 

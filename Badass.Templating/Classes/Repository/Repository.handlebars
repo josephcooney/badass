@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NpgsqlTypes;
 using {{cs_name Namespace}}.Data.Domain; 
 {{#if HasCustomResultType}}
-using {{cs_name Namespace}}.Data.Result; 
+using {{cs_name Namespace}}.Data.Model; 
 {{/if}}
 
 namespace {{cs_name Namespace}}.Data.Repository 
@@ -17,9 +17,9 @@ namespace {{cs_name Namespace}}.Data.Repository
     {
     {{#each Operations}}
     
-        {{{Returns}}} {{cs_name BareName}}({{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
+        {{{Returns}}} {{cs_name BareName}}({{#each Parameters}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
         
-        {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}Async({{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
+        {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}Async({{#each Parameters}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
 
     {{/each}}        
     }
@@ -35,10 +35,10 @@ namespace {{cs_name Namespace}}.Data.Repository
 
         {{#each Operations}}
 
-        public {{{Returns}}} {{cs_name BareName}}({{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
+        public {{{Returns}}} {{cs_name BareName}}({{#each Parameters}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
         {
             using (var cn = base.CreateConnection(_connectionString))
-			using (var cmd = new NpgsqlCommand("{{Name}}", cn))
+			using (var cmd = new NpgsqlCommand("{{SqlName}}", cn))
 			{
 				cmd.CommandType = CommandType.StoredProcedure;
 
@@ -69,10 +69,10 @@ namespace {{cs_name Namespace}}.Data.Repository
 			}
         }
 
-		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}Async({{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
+		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}Async({{#each Parameters}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
         {
             using (var cn = base.CreateConnection(_connectionString))
-			using (var cmd = new NpgsqlCommand("{{Name}}", cn))
+			using (var cmd = new NpgsqlCommand("{{SqlName}}", cn))
 			{
 				cmd.CommandType = CommandType.StoredProcedure;
 
@@ -104,7 +104,7 @@ namespace {{cs_name Namespace}}.Data.Repository
         }
 
         {{#if HasParameters}}
-        private void Set{{cs_name BareName}}Parameters(NpgsqlCommand cmd, {{#each Parameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
+        private void Set{{cs_name BareName}}Parameters(NpgsqlCommand cmd, {{#each Parameters}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
         {    
 			{{#if IsSearch}}
 			{{#each Parameters}}
@@ -119,11 +119,15 @@ namespace {{cs_name Namespace}}.Data.Repository
 			{{#if IsJson}}
 			cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, (object){{cml_case Name}} ?? DBNull.Value);
 			{{else}}
-				{{#if IsNullable}}
-			SetParameterValue({{cml_case Name}}, cmd, "{{Name}}");
-				{{else}}
-			cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, {{cml_case Name}});
-				{{/if}}
+                {{#if IsCustomTypeOrCustomArray}}
+            cmd.Parameters.Add(new NpgsqlParameter{ParameterName = "{{Name}}", Value = {{cml_case Name}} });
+                {{else}}
+                    {{#if IsNullable}}
+            SetParameterValue({{cml_case Name}}, cmd, "{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}});
+                    {{else}}
+            cmd.Parameters.AddWithValue("{{Name}}", NpgsqlDbType.{{db_type_to_cs ProviderTypeName}}, {{cml_case Name}});
+                    {{/if}}
+                {{/if}}
 			{{/if}}
 			{{/each}}
 			{{/if}}

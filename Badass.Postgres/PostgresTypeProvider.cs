@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Dynamic;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.RegularExpressions;
 using Badass.Model;
-using Badass.Templating;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Npgsql;
@@ -21,6 +23,7 @@ namespace Badass.Postgres
     {
         private readonly string _connectionString;
         private static Dictionary<string, NpgsqlDbType> _postgresNpgSqlTypes;
+        
 
         static PostgresTypeProvider()
         {
@@ -68,6 +71,8 @@ namespace Badass.Postgres
                 ["cid"] = NpgsqlDbType.Cid,
                 ["oidvector"] = NpgsqlDbType.Oidvector,
             };
+            
+            
         }
         
         public PostgresTypeProvider(string connectionString)
@@ -78,12 +83,12 @@ namespace Badass.Postgres
         public Domain GetDomain(Settings settings)
         {
             var domain = new Domain(settings, this);
-            domain.Types.AddRange(GetTypes());
+            domain.Types.AddRange(GetTypes(settings.ExcludedSchemas));
 
             return domain;
         }
-
-        private List<ApplicationType> GetTypes()
+        
+        private List<ApplicationType> GetTypes(List<string> excluededSchemas)
         {
             var types = new List<ApplicationType>();
 
@@ -99,33 +104,39 @@ namespace Badass.Postgres
                     var name = row["table_name"].ToString();
                     var t = new ApplicationType(name, ns);
 
-                    using (var cmd = new NpgsqlCommand($"select * from {ns}.\"{name}\"", cn))
+                    if (!excluededSchemas.Contains(ns))
                     {
-                        using (var reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
+                        using (var cmd = new NpgsqlCommand($"select * from {ns}.\"{name}\"", cn))
                         {
-                            var tableInfo = reader.GetSchemaTable();
-                            foreach (DataRow fieldRow in tableInfo.Rows)
+                            using (var reader = cmd.ExecuteReader(CommandBehavior.SchemaOnly))
                             {
-                                var fieldName = SanitizeFieldName(fieldRow["ColumnName"].ToString());
-                                var order = int.Parse(fieldRow["ColumnOrdinal"].ToString());
-                                var providerTypeName = fieldRow["DataTypeName"].ToString();
-                                var size = int.Parse(fieldRow["ColumnSize"].ToString());
-                                var clrType = (System.Type)fieldRow["DataType"];
+                                var tableInfo = reader.GetSchemaTable();
+                                foreach (DataRow fieldRow in tableInfo.Rows)
+                                {
+                                    var fieldName = SanitizeFieldName(fieldRow["ColumnName"].ToString());
+                                    var order = int.Parse(fieldRow["ColumnOrdinal"].ToString());
+                                    var providerTypeName = fieldRow["DataTypeName"].ToString();
+                                    var size = int.Parse(fieldRow["ColumnSize"].ToString());
+                                    var clrType = (System.Type)fieldRow["DataType"];
 
-                                // AllowDbNull doesn't seem to be accurate for postgres
-                                // IsIdentity also doesn't seem accurate, however it does accord with what information_schema.columns contains for that table 
+                                    // AllowDbNull doesn't seem to be accurate for postgres
+                                    // IsIdentity also doesn't seem accurate, however it does accord with what information_schema.columns contains for that table 
 
-                                t.Fields.Add(new Field(t) { Name = fieldName, Order = order, Size = GetFieldSize(size), ProviderTypeName = providerTypeName, ClrType = clrType});
+                                    t.Fields.Add(new Field(t) { Name = fieldName, Order = order, Size = GetFieldSize(size), ProviderTypeName = providerTypeName, ClrType = clrType});
+                                }
                             }
                         }
-                    }
                     
-                    GetAdditionalFieldInfoFromInformationSchema(catalog, ns, name, cn, t);
-                    GetPrimaryKeyInfoFromInformationSchema(catalog, ns, name, cn, t);
-                    GetUniqueConstraintsFromInformationSchema(catalog, ns, name, cn, t);
+                        GetAdditionalFieldInfoFromInformationSchema(catalog, ns, name, cn, t);
+                        GetPrimaryKeyInfoFromInformationSchema(catalog, ns, name, cn, t);
+                        GetUniqueConstraintsFromInformationSchema(catalog, ns, name, cn, t);
 
-                    types.Add(t);
-
+                        types.Add(t);
+                    }
+                    else
+                    {
+                        Log.Debug("{Schema}.{TableName} was excluded because the schema is being excluded", ns, name);
+                    }
                 }
 
                 GetTypeAttributes(types);
@@ -186,29 +197,37 @@ namespace Badass.Postgres
                         try
                         {
                             var ns = reader["schema"].ToString();
-                            var resultType = reader["result_type"].ToString();
-
-                            var op = new Operation {Name = name, Namespace = ns};
-                            var description = GetField<string>(reader, "description");
-
-                            PopulateOperationAttributes(op, description);
-
-                            if (getAllDetails)
+                            if (!domain.ExcludedSchemas.Contains(ns))
                             {
-                                var parameters = reader["argument_types"].ToString();
-                                if (!string.IsNullOrEmpty(parameters))
+                                var resultType = reader["result_type"].ToString();
+
+                                var op = new Operation {Name = name, Namespace = ns};
+                                var description = GetField<string>(reader, "description");
+
+                                PopulateOperationAttributes(op, description);
+
+                                if (getAllDetails)
                                 {
-                                    op.Parameters.AddRange(ReadParameters(parameters, domain));
-                                    if (op.Attributes?.applicationtype != null)
+                                    var parameters = reader["argument_types"].ToString();
+                                    if (!string.IsNullOrEmpty(parameters))
                                     {
-                                        UpdateParameterNullabilityFromApplicationType(op, domain);
+                                        op.Parameters.AddRange(ReadParameters(parameters, domain, op));
+                                        if (op.Attributes?.applicationtype != null)
+                                        {
+                                            UpdateParameterNullabilityFromApplicationType(op, domain);
+                                        }
                                     }
+
+                                    op.Returns = GetReturnForOperation(resultType, domain, op);
                                 }
 
-                                op.Returns = GetReturnForOperation(resultType, domain, op);
+                                domain.Operations.Add(op);
+                            }
+                            else
+                            {
+                                Log.Debug("{Schema}.{OperationName} is being excluded because of the schema", ns, name);
                             }
 
-                            domain.Operations.Add(op);
                         }
                         catch (Exception ex)
                         {
@@ -280,7 +299,27 @@ namespace Badass.Postgres
 
         public string GetCsDbTypeFromDbType(string dbTypeName)
         {
-            return GetNpgsqlDbTypeFromPostgresType(dbTypeName).ToString();
+            var result = GetNpgsqlDbTypeFromPostgresType(dbTypeName);
+
+            if (result == NpgsqlDbType.TimestampTz)
+            {
+                // the capitalisation of Tz keeps getting messed up, and emitted as TZ because they both have the same enum value
+                return "TimestampTz"; 
+            }
+
+            return result.ToString();
+        }
+
+        // postgres has a name length limit of 63 bytes. This assumes you're not using unicode characters for db entity names
+        private const int NameLengthLimit = 63;
+        public string GetSqlName(string entityName)
+        {
+            if (entityName.Length > NameLengthLimit)
+            {
+                return entityName.Substring(0, NameLengthLimit);
+            }
+
+            return entityName;
         }
 
         public static NpgsqlDbType GetNpgsqlDbTypeFromPostgresType(string postgresTypeName)
@@ -926,7 +965,7 @@ namespace Badass.Postgres
         
         private void DropGeneratedOperation(Operation op, StringBuilder sb)
         {
-            var cmdText = $"DROP FUNCTION IF EXISTS {op.Namespace}.{op.Name};";
+            var cmdText = $"DROP FUNCTION IF EXISTS {op.Namespace}.{GetSqlName(op.Name)};";
             sb.AppendLine(cmdText);
             ExecuteCommandText(cmdText);
         }
@@ -1053,7 +1092,9 @@ namespace Badass.Postgres
 
         private OperationReturn GetReturnForOperation(string resultType, Domain domain, Operation operation)
         {
-            if (resultType == "void")
+            var pgType = new PostgresType(resultType);
+            
+            if (pgType.IsVoid)
             {
                 return new OperationReturn {ReturnType = ReturnType.None};
             }
@@ -1102,7 +1143,7 @@ namespace Badass.Postgres
                         else
                         {
                             // get return type info from postgres meta-data
-                            var customReturnType = ReadCustomTypeInformation(typeName, domain, operation);
+                            var customReturnType = ReadCustomOperationReturn(typeName, domain, operation);
                             if (customReturnType == null)
                             {
                                 // error
@@ -1114,16 +1155,21 @@ namespace Badass.Postgres
                     }
                 }
             }
-
+            
             return new OperationReturn
             {
                 ReturnType = ReturnType.Singular,
-                SingularReturnType = Util.GetClrTypeFromPostgresType(resultType)
+                ClrReturnType = pgType.ClrType
             };
-
         }
 
-        private OperationReturn ReadCustomTypeInformation(string typeName, Domain domain, Operation operation)
+        private OperationReturn ReadCustomOperationReturn(string typeName, Domain domain, Operation operation)
+        {
+            var result = ReadCustomOperationType(typeName, domain, operation);
+            return new OperationReturn {ReturnType = ReturnType.CustomType, SimpleReturnType = result};
+        }
+
+        private ResultType ReadCustomOperationType(string typeName, Domain domain, Operation operation)
         {
             using (var cn = new NpgsqlConnection(_connectionString))
             using (var cmd = new NpgsqlCommand(TypeQuery, cn))
@@ -1152,13 +1198,14 @@ namespace Badass.Postgres
                         {
                             fld.ProviderTypeName = providerTypeRaw;
                         }
-                        fld.ClrType = Util.GetClrTypeFromPostgresType(fld.ProviderTypeName);
+
+                        fld.ClrType = new PostgresType(fld.ProviderTypeName).ClrType;
                         
                         fld.Order = GetField<short>(reader, "ordinal_position");
                         result.Fields.Add(fld);
                     }
 
-                    if (operation.Attributes.applicationtype != null)
+                    if (operation.Attributes?.applicationtype != null)
                     {
                         UpdateResultFieldPropertiesFromApplicationType(operation, result, domain);
                     }
@@ -1166,11 +1213,11 @@ namespace Badass.Postgres
                     result.Operations.Add(operation);
                     domain.ResultTypes.Add(result);
 
-                    return new OperationReturn {ReturnType = ReturnType.CustomType, SimpleReturnType = result};
+                    return result;
                 }
             }
         }
-
+        
         private static Tuple<string, int> ParseTypeAndSize(string providerTypeRaw)
         {
             var regex = new Regex("(\\D+)\\((\\d+)\\)");
@@ -1203,7 +1250,7 @@ namespace Badass.Postgres
                     var n = GetFieldNameAndType(s);
                     fields.Add(new Field(null)
                     {
-                        Name = n.Name, ProviderTypeName = n.Type, ClrType = Util.GetClrTypeFromPostgresType(n.Type),
+                        Name = n.Name, ProviderTypeName = n.Type.Name, ClrType = n.Type.ClrType,
                         Order = index
                     });
                     index++;
@@ -1347,13 +1394,13 @@ namespace Badass.Postgres
 
 
 
-        private IEnumerable<Parameter> ReadParameters(string parameters, Domain domain)
+        private IEnumerable<Parameter> ReadParameters(string parameters, Domain domain, Operation operation)
         {
             var p = new List<Parameter>();
 
             if (parameters.IndexOf(',') < 0)
             {
-                var prm = ReadSingleParameter(parameters, domain);
+                var prm = ReadSingleParameter(parameters, domain, operation);
                 prm.Order = 0;
                 p.Add(prm);
             }
@@ -1363,7 +1410,7 @@ namespace Badass.Postgres
                 var index = 0;
                 foreach (var s in split)
                 {
-                    var prm = ReadSingleParameter(s.Trim(), domain);
+                    var prm = ReadSingleParameter(s.Trim(), domain, operation);
                     prm.Order = index;
                     p.Add(prm);
                     index++;
@@ -1373,10 +1420,36 @@ namespace Badass.Postgres
             return p;
         }
 
-        private Parameter ReadSingleParameter(string p, Domain domain)
+        private Parameter ReadSingleParameter(string p, Domain domain, Operation operation)
         {
             var n = GetFieldNameAndType(p);
-            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type, ClrType = Util.GetClrTypeFromPostgresType(n.Type) };
+            var type = n.Type.ClrType;
+            if (type == null)
+            {
+                var resultType = domain.ResultTypes.SingleOrDefault(rt => rt.Name == n.Type.Name && rt.Namespace == operation.Namespace);
+                if (resultType == null)
+                {
+                    resultType = ReadCustomOperationType(n.Type.Name, domain, operation);
+                }
+                
+                if (resultType != null)
+                {
+                    if (n.Type.IsArray)
+                    {
+                        type = typeof(List<ResultType>);
+                    }
+                    else
+                    {
+                        type = typeof(ResultType);
+                    }
+                }
+                else
+                {
+                    Log.Warning("Unable to determine CLR type for {TypeName}", n.Type);
+                }  
+            }
+            
+            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type.Name, ClrType = type };
             return parameter;
         }
 
@@ -1386,8 +1459,8 @@ namespace Badass.Postgres
             value = value.Trim();
             var space = value.IndexOf(' ');
             var name = SanitizeFieldName(value.Substring(0, space));
-            var type = value.Substring(space + 1);
-            return new NameAndType {Name = name, Type = type};
+            var pgType = new PostgresType(value.Substring(space + 1));
+            return new NameAndType {Name = name, Type = pgType };
         }
 
         private static void GetAdditionalFieldInfoFromInformationSchema(string catalog, string ns, string name,
@@ -1797,7 +1870,7 @@ cols AS (
     public class NameAndType
     {
         public string Name;
-        public string Type;
+        public PostgresType Type;
     }
 
 }

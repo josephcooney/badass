@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
+using Badass.Templating.Classes.WebApi;
 
 namespace Badass.Templating.Classes.Adapters
 {
@@ -79,7 +80,7 @@ namespace Badass.Templating.Classes.Adapters
         }
 
         public override List<OperationAdapter> Operations => base.Operations.Where(o => o.GenerateApi).ToList();
-
+        
         public bool GenerateConstructor
         {
             get { return _type.Attributes?.apiConstructor != "none"; }

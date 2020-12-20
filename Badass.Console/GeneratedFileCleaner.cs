@@ -60,7 +60,7 @@ namespace Badass.Console
         private void ClearCsharpFiles()
         {
             var csharpFiles = _fileSystem.Directory.GetFiles(_settings.RootDirectory, "*.cs", SearchOption.AllDirectories).ToList();
-            var dataCsFiles = _fileSystem.Directory.GetFiles(DbFolder, "*.sql", SearchOption.AllDirectories);
+            var dataCsFiles = _fileSystem.Directory.GetFiles(DbFolder, "*.cs", SearchOption.AllDirectories);
             csharpFiles.AddRange(dataCsFiles);
             foreach (var file in csharpFiles)
             {

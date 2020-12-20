@@ -14,8 +14,8 @@ namespace Badass.Templating.Classes
         public const string HttpDeleteOperation = "Delete";
         public const string HttpPutOperation = "Put";
 
-        private readonly Operation _op;
-        private readonly Domain _domain;
+        protected readonly Operation _op;
+        protected readonly Domain _domain;
         private readonly ApplicationType _type;
 
         public OperationAdapter(Operation op, Domain domain, ApplicationType type)
@@ -30,6 +30,8 @@ namespace Badass.Templating.Classes
             }
         }
 
+        public Operation UnderlyingOperation => _op;
+        
         public string Name => _op.Name;
 
         public string BareName => _op.BareName;
@@ -51,14 +53,14 @@ namespace Badass.Templating.Classes
 
         public bool HasParameters => _op.Parameters.Any();
 
-        public List<Parameter> Parameters => _op.Parameters;
+        public List<ParameterAdapter> Parameters => _op.Parameters.Select(p => new ParameterAdapter(_domain, p)).ToList();
 
-        public List<ParameterAdapter> UserProvidedParameters
+        public virtual List<ParameterAdapter> UserProvidedParameters
         {
             get { return _op.UserProvidedParameters.Select(p => new ParameterAdapter(_domain, p)).ToList(); }
         }
 
-        public List<ParameterAdapter> UserEditableParameters
+        public virtual List<ParameterAdapter> UserEditableParameters
         {
             get { return UserProvidedParameters.Where(p => p.UserEditable).OrderBy(p => p.RelatedTypeField?.Rank).ToList(); }
         }
@@ -69,7 +71,7 @@ namespace Badass.Templating.Classes
             {
                 if (_op.Returns.ReturnType == ReturnType.Singular)
                 {
-                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.SingularReturnType);
+                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType);
                 }
 
                 if (_op.Returns.ReturnType == ReturnType.ApplicationType || _op.Returns.ReturnType == ReturnType.CustomType)
@@ -92,13 +94,18 @@ namespace Badass.Templating.Classes
 
                 if (_op.Returns.ReturnType == ReturnType.Singular)
                 {
-                    if (_op.Returns.SingularReturnType == null)
+                    if (_op.Returns.ClrReturnType == null)
                     {
                         Log.Error("Singular return type for operation {OperationName} was not defined.", _op.Name);
                         throw new InvalidOperationException($"Scalar return type for operation {_op.Name} was not defined");
                     }
+
+                    if (_op.Returns.ClrReturnType.IsArray)
+                    {
+                        return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType.GetElementType()) + "[]";
+                    }
                     
-                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.SingularReturnType);
+                    return TypeMapping.GetCSharpShortTypeName(_op.Returns.ClrReturnType);
                 }
 
                 if (_op.Returns.ReturnType == ReturnType.ApplicationType || _op.Returns.ReturnType == ReturnType.CustomType)
@@ -129,7 +136,7 @@ namespace Badass.Templating.Classes
 
                 if (_op.Returns?.ReturnType == ReturnType.Singular)
                 {
-                    return Util.GetTypeScriptTypeForClrType(_op.Returns.SingularReturnType);
+                    return Util.GetTypeScriptTypeForClrType(_op.Returns.ClrReturnType);
                 }
 
                 if (_op.Returns?.ReturnType == ReturnType.ApplicationType || _op.Returns?.ReturnType == ReturnType.CustomType)
@@ -239,11 +246,31 @@ namespace Badass.Templating.Classes
 
         public string FriendlyName => _op.FriendlyName;
 
+        public bool ProvideDataByUri => HttpMethod == HttpGetOperation || HttpMethod == HttpDeleteOperation;
+
         public List<ClassAdapter> ParameterReferenceTypes
         {
             get
             {
-                return this.UserProvidedParameters.Where(p => p.RelatedTypeField != null && p.RelatedTypeField.ReferencesType != null).Select(p => p.RelatedTypeField.ReferencesType).Distinct()
+                var referenceTypes = UserProvidedParameters
+                    .Where(p => p.RelatedTypeField?.ReferencesType != null)
+                    .Select(p => p.RelatedTypeField.ReferencesType).ToList();
+
+                foreach (var parameter in Parameters)
+                {
+                    if (parameter.IsCustomTypeOrCustomArray)
+                    {
+                        foreach (var field in parameter.CustomType.Fields)
+                        {
+                            if (field.ReferencesType != null)
+                            {
+                                referenceTypes.Add(field.ReferencesType);
+                            }
+                        }
+                    }
+                }
+                
+                return referenceTypes.Distinct()
                     .Select(t => new ClassAdapter(t, _domain)).ToList();
             }
         }

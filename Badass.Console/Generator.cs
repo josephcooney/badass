@@ -171,7 +171,7 @@ namespace Badass.Console
         {
             var generator = new ClassGenerator();
             var files = generator.GenerateReturnTypes(domain);
-            const string folderName = "Result";
+            const string folderName = "Model";
             var dir = _fs.Path.Combine(CSharpDataAccessFolder, folderName);
             _fileWriter.ApplyCodeFiles(files, dir);
         }

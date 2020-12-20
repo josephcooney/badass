@@ -9,7 +9,7 @@ using {{cs_name Namespace}}.Data.Repository;
 using {{cs_name Namespace}}.Models;
 using {{cs_name Namespace}}.Services;
 {{#if HasCustomResultType}}
-using {{cs_name Namespace}}.Data.Result; 
+using {{cs_name Namespace}}.Data.Model; 
 {{/if}}
 
 namespace {{cs_name Namespace}}.Controllers
@@ -51,7 +51,7 @@ namespace {{cs_name Namespace}}.Controllers
 		}
 		{{else}}
 		[Http{{HttpMethod}}("[action]")]
-		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}({{#each UserProvidedParameters}}{{format_clr_type ClrType}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
+		public async {{#if NoResult}}Task{{else}}Task<{{{Returns}}}>{{/if}} {{cs_name BareName}}({{#each UserProvidedParameters}}{{#unless ../ProvideDataByUri}}[FromBody]{{/unless}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
 		{
 			var requestUserId = _userService.GetUserId(HttpContext.User);
 			{{#if ApiHooks}}
@@ -60,7 +60,7 @@ namespace {{cs_name Namespace}}.Controllers
 			{{/if}}
 			{{#if ApiHooks}}{{indent}}{{/if}}{{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
 			{{#if ApiHooks}}				
-				{{#unless NoResult}}{{cml_case BareName}}Result = {{/unless}}After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}, {{cml_case Name}}{{/each}});
+				{{#unless NoResult}}{{cml_case BareName}}Result = {{/unless}}After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
 			{{/if}}
 			{{#if ApiHooks}}{{indent}}{{/if}}{{#unless NoResult}}return {{cml_case BareName}}Result;{{/unless}}
 			{{#if ApiHooks}}

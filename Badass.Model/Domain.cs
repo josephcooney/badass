@@ -39,6 +39,8 @@ namespace Badass.Model
             }
         }
 
+        public List<string> ExcludedSchemas => _settings.ExcludedSchemas;
+
         public Field UserIdentity
         {
             get

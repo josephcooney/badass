@@ -4,6 +4,11 @@ import { get, post, postForm, del, fixJsonDate, fixNullableJsonDate, IHttpRespon
 {{#if UsesModel}}
 import { {{cs_name Name}}Model } from './{{cs_name Name}}Model'
 {{/if}}
+{{#each UserProvidedParameters}}
+{{#if IsCustomTypeOrCustomArray}}
+import { {{ResolvedTypescriptTypeUnderlying}} } from './{{ResolvedTypescriptTypeUnderlying}}'
+{{/if}}    
+{{/each}}    
 {{/each}}
 {{#each DistinctOperationReturnTypesRelatedToParent}}
 import { {{cs_name Name}} } from './{{cs_name Name}}'
@@ -49,10 +54,18 @@ export class {{cs_name Name}}ApiClient {
 		{{/if}}
 		return result;
 	{{else}}
-	public async {{cml_case BareName}}({{#each UserProvidedParameters}}{{cml_case Name}} : {{get_ts_type ClrType}} | null {{#unless @last}}, {{/unless}}{{/each}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>  { 
-		var uri = `api/{{kb_case ../Name}}/{{cs_name BareName}}?{{#each UserProvidedParameters}}{{cml_case Name}}=${({{cml_case Name}})}{{#unless @last}}&{{/unless}}{{/each}}`;
+	public async {{cml_case BareName}}({{#each UserProvidedParameters}}{{cml_case Name}} : {{ResolvedTypescriptType}} | null {{#unless @last}}, {{/unless}}{{/each}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>  { 
+    {{#if ProvideDataByUri}}
+        var uri = `api/{{kb_case ../Name}}/{{cs_name BareName}}?{{#each UserProvidedParameters}}{{cml_case Name}}=${({{cml_case Name}})}{{#unless @last}}&{{/unless}}{{/each}}`;
+    {{else}}
+        var uri = 'api/{{kb_case ../Name}}/{{cs_name BareName}}';
+    {{/if}}
 		console.log("calling {{Name}} on " + uri);
-		var result = await {{ts_fix_http HttpMethod}}<{{TypeScriptReturn}}>(uri);
+    {{#if ProvideDataByUri}}
+        var result = await {{ts_fix_http HttpMethod}}<{{TypeScriptReturn}}>(uri);
+    {{else}}
+        var result = await {{ts_fix_http HttpMethod}}<{{TypeScriptReturn}}>(uri, {{#each UserProvidedParameters}}{{cml_case Name}}{{/each}});
+    {{/if}}    
 		{{#if IsStructuredResult}}
 		{{#if ResultHasAnyDateFields}}
 		if (result.parsedBody) {

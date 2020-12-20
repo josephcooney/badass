@@ -41,12 +41,12 @@ namespace Badass.Templating.ReactClient
                     {
                         var path = GetRelativePathFromTypeName(type.Name);
 
-                        foreach (var op in adapter.Operations)
+                        foreach (var op in adapter.ApiOperations)
                         {
                             // generate the request model if there is one
-                            if (op.UsesModel)
+                            if (op.HasCustomType)
                             {
-                                var file = new CodeFile { Name = Util.CSharpNameFromName(op.Name) + "Model.ts", Contents = GenerateClientApiModel(op), RelativePath = path, Template = TemplateNames.ApiClientModel};
+                                var file = new CodeFile { Name = Util.CSharpNameFromName(op.CustomType.Name) + ".ts", Contents = GenerateClientApiModel(op), RelativePath = path, Template = TemplateNames.ApiClientModel};
                                 files.Add(file);
                             }
 
@@ -94,7 +94,7 @@ namespace Badass.Templating.ReactClient
                         files.Add(new CodeFile { Name = namestart + "Detail.tsx", Contents = GenerateFromTemplate(detailAdapter, TemplateNames.ReactDetailPage), RelativePath = path, Template = TemplateNames.ReactDetailPage});
                     }
 
-                    foreach (var operation in adapter.Operations.Where(op => op.ChangesData && op.GenerateUI))
+                    foreach (var operation in adapter.ApiOperations.Where(op => op.ChangesData && op.GenerateUI))
                     {
                         var changeDataAdapter = new ClientApiInsertUpdateAdapter(type, domain, operation);
                         files.Add(new CodeFile { Name = namestart + operation.FriendlyName + ".tsx", Contents = GenerateFromTemplate(changeDataAdapter, TemplateNames.ReactAddEditPage), RelativePath = path, Template = TemplateNames.ReactAddEditPage });
