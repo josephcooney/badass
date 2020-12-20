@@ -40,7 +40,7 @@ export class {{cs_name Name}}Validate {
         let errors: FormikErrors<I{{cs_name RelatedType.Name}}{{FriendlyName}}State> = {};
 
 		{{#each UserProvidedParameters}}
-            {{#if IsCustomType}}
+            {{#if IsCustomTypeOrCustomArray}}
                 {{#each CustomType.Fields}}
                     {{#if IsRequired}}
                         {{#if IsBoolean}}
