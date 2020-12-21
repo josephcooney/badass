@@ -136,7 +136,7 @@ namespace {{cs_name Namespace}}.Data.Repository
 
         {{#unless NoResult}}
         {{#unless IsSingular}}
-        public void Read{{cs_name BareName}}Result({{{Returns}}} result, DbDataReader reader)
+        private void Read{{cs_name BareName}}Result({{{Returns}}} result, DbDataReader reader)
         {
             {{#if SingleResult}}
             var item = result;
