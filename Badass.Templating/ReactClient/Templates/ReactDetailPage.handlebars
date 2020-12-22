@@ -171,7 +171,7 @@ export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}Detai
 		}
     }
 
-    async getItemDetails(id: number) {
+    async getItemDetails(id: {{get_ts_type IdentityField.ClrType}}) {
         await this.api.selectForDisplayById(id).then(data => {
             if (data.parsedBody && data.parsedBody.length > 0) {				
 				this.setState({ data: data.parsedBody[0], loading: false });								

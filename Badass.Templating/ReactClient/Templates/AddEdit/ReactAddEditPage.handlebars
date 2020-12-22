@@ -68,7 +68,7 @@ export interface I{{cs_name Name}}{{OperationNameFriendly}}Props {
 	title? : string;
 	{{#if AssociateViaLink}}
 	linkedType? : string;
-	linkedId? : number | null;
+	linkedId? : number | string | null;
 	{{/if}}
 	{{#if IsUpdate}}
 	id?: {{get_ts_type IdentityField.ClrType}} | null;
@@ -277,11 +277,11 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 	{{/if}}
 
 	{{#if AssociateViaLink}}
-	createLinkedItemAssociation(id: number) {
+	createLinkedItemAssociation(id: number | string) {
 		// creation via location from a link, or via linkedId and linkedType properties
         if (this.props.location || (this.props.linkedId && this.props.linkedType)) {
 			
-			var linked : [string, number] | null = null;
+			var linked : [string, number | string] | null = null;
 			if (this.props.linkedId && this.props.linkedType){
 				linked = [this.props.linkedType, this.props.linkedId];
 			} else {
@@ -387,7 +387,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 	}
 
 	{{#if IsUpdate}}
-	async getItemDetails(id: number) {
+	async getItemDetails(id: {{get_ts_type IdentityField.ClrType}}) {
         await this.api.selectForDisplayById(id).then(data => {
             if (data.parsedBody && data.parsedBody.length > 0) {
 				var newData = {

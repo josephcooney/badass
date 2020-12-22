@@ -6,7 +6,7 @@ import { {{cs_name Name}}ApiClient } from './{{cml_case Name}}ApiClient';
 
 interface {{cs_name Name}}SelectState {
     data: {{cs_name SelectAllType.Name}}[];
-	value: number | null; 
+	value: {{get_ts_type IdentityField.ClrType}} | null; 
 	loading: boolean;
 	error: boolean;
 }
