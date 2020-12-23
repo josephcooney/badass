@@ -4,8 +4,11 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
 {
     public class UserIdField : IPseudoField
     {
+        private readonly Domain _domain;
+
         public UserIdField(Domain domain)
         {
+            _domain = domain;
             Name = Parameter.SecurityUserIdParamName;
             ProviderTypeName = domain.UserIdentity.ProviderTypeName;
             HasDisplayName = false;
@@ -22,5 +25,10 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         public bool Add => true;
         public bool Edit => true;
         public bool IsUserEditable => false;
+
+        public bool IsIdentity => false;
+        public bool IsInt => _domain.UserIdentity.IsInt;
+        public bool HasSize => _domain.UserIdentity.Size != null;
+        public int? Size => _domain.UserIdentity.Size;
     }
 }

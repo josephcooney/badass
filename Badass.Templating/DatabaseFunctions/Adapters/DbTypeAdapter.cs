@@ -193,7 +193,12 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         {
             get
             {
-                var fields  = UserEditableFields.Where(f => f.Add).Union(PrimaryKeyFields).ToList();
+                var fields  = UserEditableFields.Where(f => f.Add).ToList();
+                if (!fields.Any(f => f.IsIdentity))
+                {
+                    fields.AddRange(PrimaryKeyFields);
+                }
+                
                 var createdDateTrackingField = _applicationType.Fields.FirstOrDefault(a => a.IsTrackingDate && a.Name == Field.CreatedFieldName);
                 if (createdDateTrackingField != null)
                 {
