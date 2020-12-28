@@ -24,7 +24,7 @@ interface {{cs_name Name}}ListProps {
 	hideHeading?: boolean | null;
 	hideAddButton? : boolean | null;
 	linkedType? : string | null;
-	linkedId? : number | null;
+	linkedId? : number | string | null;
 }
 
 export class {{cs_name Name}}List extends Component<{{cs_name Name}}ListProps, {{cs_name Name}}ListState> {

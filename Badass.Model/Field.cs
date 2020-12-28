@@ -55,7 +55,7 @@ namespace Badass.Model
         // TODO - convert this to a property
         public bool IsUserEditable()
         {
-            return !IsIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
+            return !IsAutoAssignedIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
         }
         
         public bool IsTrackingDate => IsDate && (Name == CreatedFieldName || Name == ModifiedFieldName || Name == SoftDeleteFieldName);
@@ -75,6 +75,15 @@ namespace Badass.Model
         public bool IsBoolean => ClrType == typeof(bool) || ClrType == typeof(bool?);
 
         public bool IsFile => (this.ClrType == typeof(byte[]) || this.ClrType == typeof(byte?[]));
+
+        public bool IsAutoAssignedIdentity
+        {
+            get
+            {
+                // TODO - this is a little crude
+                return IsIdentity && (ClrType == typeof(int) || ClrType == typeof(Guid));
+            }
+        }
 
         public bool IsAttachmentContentType
         {
@@ -111,7 +120,7 @@ namespace Badass.Model
 
         public bool Add => Attributes?.add != null ? Attributes.add : true;
 
-        public bool Edit => Attributes?.edit != null ? Attributes.edit : true;
+        public bool Edit => Attributes?.edit != null ? Attributes.edit : !IsIdentity;
 
         public bool IsInt => ClrType == typeof(int);
     }
