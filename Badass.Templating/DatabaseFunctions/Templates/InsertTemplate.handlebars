@@ -6,9 +6,9 @@ CREATE OR REPLACE FUNCTION {{FunctionName}} (
 {{#if UsesCustomInsertType}}
 ,{{NewRecordParamterName}} {{NewTypeName}}
 {{/if}}
-) RETURNS {{PrimaryKeyField.ProviderTypeName}}{{#if HasSize}}({{Size}}){{/if}} AS 
+) RETURNS {{PrimaryKeyField.ProviderTypeName}}{{#if PrimaryKeyField.HasSize}}({{PrimaryKeyField.Size}}){{/if}} AS 
 $$
-    DECLARE new_id {{PrimaryKeyField.ProviderTypeName}}{{#if HasSize}}({{Size}}){{/if}};
+    DECLARE new_id {{PrimaryKeyField.ProviderTypeName}}{{#if PrimaryKeyField.HasSize}}({{PrimaryKeyField.Size}}){{/if}};
 
     BEGIN
 
@@ -32,9 +32,16 @@ $$
             {{/each}}
         );
 
-		{{#unless PrimaryKeyField.IsUuid}}
+		{{#if PrimaryKeyField.IsInt}}
         new_id = currval(pg_get_serial_sequence('{{Name}}', 'id'));
-		{{/unless}}
+		{{/if}}
+        {{#if PrimaryKeyField.IsUserEditable}}
+            {{#if UsesCustomInsertType}}
+        new_id = {{NewRecordParamterName}}.{{PrimaryKeyField.Name}};
+            {{else}}
+        new_id = {{FunctionName}}.{{PrimaryKeyField.Name}};
+            {{/if}}
+        {{/if}}
 
         return new_id;
     END

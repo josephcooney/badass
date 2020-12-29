@@ -13,5 +13,13 @@
         bool Edit { get; }
         
         bool IsUserEditable { get; }
+        
+        bool IsIdentity { get; }
+        
+        bool IsInt { get; }
+        
+        bool HasSize { get; }
+        
+        int? Size { get; }
     }
 }
