@@ -35,7 +35,7 @@ namespace {{cs_name Namespace}}.Controllers
 		[Http{{HttpMethod}}("[action]")]
         [ProducesResponseType(typeof({{{Returns}}}), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async {{#if NoResult}}Task{{else}}Task<ActionResult>{{/if}} {{cs_name BareName}}([FromBody]{{cs_name Name}}Model model)
+		public async Task<ActionResult> {{cs_name BareName}}([FromBody]{{cs_name Name}}Model model)
 		{
 			var requestUserId = _userService.GetUserId(HttpContext.User);
 			{{#if ApiHooks}}
@@ -47,16 +47,20 @@ namespace {{cs_name Namespace}}.Controllers
 			{{/if}}
 			{{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}model.{{cs_name Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
 			{{#if ApiHooks}}				
-			{{#unless NoResult}}return await {{/unless}}After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}} model);
+			return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}} model);
             {{else}}
-            {{#unless NoResult}}return Ok({{cml_case BareName}}Result);{{/unless}}
+            {{#if NoResult}}
+            return Ok();
+            {{else}}
+            return Ok({{cml_case BareName}}Result);
+            {{/if}}            
             {{/if}}
 		}
 		{{else}}
 		[Http{{HttpMethod}}("[action]")]
         [ProducesResponseType(typeof({{{Returns}}}), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public async {{#if NoResult}}Task{{else}}Task<ActionResult>{{/if}} {{cs_name BareName}}({{#each UserProvidedParameters}}{{#unless ../ProvideDataByUri}}[FromBody]{{/unless}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
+		public async Task<ActionResult> {{cs_name BareName}}({{#each UserProvidedParameters}}{{#unless ../ProvideDataByUri}}[FromBody]{{/unless}}{{{ResolvedClrType}}} {{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}})
 		{
 			var requestUserId = _userService.GetUserId(HttpContext.User);
 			{{#if ApiHooks}}
@@ -69,9 +73,13 @@ namespace {{cs_name Namespace}}.Controllers
 			{{/if}}
 			{{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
 			{{#if ApiHooks}}				
-			{{#unless NoResult}}return await {{/unless}}After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
+			return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
             {{else}}
-            {{#unless NoResult}}return Ok({{cml_case BareName}}Result);{{/unless}}
+            {{#if NoResult}}
+            return Ok();    
+            {{else}}
+            return Ok({{cml_case BareName}}Result);
+            {{/if}}
             {{/if}}
 		}
 		{{/if}}
