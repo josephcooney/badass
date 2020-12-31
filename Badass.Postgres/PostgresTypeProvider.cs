@@ -1203,7 +1203,7 @@ namespace Badass.Postgres
                 using (var reader = cmd.ExecuteReader())
                 {
                     // possibly inaccurate since it just picks the related type of the operation
-                    var result = new ResultType(typeName, operation.Namespace, operation.RelatedType);
+                    var result = new ResultType(typeName, operation.Namespace, operation.RelatedType, true);
                     while (reader.Read())
                     {
                         var fld = new Field(result);
@@ -1303,7 +1303,7 @@ namespace Badass.Postgres
                     if (existingReturnType == null)
                     {
                         // possibly inaccurate since it just picks the related type of the operation it is returned by
-                        var result = new ResultType(name, operation.Namespace, operation.RelatedType);
+                        var result = new ResultType(name, operation.Namespace, operation.RelatedType, false);
                         result.Operations.Add(operation);
 
                         var newFields = fields.Select(f => new Field(result)
