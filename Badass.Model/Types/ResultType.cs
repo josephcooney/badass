@@ -5,10 +5,11 @@ namespace Badass.Model
 {
     public class ResultType : SimpleType
     {
-        public ResultType(string name, string ns, ApplicationType relatedType) : base(name, ns)
+        public ResultType(string name, string ns, ApplicationType relatedType, bool isCustomType) : base(name, ns)
         {
             Operations = new List<Operation>();
             RelatedType = relatedType;
+            IsCustomType = isCustomType;
         }
 
         public ApplicationType RelatedType { get; }
@@ -16,5 +17,7 @@ namespace Badass.Model
         public List<Operation> Operations { get; }
 
         public bool Ignore => Operations.All(op => op.Ignore);
+        
+        public bool IsCustomType { get; }
     }
 }
