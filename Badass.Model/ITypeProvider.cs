@@ -18,5 +18,7 @@ namespace Badass.Model
         public string GetCsDbTypeFromDbType(string dbTypeName);
 
         public string GetSqlName(string entityName);
+
+        public bool CustomTypeExists(string customTypeName);
     }
 }

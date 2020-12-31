@@ -322,6 +322,27 @@ namespace Badass.Postgres
             return entityName;
         }
 
+        public bool CustomTypeExists(string customTypeName)
+        {
+            using (var cn = new NpgsqlConnection(_connectionString))
+            using (var cmd = new NpgsqlCommand(IndividualCustomTypeQuery, cn))
+            {
+                cmd.Parameters.AddWithValue("typeName", NpgsqlDbType.Text, customTypeName);
+                
+                cn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Log.Debug("Custom Type {CustomTypeName} already exists.", customTypeName);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public static NpgsqlDbType GetNpgsqlDbTypeFromPostgresType(string postgresTypeName)
         {
             if (_postgresNpgSqlTypes.ContainsKey(postgresTypeName))
@@ -1182,7 +1203,7 @@ namespace Badass.Postgres
                 using (var reader = cmd.ExecuteReader())
                 {
                     // possibly inaccurate since it just picks the related type of the operation
-                    var result = new ResultType(typeName, operation.Namespace, operation.RelatedType);
+                    var result = new ResultType(typeName, operation.Namespace, operation.RelatedType, true);
                     while (reader.Read())
                     {
                         var fld = new Field(result);
@@ -1282,7 +1303,7 @@ namespace Badass.Postgres
                     if (existingReturnType == null)
                     {
                         // possibly inaccurate since it just picks the related type of the operation it is returned by
-                        var result = new ResultType(name, operation.Namespace, operation.RelatedType);
+                        var result = new ResultType(name, operation.Namespace, operation.RelatedType, false);
                         result.Operations.Add(operation);
 
                         var newFields = fields.Select(f => new Field(result)
@@ -1807,6 +1828,33 @@ AND KCU1.TABLE_SCHEMA = '{type.Namespace}'
             AND n.nspname <> 'information_schema'
             AND n.nspname !~ '^pg_toast'
         order by obj_name";
+        
+        private const string IndividualCustomTypeQuery = @"    
+        SELECT n.nspname,
+            pg_catalog.format_type ( t.oid, NULL ) AS obj_name,
+            CASE
+                WHEN t.typrelid != 0 THEN CAST ( 'tuple' AS pg_catalog.text )
+                WHEN t.typlen < 0 THEN CAST ( 'var' AS pg_catalog.text )
+                ELSE CAST ( t.typlen AS pg_catalog.text )
+                END AS obj_type,
+            coalesce ( pg_catalog.obj_description ( t.oid, 'pg_type' ), '' ) AS description
+        FROM pg_catalog.pg_type t
+        JOIN pg_catalog.pg_namespace n
+            ON n.oid = t.typnamespace
+        WHERE 
+           pg_catalog.format_type ( t.oid, NULL ) = @typeName 
+           AND ( t.typrelid = 0
+                OR ( SELECT c.relkind = 'c'
+                        FROM pg_catalog.pg_class c
+                        WHERE c.oid = t.typrelid ) )
+            AND NOT EXISTS (
+                    SELECT 1
+                        FROM pg_catalog.pg_type el
+                        WHERE el.oid = t.typelem
+                        AND el.typarray = t.oid )
+            AND n.nspname <> 'pg_catalog'
+            AND n.nspname <> 'information_schema'
+            AND n.nspname !~ '^pg_toast'";
 
         // this query comes from here: https://dba.stackexchange.com/a/35510
         private const string TypeQuery =
