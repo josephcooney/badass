@@ -221,15 +221,13 @@ namespace Badass.Templating.Classes
             }
         }
 
-        public bool CanCheckForResultByCount
-        {
-            get
-            {
-                return _op.ChangesData && !_op.CreatesNew && IsSingular && _op.Returns.ClrReturnType == typeof(int);
-            }
-        }
+        public bool CanCheckForResultByCount => _op.ChangesData && !_op.CreatesNew && IsSingular && _op.Returns.ClrReturnType == typeof(int);
 
-        public bool CanCheckForResult => CanCheckForResultByCount;
+        public bool CanCheckForResultByPresenceOfData => _op.IsSelectById && _op.SingleResult;
+
+        public bool CanCheckForResultByPresenceOrLengthOfData => _op.IsSelectById && !_op.SingleResult;
+
+        public bool CanCheckForResult => CanCheckForResultByCount || CanCheckForResultByPresenceOfData || CanCheckForResultByPresenceOrLengthOfData;
 
         public bool UsesModel
         {

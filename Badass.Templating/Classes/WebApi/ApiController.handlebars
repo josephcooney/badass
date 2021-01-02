@@ -55,11 +55,13 @@ namespace {{cs_name Namespace}}.Controllers
                 {{#if NoResult}}
             return Ok();
                 {{else}}
-                    {{#if CanCheckForResultByCount}}
-            if ({{cml_case BareName}}Result == 0) 
+                    {{#if CanCheckForResult}}
+                        {{#if CanCheckForResultByCount}}
+            if ({{cml_case BareName}}Result == 0)
             {
-                return NotFound();        
-            }
+                return NotFound();
+            }                
+                        {{/if}}
             return Ok({{cml_case BareName}}Result);
                     {{else}}
             return Ok({{cml_case BareName}}Result);
@@ -92,11 +94,25 @@ namespace {{cs_name Namespace}}.Controllers
                 {{#if NoResult}}
             return Ok();
                 {{else}}
-                    {{#if CanCheckForResultByCount}}
+                    {{#if CanCheckForResult}}
+                        {{#if CanCheckForResultByCount}}
             if ({{cml_case BareName}}Result == 0)
             {
                 return NotFound();
-            }
+            }                
+                        {{/if}}
+                        {{#if CanCheckForResultByPresenceOfData}}
+            if ({{cml_case BareName}}Result == null)
+            {
+                return NotFound();
+            }                
+                        {{/if}}
+                        {{#if CanCheckForResultByPresenceOrLengthOfData}}
+            if ({{cml_case BareName}}Result == null || {{cml_case BareName}}Result.Count == 0)
+            {
+                return NotFound();
+            }                
+                        {{/if}}
             return Ok({{cml_case BareName}}Result);
                     {{else}}
             return Ok({{cml_case BareName}}Result);
