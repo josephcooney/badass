@@ -134,6 +134,8 @@ export class {{cs_name Name}}List extends Component<{{cs_name Name}}ListProps, {
             var responseBody = data.parsedBody;
             if (responseBody) {
                 this.setState({ data: responseBody, loading: false } as Pick<{{cs_name ../Name}}ListState, keyof {{cs_name ../Name}}ListState>);
+            } else {
+                this.setState({ loading: false } as Pick<{{cs_name ../Name}}ListState, keyof {{cs_name ../Name}}ListState>);
             }
         }).catch(err => {
             this.setState({ data: [], loading: false, error: true, message: err.message });
