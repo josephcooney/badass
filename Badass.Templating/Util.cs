@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Badass.Model;
 using HandlebarsDotNet;
 using Serilog;
+using Pluralize.NET.Core;
 
 namespace Badass.Templating
 {
@@ -413,12 +414,29 @@ namespace Badass.Templating
             return name.ToLowerInvariant().Replace(" ", "").Replace("-", "").Replace("_", "");
         }
 
+        public static string Pluralise(string phrase)
+        {
+            if (string.IsNullOrEmpty(phrase))
+            {
+                return phrase;
+            }
+            
+            var words = phrase.Split(' ');
+            var lastWord = words.Last();
+            lastWord = _pluralizer.Pluralize(lastWord);
+            var newWords = words.SkipLast(1).ToList();
+            newWords.Add(lastWord);
+            return string.Join(" ", newWords);
+        }
+
         private static ITypeProvider _typeProvider;
 
         private static Dictionary<System.Type, string> _typeScriptTypes;
 
         private static Dictionary<System.Type, string> _inputTypes;
 
+        private static Pluralizer _pluralizer = new Pluralizer();
+        
         static Util()
         {
             _typeScriptTypes = new Dictionary<Type, string>()

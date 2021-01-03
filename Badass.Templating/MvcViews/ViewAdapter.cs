@@ -12,14 +12,7 @@ namespace Badass.Templating.MvcViews
         {
         }
 
-        public string HumanizedNamePlural
-        {
-            get
-            {
-                // this is shockingly naive
-                return Util.HumanizeName(base._type.Name) + "s";
-            }
-        }
+        public string HumanizedNamePlural => Util.Pluralise(Util.HumanizeName(base._type.Name));
 
         public ApplicationType Type => (ApplicationType)_type;
     }

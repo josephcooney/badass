@@ -61,14 +61,8 @@ namespace Badass.Templating.ReactClient.Adapters
         {
             get
             {
-                // this is shockingly naive
                 var hmn = Util.HumanizeName(base._type.Name);
-                if (hmn.EndsWith("s"))
-                {
-                    return hmn + "es";
-                }
-
-                return hmn + "s";
+                return Util.Pluralise(hmn);
             }
         }
 
