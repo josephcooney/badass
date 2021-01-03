@@ -97,7 +97,7 @@ namespace Badass.Templating.Classes.Adapters
                     return customControllerBase;
                 }
 
-                return "Controller";
+                return "BaseController";
             }
         }
     }

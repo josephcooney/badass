@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Npgsql;
 using {{cs_name Namespace}}.Data.Domain;
 using {{cs_name Namespace}}.Data.Repository;
 using {{cs_name Namespace}}.Models;
@@ -48,26 +49,45 @@ namespace {{cs_name Namespace}}.Controllers
                 return beforeResult;    
             }    
 			{{/if}}
-			{{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}model.{{cs_name Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
+            try 
+            {
+			    {{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}model.{{cs_name Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
 			{{#if ApiHooks}}				
-			return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}} model);
+			    return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}} model);
             {{else}}
                 {{#if NoResult}}
-            return Ok();
+                return Ok();
                 {{else}}
                     {{#if CanCheckForResult}}
                         {{#if CanCheckForResultByCount}}
-            if ({{cml_case BareName}}Result == 0)
-            {
-                return NotFound();
-            }                
+                if ({{cml_case BareName}}Result == 0)
+                {
+                    return NotFound();
+                }
                         {{/if}}
-            return Ok({{cml_case BareName}}Result);
+                        {{#if CanCheckForResultByPresenceOfData}}
+                if ({{cml_case BareName}}Result == null)
+                {
+                    return NotFound();
+                }
+                        {{/if}}
+                        {{#if CanCheckForResultByPresenceOrLengthOfData}}
+                if ({{cml_case BareName}}Result == null || {{cml_case BareName}}Result.Count == 0)
+                {
+                    return NotFound();
+                }
+                        {{/if}}
+                return Ok({{cml_case BareName}}Result);
                     {{else}}
-            return Ok({{cml_case BareName}}Result);
+                return Ok({{cml_case BareName}}Result);
                     {{/if}}
-                {{/if}}            
+                {{/if}}
             {{/if}}
+            }
+            catch (NpgsqlException ex)
+            {
+                return TranslateExceptionToResult(ex);
+            }
 		}
 		{{else}}
 		[Http{{HttpMethod}}("[action]")]
@@ -87,38 +107,45 @@ namespace {{cs_name Namespace}}.Controllers
             }    
 			
 			{{/if}}
-			{{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
+            try
+            {
+			    {{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}requestUserId{{else}}requestUserId.Value{{/if}}{{else}}{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
 			{{#if ApiHooks}}				
-			return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
+			    return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
             {{else}}
                 {{#if NoResult}}
-            return Ok();
+                return Ok();
                 {{else}}
                     {{#if CanCheckForResult}}
                         {{#if CanCheckForResultByCount}}
-            if ({{cml_case BareName}}Result == 0)
-            {
-                return NotFound();
-            }                
+                if ({{cml_case BareName}}Result == 0)
+                {
+                    return NotFound();
+                }                
                         {{/if}}
                         {{#if CanCheckForResultByPresenceOfData}}
-            if ({{cml_case BareName}}Result == null)
-            {
-                return NotFound();
-            }                
+                if ({{cml_case BareName}}Result == null)
+                {
+                    return NotFound();
+                }                
                         {{/if}}
                         {{#if CanCheckForResultByPresenceOrLengthOfData}}
-            if ({{cml_case BareName}}Result == null || {{cml_case BareName}}Result.Count == 0)
-            {
-                return NotFound();
-            }                
+                if ({{cml_case BareName}}Result == null || {{cml_case BareName}}Result.Count == 0)
+                {
+                    return NotFound();
+                }                
                         {{/if}}
-            return Ok({{cml_case BareName}}Result);
+                return Ok({{cml_case BareName}}Result);
                     {{else}}
-            return Ok({{cml_case BareName}}Result);
+                return Ok({{cml_case BareName}}Result);
                     {{/if}}
                 {{/if}}
             {{/if}}
+            }
+            catch (NpgsqlException ex)
+            {
+                return TranslateExceptionToResult(ex);
+            }
 		}
 		{{/if}}
 

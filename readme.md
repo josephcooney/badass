@@ -72,7 +72,7 @@ Attributes are set as a JSON text string 'comment' on the respective database en
 - apiHooks: "none"|"modify"|"all" - When set to "modify" any API methods that changes or creates new data will generate an API hook. When set to "all", all API operations will generate pre and post-execution hooks. Defaults to "none", which means no hooks will be generated. 
 - apiConstructor: "generate"|"none" - when set to "generate" a constructor is generated for the API controller. When set to none no constructur is generated, so a custom constructor can be added to a partial class. Defaults to "generate".
 - addMany: true|false - When set to true creates array-based add/insert operations to allow multiple entities to be added via a single call. Defaults to false.
-- apiControllerBaseClass: string - the name of the custom controller that the API controller should inherit from. Defaults to `Controller`.
+- apiControllerBaseClass: string - the name of the custom controller that the API controller should inherit from. Defaults to `BaseController` (a type which you will need to created).
 
 ### Function Level ###
 - applicationtype:[type name] on a function acts as a hint that that type should be returned by the function wrapper
