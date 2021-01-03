@@ -78,6 +78,8 @@ export class {{cs_name Name}}Select extends Component<{{cs_name Name}}SelectProp
             var responseBody = data.parsedBody;
             if (responseBody) {
                 this.setState({ data: responseBody, loading: false });
+            } else {
+                this.setState({ loading: false }); 
             }
         }).catch(err => {
             this.setState({ data: [], loading: false, error: true });

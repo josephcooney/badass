@@ -36,6 +36,8 @@ export class {{cs_name Name}}Component extends Search<{{ReturnTypeName}}> {
             if (responseBody) {
                 this.setState({ data: responseBody, loading: false, error: false, message: null, searchText: this.state.searchText, loadingFromHistory: false } as Pick<searchState<{{ReturnTypeName}}>, keyof searchState<{{ReturnTypeName}}>>);
 				this.addSearchHistory();
+            } else {
+                this.setState({ loading: false, error: false, message: "no results", searchText: this.state.searchText, loadingFromHistory: false } as Pick<searchState<{{ReturnTypeName}}>, keyof searchState<{{ReturnTypeName}}>>);     
             }
         }).catch(err => {
             this.setState({ data: [], loading: false, error: true, message: err.message });

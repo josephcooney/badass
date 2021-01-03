@@ -3,9 +3,9 @@ CREATE OR REPLACE FUNCTION {{FunctionName}} (
 {{#each UpdateInputFields}}
 {{{escape_sql_keyword Name}}} {{ProviderTypeName}}{{#if HasSize}}({{Size}}){{/if}}{{#unless @last}},{{/unless}}
 {{/each}}
-) RETURNS void AS
+) RETURNS int AS
 $$
-
+    declare update_count int;
     BEGIN
 
         IF (security_user_id_param is not null) THEN
@@ -20,6 +20,10 @@ $$
         WHERE
         {{#each PrimaryKeyFields}}
             {{{escape_sql_keyword Parent.Name}}}.{{{escape_sql_keyword Name}}} = {{escape_sql_keyword Parent.FunctionName}}.{{{escape_sql_keyword Name}}}{{#unless @last}} AND{{/unless}}{{/each}}{{#if SoftDelete}} AND deleted_date is NULL{{/if}};
+
+        get diagnostics update_count = row_count;
+        
+        return update_count;
         
     END
 $$

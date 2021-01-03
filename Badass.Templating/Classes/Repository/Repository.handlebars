@@ -56,13 +56,15 @@ namespace {{cs_name Namespace}}.Data.Repository
 				{{else}}
 				using (var reader = cmd.ExecuteReader())
 				{
+                    var readResults = false;
 					var result = new {{{Returns}}}();
 					while (reader.Read())
 					{
 						Read{{cs_name BareName}}Result(result, reader);
+                        readResults = true;
 					}
 
-					return result;
+					return readResults ? result : null;
 				}	
 				{{/if}}
 				{{/if}}
@@ -90,13 +92,15 @@ namespace {{cs_name Namespace}}.Data.Repository
 				{{else}}
 				using (var reader = await cmd.ExecuteReaderAsync())
 				{
+                    var readResults = false;
 					var result = new {{{Returns}}}();
 					while (await reader.ReadAsync())
 					{
 						Read{{cs_name BareName}}Result(result, reader);
+                        readResults = true;
 					}
 
-					return result;
+					return readResults ? result : null;
 				}	
 				{{/if}}
 				{{/if}}

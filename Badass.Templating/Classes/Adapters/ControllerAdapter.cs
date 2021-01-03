@@ -86,6 +86,20 @@ namespace Badass.Templating.Classes.Adapters
         {
             get { return _type.Attributes?.apiConstructor != "none"; }
         }
+        
+        public string ControllerBaseClassName
+        {
+            get
+            {
+                var customControllerBase = _type?.Attributes?.apiControllerBaseClass?.ToString();
+                if (!string.IsNullOrEmpty(customControllerBase))
+                {
+                    return customControllerBase;
+                }
+
+                return "BaseController";
+            }
+        }
     }
 
     public class FieldAdapter
