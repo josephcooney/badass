@@ -320,20 +320,12 @@ namespace Badass.Templating
                 name = CSharpNameFromName(name);
             }
 
-            var index = 0;
-            var camelcasedName = string.Empty;
-            while (index < name.Length && name[index] != char.ToLowerInvariant(name[index]))
+            if (name.ToUpperInvariant() == name)
             {
-                camelcasedName += char.ToLowerInvariant(name[index]);
-                index++;
+                return name.ToLowerInvariant();
             }
-
-            if (index < name.Length)
-            {
-                camelcasedName += name.Substring(index);
-            }
-
-            return camelcasedName;
+            
+            return Char.ToLowerInvariant(name[0]) + name.Substring(1);
         }
 
         public static string KebabCase(string name)

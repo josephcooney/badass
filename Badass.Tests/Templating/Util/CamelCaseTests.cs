@@ -53,5 +53,12 @@ namespace Badass.Tests.Templating.Util
             var cmlCasedName = Badass.Templating.Util.CamelCase("ABcDefg");
             cmlCasedName.Should().Be("aBcDefg");
         }
+        
+        [Fact]
+        public void Another_Longer_Name_With_Confusing_Case_Is_Capitalized_Correctly()
+        {
+            var cmlCasedName = Badass.Templating.Util.CamelCase("ABcDE");
+            cmlCasedName.Should().Be("aBcDE");
+        }
     }
 }
