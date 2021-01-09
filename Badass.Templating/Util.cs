@@ -310,13 +310,30 @@ namespace Badass.Templating
 
         public static string CamelCase(string name)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+            
             if (name.IndexOf('_') > -1)
             {
-                var parts = name.Split('_');
-                return parts[0].ToLowerInvariant() + string.Join("", parts.Skip(1).Select(p => char.ToUpperInvariant(p[0]) + p.Substring(1)));
+                name = CSharpNameFromName(name);
             }
 
-            return Char.ToLowerInvariant(name[0]) + name.Substring(1);
+            var index = 0;
+            var camelcasedName = string.Empty;
+            while (index < name.Length && name[index] != char.ToLowerInvariant(name[index]))
+            {
+                camelcasedName += char.ToLowerInvariant(name[index]);
+                index++;
+            }
+
+            if (index < name.Length)
+            {
+                camelcasedName += name.Substring(index);
+            }
+
+            return camelcasedName;
         }
 
         public static string KebabCase(string name)
