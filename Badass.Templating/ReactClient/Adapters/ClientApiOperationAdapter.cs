@@ -91,6 +91,10 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public string NameWithPath => RelativeStatePath + Name;
 
+        public string NameWithPathCamelCase => Util.CamelCase(RelativeStatePath) + Util.CamelCase(Name);
+
+        public string NameWithPathSafeCamelCase => NameWithPathCamelCase.Replace(".", "?.");
+        
         public string NameWithPathSafe => NameWithPath.Replace(".", "?.");
 
         public bool IsBoolean => Field?.IsBoolean ?? Parameter.IsBoolean;

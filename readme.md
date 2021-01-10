@@ -99,3 +99,8 @@ Attributes are set as a JSON text string 'comment' on the respective database en
 							 Defaults to empty.
 - add: true|false - When set to false excludes the field from add operations and from add UI. Default to true.
 - edit: true|false - When set to false excludes the field from edit operations and from edit UI. Default to true.
+
+Postgres SQL Syntax for adding comments to fields is
+```sql
+COMMENT ON COLUMN public.foo.bar IS '{"rank": 1}';
+```
