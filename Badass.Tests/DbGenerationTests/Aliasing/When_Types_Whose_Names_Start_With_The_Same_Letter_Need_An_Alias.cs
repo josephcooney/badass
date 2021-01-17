@@ -12,10 +12,10 @@ namespace Badass.Tests.DbGenerationTests.Aliasing
 
         public When_Types_Whose_Names_Start_With_The_Same_Letter_Need_An_Alias()
         {
-            var type = new ApplicationType("fooBar", "test");
+            var type = new ApplicationType("fooBar", "test", null);
             var f1 = new Field(type) { Name = "baz" };
 
-            var secondType = new ApplicationType("food", "test");
+            var secondType = new ApplicationType("food", "test", null);
             var f2 = new Field(secondType) {Name = "wahoo"};
             var aliases = new FieldEntityAliasDictionary();
             alias = aliases.CreateAliasForTypeByField(f1);

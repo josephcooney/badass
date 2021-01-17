@@ -83,12 +83,12 @@ namespace Badass.Postgres
         public Domain GetDomain(Settings settings)
         {
             var domain = new Domain(settings, this);
-            domain.Types.AddRange(GetTypes(settings.ExcludedSchemas));
+            domain.Types.AddRange(GetTypes(settings.ExcludedSchemas, domain));
 
             return domain;
         }
         
-        private List<ApplicationType> GetTypes(List<string> excluededSchemas)
+        private List<ApplicationType> GetTypes(List<string> excluededSchemas, Domain domain)
         {
             var types = new List<ApplicationType>();
 
@@ -102,7 +102,7 @@ namespace Badass.Postgres
                     var catalog = row["table_catalog"].ToString();
                     var ns = row["table_schema"].ToString();
                     var name = row["table_name"].ToString();
-                    var t = new ApplicationType(name, ns);
+                    var t = new ApplicationType(name, ns, domain);
 
                     if (!excluededSchemas.Contains(ns))
                     {
@@ -341,6 +341,16 @@ namespace Badass.Postgres
             }
 
             return false;
+        }
+
+        public bool IsDateOnly(string typeName)
+        {
+            return PostgresType.IsDateOnly(typeName);
+        }
+
+        public bool IsTimeOnly(string typeName)
+        {
+            return PostgresType.IsTimeOnly(typeName);
         }
 
         public static NpgsqlDbType GetNpgsqlDbTypeFromPostgresType(string postgresTypeName)
@@ -1203,7 +1213,7 @@ namespace Badass.Postgres
                 using (var reader = cmd.ExecuteReader())
                 {
                     // possibly inaccurate since it just picks the related type of the operation
-                    var result = new ResultType(typeName, operation.Namespace, operation.RelatedType, true);
+                    var result = new ResultType(typeName, operation.Namespace, operation.RelatedType, true, domain);
                     while (reader.Read())
                     {
                         var fld = new Field(result);
@@ -1303,7 +1313,7 @@ namespace Badass.Postgres
                     if (existingReturnType == null)
                     {
                         // possibly inaccurate since it just picks the related type of the operation it is returned by
-                        var result = new ResultType(name, operation.Namespace, operation.RelatedType, false);
+                        var result = new ResultType(name, operation.Namespace, operation.RelatedType, false, domain);
                         result.Operations.Add(operation);
 
                         var newFields = fields.Select(f => new Field(result)

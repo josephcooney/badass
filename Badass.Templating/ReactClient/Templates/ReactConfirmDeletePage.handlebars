@@ -50,7 +50,7 @@ export class {{cs_name Name}}ConfirmDelete extends Component<any,I{{cs_name Name
 							<div className="form-group row">
 								<label className="col-sm-2 col-form-label">{{hmn DisplayName}}</label>
 								<div className="col-sm-10">							
-								{{#if IsDate}}
+								{{#if IsDateTime}}
 									<DateTimeDisplay date={this.state.data.{{cml_case Name}} } />
 								{{else}}
 								<span>{ this.state.data.{{cml_case Name}} }</span>

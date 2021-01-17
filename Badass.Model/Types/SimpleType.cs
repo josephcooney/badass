@@ -7,16 +7,19 @@ namespace Badass.Model
     {
         public const string DefaultNamespace = "public";
 
-        public SimpleType(string name, string ns)
+        public SimpleType(string name, string ns, Domain domain)
         {
             Name = name;
             Namespace = ns;
             Fields = new List<Field>();
+            Domain = domain;
         }
 
         public string Name { get; }
 
         public string Namespace { get; }
+        
+        public Domain Domain { get; }
 
         public List<Field> Fields { get; }
 

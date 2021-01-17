@@ -20,5 +20,9 @@ namespace Badass.Model
         public string GetSqlName(string entityName);
 
         public bool CustomTypeExists(string customTypeName);
+
+        public bool IsDateOnly(string typeName);
+
+        public bool IsTimeOnly(string typeName);
     }
 }

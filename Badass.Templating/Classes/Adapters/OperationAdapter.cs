@@ -244,7 +244,7 @@ namespace Badass.Templating.Classes
         {
             get
             {
-                return IsStructuredResult && _op.Returns.SimpleReturnType.Fields.Any(f => f.IsDate && !f.IsExcludedFromResults);
+                return IsStructuredResult && _op.Returns.SimpleReturnType.Fields.Any(f => f.IsDateTime && !f.IsExcludedFromResults);
             }
         }
 

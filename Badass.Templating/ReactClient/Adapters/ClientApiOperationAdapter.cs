@@ -99,7 +99,9 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public bool IsBoolean => Field?.IsBoolean ?? Parameter.IsBoolean;
 
-        public bool IsDateTime => Field?.IsDate ?? Parameter.IsDateTime;
+        public bool IsDate => Field?.IsDate ?? Parameter.IsDate;
+
+        public bool IsDateTime => Field?.IsDateTime ?? Parameter.IsDateTime;
 
         public bool IsLargeTextContent => Field?.IsLargeTextContent ?? Parameter.IsLargeTextContent;
 
