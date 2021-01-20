@@ -58,7 +58,7 @@ namespace Badass.Model
             return !IsAutoAssignedIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
         }
         
-        public bool IsTrackingDate => IsDate && (Name == CreatedFieldName || Name == ModifiedFieldName || Name == SoftDeleteFieldName);
+        public bool IsTrackingDate => IsDateTime && (Name == CreatedFieldName || Name == ModifiedFieldName || Name == SoftDeleteFieldName);
 
         public bool IsTrackingUser => ((ReferencesType != null && ReferencesType.IsSecurityPrincipal) && (Name.StartsWith(CreatedFieldName) || Name.StartsWith(ModifiedFieldName) || (Type is ApplicationType && ((ApplicationType)Type).DeleteType == DeleteType.Soft && Name.StartsWith(DeletedFieldName))));
 
@@ -70,8 +70,10 @@ namespace Badass.Model
 
         public bool HasReferenceType => ReferencesType != null;
 
-        public bool IsDate => (ClrType == typeof(DateTime) || ClrType == typeof(DateTime?));
+        public bool IsDateTime => (ClrType == typeof(DateTime) || ClrType == typeof(DateTime?));
 
+        public bool IsDate => Type.Domain.TypeProvider.IsDateOnly(ProviderTypeName);
+        
         public bool IsBoolean => ClrType == typeof(bool) || ClrType == typeof(bool?);
 
         public bool IsFile => (this.ClrType == typeof(byte[]) || this.ClrType == typeof(byte?[]));

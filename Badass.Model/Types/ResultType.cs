@@ -5,7 +5,7 @@ namespace Badass.Model
 {
     public class ResultType : SimpleType
     {
-        public ResultType(string name, string ns, ApplicationType relatedType, bool isCustomType) : base(name, ns)
+        public ResultType(string name, string ns, ApplicationType relatedType, bool isCustomType, Domain domain) : base(name, ns, domain)
         {
             Operations = new List<Operation>();
             RelatedType = relatedType;

@@ -24,7 +24,7 @@ export class {{cs_name Name}}Row extends Component<{{cs_name Name}}RowProps, any
                                 {{#if IsLinkingFieldWithDetails}}
                             <td><Link to={ { pathname:'/{{kb_case LinkingField.ReferencesType.Name}}/detail/' + s.{{cml_case LinkingField.Name}} } }> { s.{{cml_case Name}} }</Link></td>
                                 {{else}}
-							        {{#if IsDate}}
+							        {{#if IsDateTime}}
 							<td><DateTimeDisplay date={s.{{cml_case Name}} } /></td>
 							        {{else}}
 							            {{#if IsBoolean}}

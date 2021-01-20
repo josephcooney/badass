@@ -39,7 +39,7 @@ export class {{cs_name Name}}ApiClient {
         {{/if}}
                 {{#each SimpleReturnType.Fields}}
                 {{#unless IsExcludedFromResults}}
-				{{#if IsDate}}
+				{{#if IsDateTime}}
 				{{#if IsRequired}}
 				d.{{cml_case Name}} = fixJsonDate(d.{{cml_case Name}});
 				{{else}}
@@ -76,7 +76,7 @@ export class {{cs_name Name}}ApiClient {
         {{/if}}
                 {{#each SimpleReturnType.Fields}}
                 {{#unless IsExcludedFromResults}}
-				{{#if IsDate}}
+				{{#if IsDateTime}}
 				{{#if IsRequired}}
 				d.{{cml_case Name}} = fixJsonDate(d.{{cml_case Name}});
 				{{else}}

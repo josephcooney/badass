@@ -79,5 +79,6 @@ namespace Badass.Model
         public virtual bool IsRequired => RelatedTypeField?.IsRequired ?? false;
 
         public bool IsJson => ProviderTypeName == "jsonb";
+        public bool IsDate => IsDateTime && _domain.TypeProvider.IsDateOnly(ProviderTypeName);
     }
 }

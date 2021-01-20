@@ -15,6 +15,10 @@ namespace Badass.Postgres
         private const string VoidKeyword = "void";
         private readonly string _typeDescription;
 
+        private const string date = "date";
+        private const string time_with_timezone = "time with time zone";
+        private const string time = "time";
+        
         static PostgresType()
         {
             // from here https://www.npgsql.org/doc/types/basic.html
@@ -52,13 +56,13 @@ namespace Badass.Postgres
                 ["macaddr"] = typeof(PhysicalAddress),
                 ["tsquery"] = typeof(NpgsqlTsQuery),
                 ["tsvector"] = typeof(NpgsqlTsVector),
-                ["date"] = typeof(DateTime),
+                [date] = typeof(DateTime),
                 ["interval"] = typeof(TimeSpan),
                 ["timestamp"] = typeof(DateTime),
                 ["timestamp without time zone"] = typeof(DateTime),
                 ["timestamp with time zone"] = typeof(DateTime),
-                ["time"] = typeof(TimeSpan),
-                ["time with time zone"] = typeof(DateTimeOffset),
+                [time] = typeof(TimeSpan),
+                [time_with_timezone] = typeof(DateTimeOffset),
                 ["bytea"] = typeof(byte[]),
                 ["oid"] = typeof(uint),
                 ["xid"] = typeof(uint),
@@ -107,6 +111,17 @@ namespace Badass.Postgres
             
                 return null;
             }
+        }
+
+        public static bool IsDateOnly(string typeName)
+        {
+            return typeName.ToLowerInvariant() == date;
+        }
+
+        public static bool IsTimeOnly(string typeName)
+        {
+            var nameLower = typeName.ToLowerInvariant();
+            return (nameLower == time || nameLower == time_with_timezone);
         }
     }
 }

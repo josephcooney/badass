@@ -68,7 +68,7 @@ export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}Detai
                     {{#each DisplayFields}}
 					<tr>
 						<td>{{DisplayName}}</td>								
-						{{#if IsDate}}
+						{{#if IsDateTime}}
 						<td><DateTimeDisplay date={ data.{{cml_case Name}} } /></td>
 						{{else}}
 						{{#if IsBoolean}}

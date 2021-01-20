@@ -13,7 +13,7 @@ using {{cs_name Namespace}}.Data.Model;
 
 namespace {{cs_name Namespace}}.Data.Repository 
 {
-    public interface I{{cs_name Type.Name}}Repository 
+    public partial interface I{{cs_name Type.Name}}Repository 
     {
     {{#each Operations}}
     
@@ -24,7 +24,7 @@ namespace {{cs_name Namespace}}.Data.Repository
     {{/each}}        
     }
 
-    public class {{cs_name Type.Name}}Repository : RepositoryBase, I{{cs_name Type.Name}}Repository
+    public partial class {{cs_name Type.Name}}Repository : RepositoryBase, I{{cs_name Type.Name}}Repository
     {
         private string _connectionString;
 

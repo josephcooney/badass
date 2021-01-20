@@ -240,6 +240,10 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
             } else if (this.props.history) {
                 this.props.history.goBack();
             }
+        }).catch(err => {
+            err.text().then((value: string) => {
+                this.setState({ error: true, message: value });
+            });
         });
     }
 	{{else}}
@@ -262,6 +266,10 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
             } else if (this.props.history) {
                 this.props.history.goBack();
             }
+        }).catch(err => {
+            err.text().then((value: string) => {
+                this.setState({ error: true, message: value });
+            });
         });
     }
 	{{/if}}
@@ -329,7 +337,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 							<Field id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" component={ {{cs_name Field.ReferencesType.Name}}Select } value={ {{../CurrentOperation.StatePath}}?.{{NameWithPathSafeCamelCase}} } className={(getIn(errors,'{{NameWithPathCamelCase}}') && getIn(touched, '{{NameWithPathCamelCase}}') ? 'invalid-select' : '')} {{#unless Field.ReferencesType.IsReferenceData}} readonly={this.{{cml_case Name}} != null} {{/unless}} />
 							{{else}}
 								{{#if IsDateTime}}
-								<DatePicker id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" className={'form-control' + (getIn(errors, '{{NameWithPathCamelCase}}') && getIn(touched, '{{NameWithPathCamelCase}}') ? ' is-invalid' : '')} selected={ values.{{NameWithPathSafeCamelCase}} } onChange={(date, dateString) =>
+                                    <DatePicker id="{{NameWithPathCamelCase}}" {{#if IsDate}}dateFormat="yyyy-MM-dd"{{else}}dateFormat="yyyy-MM-dd HH:mm"{{/if}} name="{{NameWithPathCamelCase}}" className={'form-control' + (getIn(errors, '{{NameWithPathCamelCase}}') && getIn(touched, '{{NameWithPathCamelCase}}') ? ' is-invalid' : '')} selected={ values.{{NameWithPathSafeCamelCase}} } onChange={(date, dateString) =>
                                     setFieldValue("{{NameWithPathCamelCase}}", date)
                                 } />
 								{{else}}

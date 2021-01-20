@@ -11,7 +11,7 @@ namespace Badass.Tests.DbGenerationTests.Aliasing
 
         public When_Type_With_UpperCase_Name_Needs_An_Alias()
         {
-            var type = new ApplicationType("FooBar", "test");
+            var type = new ApplicationType("FooBar", "test", null);
             var field = new Field(type) { Name = "baz" };
             var aliases = new FieldEntityAliasDictionary();
             alias = aliases.CreateAliasForTypeByField(field);

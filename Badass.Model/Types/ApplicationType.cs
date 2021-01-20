@@ -5,7 +5,7 @@ namespace Badass.Model
 {
     public class ApplicationType : SimpleType
     {
-        public ApplicationType(string name, string ns) : base(name, ns)
+        public ApplicationType(string name, string ns, Domain domain) : base(name, ns, domain)
         {
             Constraints = new List<Constraint>();
         }
