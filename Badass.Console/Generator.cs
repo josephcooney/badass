@@ -36,12 +36,25 @@ namespace Badass.Console
         {
             get
             {
-                if (!string.IsNullOrEmpty(_settings.DbFolder))
+                if (!string.IsNullOrEmpty(_settings.DataDirectory))
                 {
-                    return _fs.Path.Combine(_settings.RootDirectory, _settings.DbFolder);
+                    return _fs.Path.Combine(_settings.RootDirectory, _settings.DataDirectory);
                 }
                 
                 return _fs.Path.Combine(_settings.RootDirectory, "Data");
+            }
+        }
+        
+        private string CSharpDataAccessTestFolder
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_settings.TestDataDirectory))
+                {
+                    return _fs.Path.Combine(_settings.RootDirectory, _settings.TestDataDirectory);
+                }
+                
+                return _fs.Path.Combine(_settings.RootDirectory, "Data\\Test");
             }
         }
 
@@ -92,6 +105,12 @@ namespace Badass.Console
             GenerateRepositories(domain);
             Log.Information("Finished generating repositories");
 
+            if (_settings.GenerateTestRepos && !string.IsNullOrEmpty(_settings.TestDataDirectory))
+            {
+                GenerateTestRepositories(domain);
+                Log.Information("Finished generating test repositories");
+            }
+            
             if (domain.ResultTypes.Any(rt => !rt.Ignore))
             {
                 GenerateReturnTypes(domain);
@@ -200,6 +219,17 @@ namespace Badass.Console
 
             const string RepoFolderName = "Repository";
             var path = _fs.Path.Combine(CSharpDataAccessFolder, RepoFolderName);
+
+            _fileWriter.ApplyCodeFiles(files, path);
+        }
+        
+        private void GenerateTestRepositories(Domain domain)
+        {
+            var generator = new ClassGenerator();
+            var files = generator.GenerateTestRepositories(domain);
+            
+            const string RepoFolderName = "Repository";
+            var path = _fs.Path.Combine(CSharpDataAccessTestFolder, RepoFolderName);
 
             _fileWriter.ApplyCodeFiles(files, path);
         }

@@ -103,9 +103,9 @@ namespace Badass.Console
         {
             get
             {
-                if (!string.IsNullOrEmpty(_settings.DbFolder))
+                if (!string.IsNullOrEmpty(_settings.DataDirectory))
                 {
-                    return _fileSystem.Path.Combine(_settings.RootDirectory, _settings.DbFolder);
+                    return _fileSystem.Path.Combine(_settings.RootDirectory, _settings.DataDirectory);
                 }
 
                 return _fileSystem.Path.Combine(_settings.RootDirectory, "Database");

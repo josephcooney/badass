@@ -21,6 +21,14 @@ namespace Badass.Templating.Classes.Repository
             get { return _domain.Operations.Where(o => !o.Ignore && o.Attributes?.applicationtype == Type.Name || o.Returns.SimpleReturnType == Type).Select(o => new DbOperationAdapter(o, _domain, Type)).ToList(); }
         }
 
+        public List<ReturnModel> DistinctReturnTypes
+        {
+            get
+            {
+                return Operations.Where(o => !o.NoResult).Select(o => new ReturnModel(o.Returns, o.ReturnTypeName)).Distinct().ToList();
+            }
+        }
+        
         public bool HasCustomResultType
         {
             get { return _domain.Operations.Any(o => !o.Ignore && o.Returns.SimpleReturnType != null && (o.Returns.SimpleReturnType is ResultType) && !((ResultType)o.Returns.SimpleReturnType).Ignore); }
@@ -38,5 +46,18 @@ namespace Badass.Templating.Classes.Repository
                 return Type.Namespace;
             }
         }
+    }
+
+    public class ReturnModel
+    {
+        public ReturnModel(string returns, string typeName)
+        {
+            Returns = returns;
+            TypeName = typeName;
+        }
+        
+        public string Returns { get; set; }
+        
+        public string TypeName { get; set; }
     }
 }

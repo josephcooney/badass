@@ -20,6 +20,7 @@ Badass attempts to generate a 'full stack' of an application once the database s
 - C# controllers that call through to repositories
 - typescript client API for calling C# controllers
 - React components for displaying, editing, and deleting entities.
+- In-memory repositories to make tests easier to set up
 
 ## Databases ##
 Relational databases provide a rich source of machine-readable information about the entities and their relationships in a domain. Badass uses this, with some augmentation via attributes, to generate the basics of an application. Badass is currently very postgres-centric, but could be enhanced to support other databases in the future.
@@ -38,7 +39,8 @@ Here is an example codegen.json config file:
 {
   "root": "c:\\temp\\NewProject\\app",
   "name": "AppName",
-  "data-fldr": ".\\Data\\Database\\",
+  "data-dir": ".\\Data\\Database\\",
+  "data-test-dir": ".\\Data.Testing\\",
   "ConnectionStrings": {
     "application-db": "Server=127.0.0.1;Port=5432;Database=database_name;User Id=code_gen_user;Password=secret_password;"
   }
