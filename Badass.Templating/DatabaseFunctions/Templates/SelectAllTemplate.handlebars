@@ -23,14 +23,18 @@ $$
 
         RETURN QUERY
         SELECT
+        {{#if HasExcludedFields}}
             {{#each Fields}}
             {{../ShortName}}.{{{escape_sql_keyword Name}}}{{#unless @last}},{{/unless}}
             {{/each}}
-        FROM {{{escape_sql_keyword Name}}} {{ShortName}}{{#unless SoftDelete}};{{/unless}}
-        {{#if SoftDelete}}
-        WHERE deleted_date is NULL;
+        {{else}}
+            {{ShortName}}.*
         {{/if}}
-        
+        FROM {{{escape_sql_keyword Name}}} {{ShortName}}
+        {{#if SoftDelete}}
+        WHERE deleted_date is NULL
+        {{/if}}
+        ORDER BY {{ShortName}}.{{{escape_sql_keyword PrimaryKeyField.Name}}};
 
     END
 $$
