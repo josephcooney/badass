@@ -16,7 +16,7 @@ namespace Badass.Model
             ClientAppTypes = new List<ClientAppUIType>();
             GenerateSecurityPolicies = true;
             ExcludedSchemas = new List<string>();
-            GenerateTestRepos = true;
+            GenerateTestRepos = false;
         }
 
         public string ConfigurationFile

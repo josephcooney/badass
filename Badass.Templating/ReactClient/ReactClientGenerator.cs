@@ -53,7 +53,7 @@ namespace Badass.Templating.ReactClient
                             // generate the response if there is one
                             // TODO - re-use of models causes the same files to be generated multiple times 
                             var resultType = op.SimpleReturnType as ResultType;
-                            if (!op.NoResult && !op.IsSingular && (resultType == null || resultType.RelatedType == type))
+                            if (!op.NoResult && !op.IsSingular && (resultType == null || resultType.RelatedType == type) && op.SimpleReturnType != null)
                             {
                                 var file = new CodeFile { Name = Util.CSharpNameFromName(op.SimpleReturnType.Name) + ".ts", Contents = GenerateClientApiResultType(op.SimpleReturnType), RelativePath = path, Template = TemplateNames.ApiClientResult };
                                 files.Add(file);
@@ -114,7 +114,7 @@ namespace Badass.Templating.ReactClient
             }
 
             // build 'list' UIs from return types
-            foreach (var rt in domain.Operations.Where(o => o.GenerateUI && o.RelatedType?.GenerateUI == true && (o.Returns.ReturnType == ReturnType.ApplicationType || o.Returns.ReturnType == ReturnType.CustomType))
+            foreach (var rt in domain.Operations.Where(o => o.GenerateUI && o.RelatedType?.GenerateUI == true && (o.Returns != null && o.Returns.ReturnType == ReturnType.ApplicationType || o.Returns != null && o.Returns.ReturnType == ReturnType.CustomType))
                 .Select(o => new {o.Returns.SimpleReturnType, RelatedType = o.Returns.SimpleReturnType is ApplicationType ? o.RelatedType : ((ResultType)o.Returns.SimpleReturnType).RelatedType}) // get the related type from the result type if it is a custom type, or from the operation if the operation returns an application type - allows OpenApi operations to re-use types across application types.
                 .Distinct()
                 .OrderBy(rt => rt.RelatedType.Name))
