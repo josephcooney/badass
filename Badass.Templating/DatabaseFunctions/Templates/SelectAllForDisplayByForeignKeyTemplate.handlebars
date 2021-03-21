@@ -37,8 +37,8 @@ $$
             {{#if SoftDelete}}
         AND {{ShortName}}.deleted_date is NULL
             {{/if}}
-        {{/if}}        
-        /* */ ;       
+        {{/if}}
+        ORDER BY {{ShortName}}.{{{escape_sql_keyword PrimaryKeyField.Name}}};       
 
     END
 $$

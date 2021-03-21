@@ -25,7 +25,7 @@ namespace Badass.Templating
             try
             {
                 resourceName = assembly.GetManifestResourceNames()
-                    .Single(str => str.EndsWith(templateName + ".handlebars"));
+                    .Single(str => str.EndsWith($".{templateName}.handlebars"));
             }
             catch
             {

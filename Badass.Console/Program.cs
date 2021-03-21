@@ -101,7 +101,8 @@ namespace Badass.Console
                 "Options:",
                 { "c|config=", "JSON configuration file to use.", c => s.ConfigurationFile = c },
                 { "r|root=", "the root folder to generate code into.", r => s.RootDirectory = r },
-                { "data-fldr|database-code-folder=", "the root folder to generate database code into.", m => s.DbFolder = m },
+                { "data-fldr|database-code-folder=", "the root folder to generate database code into.", m => s.DataDirectory = m },
+                { "data-test-fldr|database-test-folder=", "the root folder to generate database test helpers into.", m => s.TestDataDirectory = m },
                 { "v", "increase debug message verbosity", v => { if (v != null) ++s.Verbosity; } },
                 { "h|?|help",  "show this message and exit", h => s.ShowHelp = h != null },
                 { "u|update-db-operations",  "Update database with generated operations", u => s.AddGeneratedOptionsToDatabase = u != null },
@@ -116,6 +117,7 @@ namespace Badass.Console
                 { "flutter", "Generate a Flutter client for application", f => {if (f != null) s.ClientAppTypes.Add(ClientAppUIType.Flutter); } },
                 { "tmplt=", "Template project directory", t => { if (t != null) { s.NewAppSettings.TemplateProjectDirectory = t; } }},
                 { "no-policy", "Globally disable generation of security policies", p => { if (p != null) s.GenerateSecurityPolicies = false; }  },
+                { "no-test-repo", "Disable generation of test repositories", t => { if (t != null) s.GenerateTestRepos = false; }},
                 { "x|exclude=", "Exclude schema", x => s.ExcludedSchemas.Add(x) }
             };
 
@@ -160,12 +162,17 @@ namespace Badass.Console
                 settings.ApplicationName = configuration.GetValue<string>("name");
             }
 
-            if (string.IsNullOrEmpty(settings.DbFolder))
+            if (string.IsNullOrEmpty(settings.DataDirectory))
             {
                 // this setting is not required, so should not trigger an error
-                settings.DbFolder = configuration.GetValue<string>("data-fldr");
+                settings.DataDirectory = configuration.GetValue<string>("data-dir");
             }
 
+            if (string.IsNullOrEmpty(settings.TestDataDirectory))
+            {
+                settings.TestDataDirectory = configuration.GetValue<string>("data-test-dir");
+            }
+            
             if (string.IsNullOrEmpty(settings.OpenApiUri))
             {
                 settings.OpenApiUri = configuration.GetValue<string>("openapi-uri");

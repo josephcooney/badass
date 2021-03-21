@@ -48,6 +48,27 @@ namespace Badass.Templating.Classes
 
             return files;
         }
+        
+        public List<CodeFile> GenerateTestRepositories(Domain domain)
+        {
+            Util.RegisterHelpers(domain.TypeProvider);
+            var files = new List<CodeFile>();
+
+            foreach (var type in domain.Types.OrderBy(t => t.Name))
+            {
+                if (!type.Ignore)
+                {
+                    var repo = new RepositoryAdapter(domain, type);
+                    if (repo.Operations.Any())
+                    {
+                        var file = new CodeFile { Name = Util.CSharpNameFromName(type.Name) + "InMemoryRepository.cs", Contents = GenerateTestRepo(repo) };
+                        files.Add(file);
+                    }
+                }
+            }
+
+            return files;
+        }
 
         public List<CodeFile> GenerateRepositoryInfrastructure(Domain domain)
         {
@@ -187,7 +208,20 @@ namespace Badass.Templating.Classes
                 throw;
             }
         }
-
+        
+        private string GenerateTestRepo(RepositoryAdapter adapter)
+        {
+            var templateFunction = Util.GetCompiledTemplate("TestRepository");
+            try
+            {
+                return templateFunction(adapter);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error executing test repository template for {TypeName}", adapter.Type.Name);
+                throw;
+            }
+        }
         private string GenerateRepoBase(Domain dom)
         {
             return Util.GetCompiledTemplate("RepositoryBase")(dom);

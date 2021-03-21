@@ -16,6 +16,7 @@ namespace Badass.Model
             ClientAppTypes = new List<ClientAppUIType>();
             GenerateSecurityPolicies = true;
             ExcludedSchemas = new List<string>();
+            GenerateTestRepos = false;
         }
 
         public string ConfigurationFile
@@ -39,7 +40,7 @@ namespace Badass.Model
         public bool ShowHelp { get; set; }
         public bool AddGeneratedOptionsToDatabase { get; set; }
         public string ApplicationName { get; set; }
-        public string DbFolder { get; set; }
+        public string DataDirectory { get; set; }
         public WebUIType WebUIType { get; set; }
         public string TypeName { get; set; }
         public bool Debug { get; set; }
@@ -54,6 +55,10 @@ namespace Badass.Model
         public bool GenerateSecurityPolicies { get; set; }
         
         public List<string> ExcludedSchemas { get; set; }
+        
+        public bool GenerateTestRepos { get; set; }
+            
+        public string TestDataDirectory { get; set; }
     }
 
     public class NewAppSettings 
