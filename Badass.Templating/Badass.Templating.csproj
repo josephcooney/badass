@@ -61,8 +61,11 @@
     <EmbeddedResource Include="DatabaseFunctions\Templates\DisplayType.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\ResultType.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\SecurityPolicyTemplate.handlebars" />
-    <EmbeddedResource Include="DatabaseFunctions\Templates\SelectAllForDisplayByForeignKeyTemplate.handlebars" />
-    <EmbeddedResource Include="DatabaseFunctions\Templates\SelectAllForDisplayViaLinkTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllForDisplayByForeignKeyTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllForDisplayTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllForDisplayViaLinkTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectByForeignKeyTemplate.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\AddEdit\ReactAddEditPageRendering.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\AppRoutes.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\List\ReactListHeader.handlebars" />
@@ -77,6 +80,8 @@
     <EmbeddedResource Include="DatabaseFunctions\Templates\InsertManyTemplate.handlebars" />
     <None Remove="Classes\Repository\TestRepository.handlebars" />
     <EmbeddedResource Include="Classes\Repository\TestRepository.handlebars" />
+    <None Remove="DatabaseFunctions\Templates\Select\SelectAllPagedTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllPagedTemplate.handlebars" />
   </ItemGroup>
 
   <ItemGroup>
@@ -100,9 +105,6 @@
     <EmbeddedResource Include="DatabaseFunctions\Templates\DeleteTemplate.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\InsertTemplate.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\SearchTemplate.handlebars" />
-    <EmbeddedResource Include="DatabaseFunctions\Templates\SelectAllForDisplayTemplate.handlebars" />
-    <EmbeddedResource Include="DatabaseFunctions\Templates\SelectAllTemplate.handlebars" />
-    <EmbeddedResource Include="DatabaseFunctions\Templates\SelectByForeignKeyTemplate.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\UpdateTemplate.handlebars" />
     <EmbeddedResource Include="MvcViews\EditTemplate.handlebars" />
     <EmbeddedResource Include="MvcViews\IndexTemplate.handlebars" />

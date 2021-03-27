@@ -9,8 +9,8 @@
         string DisplayName { get; }
         int Order { get; }
         bool IsUuid { get; }
-        bool Add { get; }
-        bool Edit { get; }
+        bool Add { get; } // true if it should be provided when creating a new entity, otherwise false
+        bool Edit { get; } // true if it can be provided when editing an existing entity, otherwise false
         
         bool IsUserEditable { get; }
         

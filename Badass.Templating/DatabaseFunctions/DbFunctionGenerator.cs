@@ -45,15 +45,19 @@ namespace Badass.Templating.DatabaseFunctions
                     
                     files.Add(GenerateInsertFunction(type, domain));
 
+                    files.Add(GenerateDisplayType(type, domain));
                     files.Add(GenerateSelectAllFunction(type, domain));
+                    files.Add(GenerateSelectAllForDisplayFunction(type, domain));
 
+                    if (type.Paged)
+                    {
+                        files.Add(GeneratePagedOrderedSelectFunction(type, domain));
+                    }
                     
                     if (adapter.UpdateFields.Any())
                     {
                         files.Add(GenerateUpdateFunction(adapter));
                     }
-
-                    files.Add(GenerateDisplayType(type, domain));
 
                     if (type.Fields.Count(f => f.IsIdentity) == 1)
                     {
@@ -97,8 +101,7 @@ namespace Badass.Templating.DatabaseFunctions
                         files.Add(GenerateSearchFunction(type, domain));
                     }
 
-                    files.Add(GenerateSelectAllFunction(type, domain));
-                    files.Add(GenerateSelectAllForDisplayFunction(type, domain));
+                    
 
                     if (!type.IsSecurityPrincipal)
                     {
@@ -187,6 +190,12 @@ namespace Badass.Templating.DatabaseFunctions
             return GenerateTemplateFromAdapter(adapter, "SelectAllTemplate");
         }
 
+        private CodeFile GeneratePagedOrderedSelectFunction(ApplicationType applicationType, Domain domain)
+        {
+            var adapter = new PagedDbTypeAdapter(applicationType, OperationType.Select, domain);
+            return GenerateTemplateFromAdapter(adapter, "SelectAllPagedTemplate");
+        }
+        
         private CodeFile GenerateDisplayType(ApplicationType type, Domain domain)
         {
             var adapter = new SelectForDisplayDbTypeAdapter(type, "display", domain);

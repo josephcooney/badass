@@ -79,6 +79,7 @@ Attributes are set as a JSON text string 'comment' on the respective database en
 - apiConstructor: "generate"|"none" - when set to "generate" a constructor is generated for the API controller. When set to none no constructur is generated, so a custom constructor can be added to a partial class. Defaults to "generate".
 - addMany: true|false - When set to true creates array-based add/insert operations to allow multiple entities to be added via a single call. Defaults to false.
 - apiControllerBaseClass: string - the name of the custom controller that the API controller should inherit from. Defaults to `BaseController` (a type which you will need to created).
+- paged: true|false - When set to true creates paged select all/select all for display operations for this type. Defaults to false.
 
 ### Function Level ###
 - applicationtype:[type name] on a function acts as a hint that that type should be returned by the function wrapper
@@ -94,6 +95,7 @@ Attributes are set as a JSON text string 'comment' on the respective database en
 - apiHooks: true|false - when set to true custom 'before' and 'after' methods are called prior to the generated API code being called. Defaults to false.
 - single_result: true|false - when set to true it causes the generated repository and API operations to return singular items instead of lists. Defaults to false.
 - fullName: string - used to get around the 63 byte length limit of postgres entities. The pattern of <entity>_<operation> often leads to names greater than 63 characters.
+- paged: true|false - indicates that the operation supports paging. Defaults to false.
 
 ### Field Level ### 
 - largeContent : true|false - Signals to UI generators when set to true that a particular field should be displayed with more screen area. Defaults to false.

@@ -72,6 +72,7 @@ namespace Badass.Model
         }
 
         public bool Important => Attributes?.important == true;
+        public bool Paged => Attributes?.paged == true;
     }
 
     public enum DeleteType
