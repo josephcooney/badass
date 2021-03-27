@@ -81,7 +81,7 @@
     <None Remove="Classes\Repository\TestRepository.handlebars" />
     <EmbeddedResource Include="Classes\Repository\TestRepository.handlebars" />
     <None Remove="DatabaseFunctions\Templates\Select\SelectAllPagedTemplate.handlebars" />
-    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllPagedTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectPagedTemplate.handlebars" />
   </ItemGroup>
 
   <ItemGroup>

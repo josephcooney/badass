@@ -2,7 +2,7 @@
 {
     public class SortDescendingField : IPseudoField
     {
-        public string Name => "sort_desc";
+        public string Name => "sort_descending";
         public string ParentAlias => null;
         public string ProviderTypeName => "boolean";
         public bool HasDisplayName => false;

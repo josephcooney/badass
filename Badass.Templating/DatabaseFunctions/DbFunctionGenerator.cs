@@ -193,7 +193,7 @@ namespace Badass.Templating.DatabaseFunctions
         private CodeFile GeneratePagedOrderedSelectFunction(ApplicationType applicationType, Domain domain)
         {
             var adapter = new PagedDbTypeAdapter(applicationType, OperationType.Select, domain);
-            return GenerateTemplateFromAdapter(adapter, "SelectAllPagedTemplate");
+            return GenerateTemplateFromAdapter(adapter, "SelectPagedTemplate");
         }
         
         private CodeFile GenerateDisplayType(ApplicationType type, Domain domain)
