@@ -52,6 +52,7 @@ namespace Badass.Templating.DatabaseFunctions
                     if (type.Paged)
                     {
                         files.Add(GeneratePagedOrderedSelectFunction(type, domain));
+                        files.Add(GenerateSelectPagedForDisplayFunction(type, domain));
                     }
                     
                     if (adapter.UpdateFields.Any())
@@ -193,7 +194,7 @@ namespace Badass.Templating.DatabaseFunctions
         private CodeFile GeneratePagedOrderedSelectFunction(ApplicationType applicationType, Domain domain)
         {
             var adapter = new PagedDbTypeAdapter(applicationType, OperationType.Select, domain);
-            return GenerateTemplateFromAdapter(adapter, "SelectPagedTemplate");
+            return GenerateTemplateFromAdapter(adapter, "SelectPaged");
         }
         
         private CodeFile GenerateDisplayType(ApplicationType type, Domain domain)
@@ -218,6 +219,12 @@ namespace Badass.Templating.DatabaseFunctions
         {
             var adapter = new SelectForDisplayDbTypeAdapter(applicationType, SelectAllForDisplayFunctionName, domain);
             return GenerateTemplateFromAdapter(adapter, "SelectAllForDisplayTemplate");
+        }
+        
+        private CodeFile GenerateSelectPagedForDisplayFunction(ApplicationType applicationType, Domain domain)
+        {
+            var adapter = new SelectPagedForDisplayDbTypeAdapter(applicationType, domain);
+            return GenerateTemplateFromAdapter(adapter, "SelectPagedForDisplay");
         }
 
         private CodeFile GenerateSearchFunction(ApplicationType applicationType, Domain domain)
