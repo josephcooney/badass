@@ -66,6 +66,7 @@
     <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllForDisplayViaLinkTemplate.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectAllTemplate.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectByForeignKeyTemplate.handlebars" />
+    <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectPagedByForeignKey.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\AddEdit\ReactAddEditPageRendering.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\AppRoutes.handlebars" />
     <EmbeddedResource Include="ReactClient\Templates\List\ReactListHeader.handlebars" />
