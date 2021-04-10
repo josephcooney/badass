@@ -30,7 +30,7 @@ namespace {{cs_name DefaultNamespace}}.Data.Repository
         {
             Log.Information("Registering custom Postgres types.");
             {{#each CustomTypes}}
-            NpgsqlConnection.GlobalTypeMapper.MapComposite<{{cs_name Name}}>("{{Name}}");    
+            NpgsqlConnection.GlobalTypeMapper.MapComposite<{{cs_name Name}}>("{{Name}}");
             {{/each}}
         }
     }
