@@ -80,6 +80,7 @@ namespace Badass.Templating.DatabaseFunctions
                             if (type.Paged)
                             {
                                 files.Add(GeneratePagedSelectByRelatedTypeFunction(type, field, domain));
+                                files.Add(GeneratePagedSelectForDisplayByRelatedTypeFunction(type, field, domain));
                             }
                         }
                     }
@@ -167,6 +168,12 @@ namespace Badass.Templating.DatabaseFunctions
         {
             var adapter = new SelectByFieldsForDisplayDbTypeAdapter(type, $"select_for_display_by_{field.Name}", new List<Field> { field }, domain);
             return GenerateTemplateFromAdapter(adapter, "SelectAllForDisplayByForeignKeyTemplate");
+        }
+        
+        private CodeFile GeneratePagedSelectForDisplayByRelatedTypeFunction(ApplicationType type, Field field, Domain domain)
+        {
+            var adapter = new SelectPagedByFieldsForDisplayDbTypeAdapter(type, $"select_paged_for_display_by_{field.Name}", new List<Field> { field }, domain);
+            return GenerateTemplateFromAdapter(adapter, "SelectPagedForDisplayByForeignKey");
         }
 
         private CodeFile GenerateSelectByPrimaryKeyFunction(ApplicationType type, Field field, Domain domain)
