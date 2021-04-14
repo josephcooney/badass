@@ -120,6 +120,13 @@ namespace Badass.Templating.DatabaseFunctions
                                 if (linkAdapter.LinkingTypeField != null && linkAdapter.LinkTypeOtherField != null)
                                 {
                                     files.Add(GenerateTemplateFromAdapter(linkAdapter, "SelectAllForDisplayViaLinkTemplate"));
+                                    
+                                    if (type.Paged)
+                                    {
+                                        var pagedLinkAdapter = new SelectPagedForDisplayViaLinkDbTypeAdapter(type,
+                                            SelectAllForDisplayFunctionName, linkingType, domain);
+                                        files.Add(GenerateTemplateFromAdapter(pagedLinkAdapter, "SelectPagedForDisplayViaLink"));
+                                    }
                                 }
                             }
                         }

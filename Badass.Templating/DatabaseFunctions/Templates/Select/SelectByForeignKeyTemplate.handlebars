@@ -37,7 +37,7 @@ $$
 
     END
 $$
-  LANGUAGE plpgsql VOLATILE SECURITY INVOKER
+  LANGUAGE plpgsql STABLE SECURITY INVOKER
   COST 100;
 
 REVOKE ALL ON FUNCTION {{FunctionName}} ({{#each SelectInputFields}}{{ProviderTypeName}}{{#if HasSize}}({{Size}}){{/if}}{{#unless @last}},{{/unless}}{{/each}}) FROM public;
