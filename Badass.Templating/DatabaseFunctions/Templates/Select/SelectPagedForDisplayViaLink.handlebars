@@ -8,14 +8,15 @@ CREATE OR REPLACE FUNCTION {{FunctionName}} (
 ) 
 RETURNS SETOF {{Name}}_display AS
 $$
-    
+    DECLARE query_txt text;
+
     BEGIN
 
         IF (security_user_id_param is not null) THEN
 		    perform set_config('app.user_id', security_user_id_param::text, true);
         END IF;
 
-        RETURN QUERY
+        query_txt = '
         SELECT
             {{#each DisplayAllFields}}
             {{ParentAlias}}.{{{escape_sql_keyword Name}}}{{#if HasDisplayName}} AS {{{escape_sql_keyword DisplayName}}}{{/if}}{{#unless @last}},{{/unless}}
@@ -25,7 +26,7 @@ $$
         LEFT JOIN {{{escape_sql_keyword Field.ReferencesType.Name}}} AS {{ParentAlias}} ON {{PrimaryAlias}}.{{escape_sql_keyword Field.Name}} = {{ParentAlias}}.{{escape_sql_keyword Field.ReferencesTypeField.Name}} 
         {{/each}}
 		LEFT JOIN {{{escape_sql_keyword LinkingType.Name}}} AS {{LinkTypeAlias}} ON {{LinkTypeAlias}}.{{escape_sql_keyword LinkingTypeField.Name}} = {{ShortName}}.{{{escape_sql_keyword LinkingTypeField.ReferencesTypeField.Name}}}
-        WHERE {{LinkTypeAlias}}.{{{escape_sql_keyword LinkTypeOtherField.Name}}} = {{{escape_sql_keyword FunctionName}}}.{{{escape_sql_keyword LinkTypeOtherField.Name}}}
+        WHERE {{LinkTypeAlias}}.{{{escape_sql_keyword LinkTypeOtherField.Name}}} = ${{LinkFieldParameterIndex}}
         {{#if FilterListOperation}}
         AND {{OwnershipExpression}}
             {{#if SoftDelete}}
@@ -35,9 +36,17 @@ $$
             {{#if SoftDelete}}
         AND {{ShortName}}.deleted_date is NULL
             {{/if}}
-        {{/if}}        
-        /* */ ;
+        {{/if}}
+        ORDER BY ' || coalesce(quote_ident({{SortField.Name}}), '{{{escape_sql_keyword PrimaryKeyField.Name}}}');
+
+        IF ({{SortDescendingField.Name}} = true) THEN
+            query_txt = query_txt || ' DESC ';
+        END IF;
         
+        query_txt = query_txt || ' LIMIT ${{PageSizeParameterIndex}} OFFSET ${{OffsetIndex}}';
+
+        RETURN QUERY EXECUTE query_txt
+        USING {{{escape_sql_keyword FunctionName}}}.{{{escape_sql_keyword LinkTypeOtherField.Name}}}, {{PageSizeField.Name}}, {{PageSizeField.Name}} * {{PageNumberField.Name}};
     END
 $$
   LANGUAGE plpgsql STABLE SECURITY INVOKER

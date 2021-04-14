@@ -30,5 +30,11 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         public IPseudoField SortField => new SortField();
 
         public IPseudoField SortDescendingField => new SortDescendingField();
+
+        public int LinkFieldParameterIndex = 1;
+
+        public int PageSizeParameterIndex => LinkFieldParameterIndex + 1;
+        
+        public int OffsetIndex => PageSizeParameterIndex + 1;
     }
 }
