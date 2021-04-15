@@ -353,6 +353,11 @@ namespace Badass.Postgres
             return PostgresType.IsTimeOnly(typeName);
         }
 
+        public void AddTestData(string text)
+        {
+            ExecuteCommandText(text);
+        }
+
         public static NpgsqlDbType GetNpgsqlDbTypeFromPostgresType(string postgresTypeName)
         {
             if (_postgresNpgSqlTypes.ContainsKey(postgresTypeName))

@@ -11,6 +11,7 @@ using Badass.Templating.Classes;
 using Badass.Templating.DatabaseFunctions;
 using Badass.Templating.MvcViews;
 using Badass.Templating.ReactClient;
+using Badass.Templating.TestData;
 using Serilog;
 
 namespace Badass.Console
@@ -107,6 +108,7 @@ namespace Badass.Console
 
             if (_settings.GenerateTestRepos && !string.IsNullOrEmpty(_settings.TestDataDirectory))
             {
+                // this is very much a work-in-progress
                 GenerateTestRepositories(domain);
                 Log.Information("Finished generating test repositories");
             }
@@ -147,6 +149,16 @@ namespace Badass.Console
             {
                 var flutterGen = new Flutter.Generator(_fs, _settings, _fileWriter);
                 flutterGen.Generate(domain);
+            }
+
+            if (_settings.TestDataSize != null && _settings.TestDataSize > 0)
+            {
+                var testDataGen = new TestDataGenerator();
+                var testData = testDataGen.Generate(domain);
+                foreach (var testDataFile in testData)
+                {
+                    typeProvider.AddTestData(testDataFile.Contents);
+                }
             }
             
             Log.Information("Finished Code Generation");

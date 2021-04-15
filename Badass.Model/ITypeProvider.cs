@@ -24,5 +24,7 @@ namespace Badass.Model
         public bool IsDateOnly(string typeName);
 
         public bool IsTimeOnly(string typeName);
+
+        public void AddTestData(string text);
     }
 }

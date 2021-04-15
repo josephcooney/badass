@@ -50,15 +50,17 @@ namespace Badass.Model
         
         public string OpenApiUri { get; set; }
 
-        public List<ClientAppUIType> ClientAppTypes { get; set; }
+        public List<ClientAppUIType> ClientAppTypes { get; }
         
         public bool GenerateSecurityPolicies { get; set; }
         
-        public List<string> ExcludedSchemas { get; set; }
+        public List<string> ExcludedSchemas { get; }
         
         public bool GenerateTestRepos { get; set; }
             
         public string TestDataDirectory { get; set; }
+        
+        public int? TestDataSize { get; set; }
     }
 
     public class NewAppSettings 

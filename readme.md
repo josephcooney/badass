@@ -26,7 +26,32 @@ Badass attempts to generate a 'full stack' of an application once the database s
 Relational databases provide a rich source of machine-readable information about the entities and their relationships in a domain. Badass uses this, with some augmentation via attributes, to generate the basics of an application. Badass is currently very postgres-centric, but could be enhanced to support other databases in the future.
 
 ## Command-Line Arguments ##
-`-h|-?|--help` show help
+```
+      --brand-color=VALUE    Brand Color for new project. Only applicable when -n or --new option is specified
+  -c, --config=VALUE         JSON configuration file to use.
+      --data-fldr, --database-code-folder=VALUE
+                             the root folder to generate database code into.
+      --data-test-fldr, --database-test-folder=VALUE
+                             the root folder to generate database test helpers into.
+      --dbg, --debug         Attach Debugger on start
+      --del                  delete generated files before re-generating
+      --flutter              Generate a Flutter client for application
+  -h, -?, --help             show this message and exit
+      --logo=VALUE           SVG logo for new project. Only applicable when -n or --new option is specified
+      --name=VALUE           Name of the application. Used for default C# namespace for generated items
+  -n, --new                  Generate a new project
+      --no-policy            Globally disable generation of security policies
+      --no-test-repo         Disable generation of test repositories
+  -r, --root=VALUE           the root folder to generate code into.
+      --react                Change the web UI generated to be React
+      --test-data=VALUE      Generate test data of the specified size for empty tables.
+      --tmplt=VALUE          Template project directory
+  -t, --type=VALUE           Only generate for a single type (for debugging)
+  -u, --update-db-operations Update database with generated operations
+  -v                         increase debug message verbosity
+  -x, --exclude=VALUE        Exclude schema
+```
+
 
 ## Configuration ##
 Badass uses a combination of command-line arguments and configuration to control its behaviour. Longer, infrequently changing, and more tedious to type settings like paths and database connection strings should be stored config. 
