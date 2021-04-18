@@ -25,7 +25,9 @@ Badass attempts to generate a 'full stack' of an application once the database s
 ## Databases ##
 Relational databases provide a rich source of machine-readable information about the entities and their relationships in a domain. Badass uses this, with some augmentation via attributes, to generate the basics of an application. Badass is currently very postgres-centric, but could be enhanced to support other databases in the future.
 
-## Command-Line Arguments ##
+## Becoming a Badass ##
+
+### Command-Line Arguments ###
 ```
       --brand-color=VALUE    Brand Color for new project. Only applicable when -n or --new option is specified
   -c, --config=VALUE         JSON configuration file to use.

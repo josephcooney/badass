@@ -87,6 +87,8 @@
     <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectPagedForDisplay.handlebars" />
     <None Remove="DatabaseFunctions\Templates\Select\SelectPagedForDisplayByForeignKey.handlebars" />
     <EmbeddedResource Include="DatabaseFunctions\Templates\Select\SelectPagedForDisplayByForeignKey.handlebars" />
+    <None Remove="TestData\TestData.handlebars" />
+    <EmbeddedResource Include="TestData\TestData.handlebars" />
   </ItemGroup>
 
   <ItemGroup>
@@ -126,6 +128,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="33.0.2" />
     <PackageReference Include="Handlebars.Net" Version="1.9.5" />
     <PackageReference Include="Npgsql" Version="4.1.3.1" />
     <PackageReference Include="Serilog" Version="2.9.0" />
