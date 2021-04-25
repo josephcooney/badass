@@ -17,7 +17,6 @@ namespace Badass.Templating.TestData
             foreach (var applicationType in orderedTables)
             {
                 var file = GenerateTestData(applicationType);
-                Console.WriteLine(file.Contents);
                 files.Add(file); 
             }
 

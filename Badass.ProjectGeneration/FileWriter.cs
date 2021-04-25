@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
+using Badass.Model;
 using Badass.Templating;
 using Serilog;
 

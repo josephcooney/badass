@@ -1,4 +1,4 @@
-﻿namespace Badass.Templating
+﻿namespace Badass.Model
 {
     public class CodeFile
     {

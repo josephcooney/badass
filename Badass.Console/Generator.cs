@@ -155,9 +155,9 @@ namespace Badass.Console
             {
                 var testDataGen = new TestDataGenerator();
                 var testData = testDataGen.Generate(domain);
-                foreach (var testDataFile in testData)
+                if (testData.Any())
                 {
-                    typeProvider.AddTestData(testDataFile.Contents);
+                    typeProvider.AddTestData(testData);
                 }
             }
             

@@ -353,11 +353,39 @@ namespace Badass.Postgres
             return PostgresType.IsTimeOnly(typeName);
         }
 
-        public void AddTestData(string text)
+        public void AddTestData(List<CodeFile> scripts)
         {
-            ExecuteCommandText(text);
-        }
+            var failedScripts = new List<CodeFile>();
 
+            foreach (var script in scripts)
+            {
+                try
+                {
+                    ExecuteCommandText(script.Contents, false);
+                }
+                catch (PostgresException)
+                {
+                    failedScripts.Add(script);
+                }
+            }
+
+            if (failedScripts.Any())
+            {
+                Log.Information("Attempting to re-run {Count} failed data scripts", failedScripts.Count);
+                foreach (var script in failedScripts)
+                {
+                    try
+                    {
+                        ExecuteCommandText(script.Contents);
+                    }
+                    catch (PostgresException pgEx)
+                    {
+                        Log.Warning("Test data script {ScriptName} failed with error {Error}", script.Name, pgEx);
+                    }
+                }
+            }
+        }
+        
         public static NpgsqlDbType GetNpgsqlDbTypeFromPostgresType(string postgresTypeName)
         {
             if (_postgresNpgSqlTypes.ContainsKey(postgresTypeName))
@@ -1006,7 +1034,7 @@ namespace Badass.Postgres
             ExecuteCommandText(cmdText);
         }
 
-        private void ExecuteCommandText(string text)
+        private void ExecuteCommandText(string text, bool log = true)
         {
             try
             {
@@ -1020,7 +1048,10 @@ namespace Badass.Postgres
             }
             catch (Exception ex)
             {
-                Log.Error(ex, ex.Message + Environment.NewLine + "-----------------------------------------" + Environment.NewLine + "Attempted To Execute: " + Environment.NewLine + text + Environment.NewLine);
+                if (log)
+                {
+                    Log.Error(ex, ex.Message + Environment.NewLine + "-----------------------------------------" + Environment.NewLine + "Attempted To Execute: " + Environment.NewLine + text + Environment.NewLine);
+                }
                 throw ex;
             }
         }

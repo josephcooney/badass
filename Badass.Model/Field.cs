@@ -86,6 +86,14 @@ namespace Badass.Model
                 return IsIdentity && (ClrType == typeof(int) || ClrType == typeof(Guid));
             }
         }
+        
+        public bool IsIntegerAssignedIdentity
+        {
+            get
+            {
+                return IsIdentity && ClrType == typeof(int);
+            }
+        }
 
         public bool IsAttachmentContentType
         {
