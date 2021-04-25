@@ -115,7 +115,14 @@ namespace Badass.Templating.TestData
                 }
                 else
                 {
-                    Value = Quote(faker.Random.Words());
+                    if (Field.IsLargeTextContent)
+                    {
+                        Value = Quote(faker.Lorem.Paragraphs());
+                    }
+                    else
+                    {
+                        Value = Quote(faker.Random.Words());
+                    }
                 }
             }
         }

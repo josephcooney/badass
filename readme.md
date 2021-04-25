@@ -25,7 +25,30 @@ Badass attempts to generate a 'full stack' of an application once the database s
 ## Databases ##
 Relational databases provide a rich source of machine-readable information about the entities and their relationships in a domain. Badass uses this, with some augmentation via attributes, to generate the basics of an application. Badass is currently very postgres-centric, but could be enhanced to support other databases in the future.
 
-## Becoming a Badass ##
+## Getting Started ##
+To test out badass using the Survey sample application perform the following steps. 
+1. Install postgres docker image 
+1. Install the .NET SDK
+1. Install Node
+1. Clone the badass repository
+1. Build the badass solution
+1. Clone the template project base <TODO - provide location>
+1. Run the Survey app .sql file `./Badass.Tests/scripts/survey/001 - survey.sql`
+1. Create a configuration file called `survey.config.json` for the survey application in the build output directory of the badass.console project (probably `./Badass.Console/bin/debug/netcoreapp3.1/`) . You will probably want to customize the "root" location
+```
+{
+  "root": "c:\\path\\to\\your\\app",
+  "name": "Survey",
+  "data-dir": ".\\Data\\Database\\",
+  "ConnectionStrings": {
+    "application-db": "Server=127.0.0.1;Port=5432;Database=survey;User Id=code_gen_user;Password=secret_password;"
+  }
+}
+```
+9. Run the badass console by navigating to the Badass.Console app build output directory and running `badass -u -react -c survey -del --test-data 10 --name SurveyApp -n --tmplt <path to template project from step 6 above> --brand-color #5FD980` 
+1. Open the root location specified in the config file you created in step 8 above, and build your new application. Building the app for the first time takes a while, because it does an NPM restore to build the react front-end.
+1. To re-generate your app after a db schema change run the .sql file located in .sql file `./Badass.Tests/scripts/survey/002 - additional fields.sql`
+1. Re-generate your application from the Badass.Console folder (the same location as step 9 above) by running `badass -u -react -c survey -del`
 
 ### Command-Line Arguments ###
 ```

@@ -301,7 +301,7 @@ create table response (
 	created timestamp with time zone
 );
 
-COMMENT ON TABLE public.response IS '{"security":{"anon":["add"], "user":["read", "list"], "admin":["read", "read-all", "list"]}}';
+COMMENT ON TABLE public.response IS '{"security":{"anon":["add"], "user":["read", "list"], "admin":["read", "read-all", "list"]}, "paged":true}';
 
 create table answer (
 	id serial primary key not null,
