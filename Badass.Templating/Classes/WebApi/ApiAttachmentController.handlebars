@@ -42,10 +42,9 @@ namespace {{cs_name Namespace}}.Controllers
         public async Task<IActionResult> Get({{format_clr_type IdentityField.ClrType}} id)
         {
 			var userId = _userService.GetUserId(HttpContext.User);
-            var itemList = await _repository.SelectByIdAsync(id, userId);
-            if (itemList != null && itemList.Any())
+            var item = await _repository.SelectByIdAsync(id, userId);
+            if (item != null)
             {
-                var item = itemList.FirstOrDefault();
                 return File(item.{{cs_name AttachmentFileField.Name}}, item.{{cs_name AttachmentFieldContentType.Name}});
             }
 
@@ -61,10 +60,9 @@ namespace {{cs_name Namespace}}.Controllers
         public async Task<IActionResult> Thumbnail({{format_clr_type IdentityField.ClrType}} id)
         {
             var userId = _userService.GetUserId(HttpContext.User);
-            var itemList = await _repository.SelectByIdAsync(id, userId);
-            if (itemList != null && itemList.Any())
+            var item = await _repository.SelectByIdAsync(id, userId);
+            if (item != null)
             {
-                var item = itemList.FirstOrDefault();
                 if (item.Thumbnail != null)
                 {
                     return File(item.Thumbnail, item.{{cs_name AttachmentFieldContentType.Name}});

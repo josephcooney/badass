@@ -35,24 +35,32 @@ namespace Badass.Console
 
         private void ClearClientFiles()
         {
-            var reactPath = _fileSystem.Path.Combine(_settings.RootDirectory, Generator.ReactComponentDirectory);
-
-            var tsxFiles = _fileSystem.Directory.GetFiles(reactPath, "*.tsx", SearchOption.AllDirectories);
-            ClearClientFileList(tsxFiles);
-
-            var tsFiles = _fileSystem.Directory.GetFiles(reactPath, "*.ts", SearchOption.AllDirectories);
-            ClearClientFileList(tsFiles);
+            if (_fileSystem.Directory.Exists(_settings.RootDirectory))
+            {
+                var reactPath = _fileSystem.Path.Combine(_settings.RootDirectory, Generator.ReactComponentDirectory);
+                if (_fileSystem.Directory.Exists(reactPath))
+                {
+                    var tsxFiles = _fileSystem.Directory.GetFiles(reactPath, "*.tsx", SearchOption.AllDirectories);
+                    ClearClientFileList(tsxFiles);
+                
+                    var tsFiles = _fileSystem.Directory.GetFiles(reactPath, "*.ts", SearchOption.AllDirectories);
+                    ClearClientFileList(tsFiles);
+                }
+            }
         }
 
         private void ClearSqlFiles()
         {
-            var sqlFiles = _fileSystem.Directory.GetFiles(DbFolder, "*.sql", SearchOption.AllDirectories);
-            foreach (var file in sqlFiles)
+            if (_fileSystem.Directory.Exists(DbFolder))
             {
-                var contents = _fileSystem.File.ReadAllLines(file);
-                if (contents != null && contents.Any() && IsGeneratedSqlFile(contents.First()))
+                var sqlFiles = _fileSystem.Directory.GetFiles(DbFolder, "*.sql", SearchOption.AllDirectories);
+                foreach (var file in sqlFiles)
                 {
-                    _fileSystem.File.Delete(file);
+                    var contents = _fileSystem.File.ReadAllLines(file);
+                    if (contents != null && contents.Any() && IsGeneratedSqlFile(contents.First()))
+                    {
+                        _fileSystem.File.Delete(file);
+                    }
                 }
             }
         }
@@ -60,14 +68,20 @@ namespace Badass.Console
         private void ClearCsharpFiles()
         {
             var csharpFiles = _fileSystem.Directory.GetFiles(_settings.RootDirectory, "*.cs", SearchOption.AllDirectories).ToList();
-            var dataCsFiles = _fileSystem.Directory.GetFiles(DbFolder, "*.cs", SearchOption.AllDirectories);
-            csharpFiles.AddRange(dataCsFiles);
-            foreach (var file in csharpFiles)
+            if (_fileSystem.Directory.Exists(DbFolder))
             {
-                var contents = _fileSystem.File.ReadAllLines(file);
-                if (contents != null && contents.Any() && IsGeneratedCsFile(contents.First()))
+                var dataCsFiles = _fileSystem.Directory.GetFiles(DbFolder, "*.cs", SearchOption.AllDirectories);
+                csharpFiles.AddRange(dataCsFiles);
+            }
+            foreach (var file in csharpFiles.Distinct())
+            {
+                if (_fileSystem.File.Exists(file))
                 {
-                    _fileSystem.File.Delete(file);
+                    var contents = _fileSystem.File.ReadAllLines(file);
+                    if (contents != null && contents.Any() && IsGeneratedCsFile(contents.First()))
+                    {
+                        _fileSystem.File.Delete(file);
+                    }
                 }
             }
         }

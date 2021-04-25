@@ -25,30 +25,36 @@ Badass attempts to generate a 'full stack' of an application once the database s
 ## Databases ##
 Relational databases provide a rich source of machine-readable information about the entities and their relationships in a domain. Badass uses this, with some augmentation via attributes, to generate the basics of an application. Badass is currently very postgres-centric, but could be enhanced to support other databases in the future.
 
+## Pre-Requisites ##
+Badass and the apps it generates depend on the following:
+1. Postgres - if you don't have it installed a docker image is probably the easiest way to get started.
+2. The .NET SDK
+3. Node (for building react front-ends)
+4. Git
+
 ## Getting Started ##
 To test out badass using the Survey sample application perform the following steps. 
-1. Install postgres docker image 
-1. Install the .NET SDK
-1. Install Node
+1. Install the pre-requisites mentioned above
 1. Clone the badass repository
 1. Build the badass solution
-1. Clone the template project base <TODO - provide location>
-1. Run the Survey app .sql file `./Badass.Tests/scripts/survey/001 - survey.sql`
+1. Clone the template project base [TODO - provide location]
+1. Run the Survey app .sql file `./Badass.Tests/scripts/survey/001 - survey.sql`. Note down the password that is generated for the user survey_web_user in the output. You will use this later in step 8.
 1. Create a configuration file called `survey.config.json` for the survey application in the build output directory of the badass.console project (probably `./Badass.Console/bin/debug/netcoreapp3.1/`) . You will probably want to customize the "root" location
 ```
 {
   "root": "c:\\path\\to\\your\\app",
-  "name": "Survey",
+  "name": "SurveyApp",
   "data-dir": ".\\Data\\Database\\",
   "ConnectionStrings": {
-    "application-db": "Server=127.0.0.1;Port=5432;Database=survey;User Id=code_gen_user;Password=secret_password;"
+    "application-db": "Server=127.0.0.1;Port=5432;Database=survey;User Id=postgres;Password=secret_password;"
   }
 }
 ```
-9. Run the badass console by navigating to the Badass.Console app build output directory and running `badass -u -react -c survey -del --test-data 10 --name SurveyApp -n --tmplt <path to template project from step 6 above> --brand-color #5FD980` 
-1. Open the root location specified in the config file you created in step 8 above, and build your new application. Building the app for the first time takes a while, because it does an NPM restore to build the react front-end.
+7. Run the badass console by navigating to the Badass.Console app build output directory and running `badass -u -react -c survey -n --tmplt <path to template project from step 6 above> --brand-color #5FD980` 
+1. Open the root location specified in the config file you created in step 6 above, and open the `appsettings.json`. Fix up the connection string. The script `001 - survey.sql` creates a user called survey_web_user, and generates a random password for the user which it prints to the output. Assuming you're connecting to a local postgres db running on the standard port the connection string would be `"Server=127.0.0.1;Port=5432;Database=survey;User Id=survey_web_user;Password=<output from script>;"`
+1. Build your new application. Building the app for the first time takes a while, because it does an NPM restore to build the react front-end.
 1. To re-generate your app after a db schema change run the .sql file located in .sql file `./Badass.Tests/scripts/survey/002 - additional fields.sql`
-1. Re-generate your application from the Badass.Console folder (the same location as step 9 above) by running `badass -u -react -c survey -del`
+1. Re-generate your application from the Badass.Console folder (the same location as step 7 above) by running `badass -u -react -c survey -del`
 
 ### Command-Line Arguments ###
 ```
