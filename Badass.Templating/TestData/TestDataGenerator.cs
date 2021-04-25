@@ -7,8 +7,6 @@ namespace Badass.Templating.TestData
 {
     public class TestDataGenerator : GeneratorBase
     {
-        // TODO - use bogus https://github.com/bchavez/Bogus to create better test data
-        
         public override List<CodeFile> Generate(Domain domain)
         {
             var files = new List<CodeFile>();
@@ -26,11 +24,25 @@ namespace Badass.Templating.TestData
         private CodeFile GenerateTestData(ApplicationType applicationType)
         {
             var adapter = new TestDataAdapter(applicationType);
-            return new CodeFile
+            var file = new CodeFile
             {
-                Name = applicationType.Name + "_testdata.sql",
-                Contents = GenerateFromTemplate(adapter, "TestData"),
+                Name = applicationType.Name + "_testdata.sql"
             };
+
+            var size = applicationType.Domain.Settings.TestDataSize;
+
+            if (applicationType.Paged)
+            {
+                size *= 10; // 10x for paged data
+            }
+            
+            for (var index = 0; index < size; index++)
+            {
+                file.Contents += GenerateFromTemplate(adapter, "TestData");
+                adapter.NewTestData();
+            }
+            
+            return file;
         }
     }
 }

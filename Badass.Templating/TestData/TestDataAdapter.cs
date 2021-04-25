@@ -19,16 +19,29 @@ namespace Badass.Templating.TestData
         public List<TestDataField> TestData { get; }
 
         public string Name => _applicationType.Name;
+
+        public void NewTestData()
+        {
+            foreach (var field in TestData)
+            {
+                field.NewTestData();
+            }
+        }
     }
 
     public class TestDataField
     {
-        private static Faker faker = new Faker();
+        private Faker faker = new Faker();
         
         public TestDataField(Field f)
         {
             Field = f;
             Value = $"/* {f.ClrType} */";
+            SetTestValue();
+        }
+
+        public void NewTestData()
+        {
             SetTestValue();
         }
         
@@ -89,7 +102,7 @@ namespace Badass.Templating.TestData
         {
             if (Field.Size < 10)
             {
-                Value = Quote(faker.Random.String(Field.Size.Value, Field.Size.Value));
+                Value = Quote(faker.Random.String2(Field.Size.Value, Field.Size.Value));
             }
             else
             {
