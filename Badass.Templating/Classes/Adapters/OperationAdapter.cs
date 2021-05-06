@@ -356,7 +356,7 @@ namespace Badass.Templating.Classes.Adapters
             {
                 if (UsesModel)
                 {
-                    return new ClientCustomTypeModel(this);
+                    return new ClientCustomTypeModel(this, _domain);
                 }
 
                 // this doesn't support multiple custom result types as parameters

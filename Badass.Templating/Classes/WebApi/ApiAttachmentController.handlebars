@@ -104,10 +104,10 @@ namespace {{cs_name Namespace}}.Controllers
             var userId = _userService.GetUserId(HttpContext.User);
             using (var ms = new MemoryStream())
             {
-                var 
                 await model.{{cs_name ../AttachmentFileField.Name}}.CopyToAsync(ms);
                 var contents = ms.ToArray();
                 var contentType = model.{{cs_name ../AttachmentFileField.Name}}.ContentType;
+                // TODO - copy to actual type here
                 {{#unless NoResult}}return{{/unless}} await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}userId{{else}}userId.Value{{/if}}{{else}}{{#if RelatedTypeField.IsAttachmentThumbnail}}_attachmentService.CreateThumbnail(contents, contentType){{else}}{{#if RelatedTypeField.IsFile}}contents{{else}}{{#if RelatedTypeField.IsAttachmentContentType}}contentType{{else}}model.{{cs_name Name}}{{/if}}{{/if}}{{/if}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
             }
         }
