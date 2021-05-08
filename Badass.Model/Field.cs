@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Badass.Model
 {
@@ -141,5 +142,18 @@ namespace Badass.Model
         public bool Edit => Attributes?.edit != null ? Attributes.edit : !IsIdentity;
 
         public bool IsInt => ClrType == typeof(int);
+
+        public Field RelatedTypeField
+        {
+            get
+            {
+                if (Type is ResultType)
+                {
+                    return ((ResultType) Type).RelatedType?.Fields.FirstOrDefault(f => f.Name == Name);
+                }
+
+                return null;
+            }
+        }
     }
 }

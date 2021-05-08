@@ -6,7 +6,6 @@ using System.Text;
 using Badass.OpenApi;
 using Badass.ProjectGeneration;
 using Badass.Model;
-using Badass.Templating;
 using Badass.Templating.Classes;
 using Badass.Templating.DatabaseFunctions;
 using Badass.Templating.MvcViews;
