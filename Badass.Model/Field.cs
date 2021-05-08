@@ -113,6 +113,14 @@ namespace Badass.Model
             }
         }
 
+        public bool IsAttachmentData
+        {
+            get
+            {
+                return IsFile && !IsAttachmentThumbnail;
+            }
+        }
+        
         public bool IsLargeTextContent
         {
             get

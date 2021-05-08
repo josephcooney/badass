@@ -364,5 +364,13 @@ namespace Badass.Templating.Classes.Adapters
                 return new ClientCustomTypeModel(customParam.CustomType);
             }
         }
+
+        public IEnumerable<ParameterAdapter> CustomTypeParameters
+        {
+            get
+            {
+                return Parameters.Where(p => p.IsCustomTypeOrCustomArray);
+            }
+        }
     }
 }

@@ -62,7 +62,7 @@ namespace Badass.Templating.Classes
                 return Util.FormatClrType(_parameter.ClrType);
             }
         }
-
+        
         public string ApiResolvedClrType
         {
             get

@@ -208,13 +208,18 @@ namespace Badass.Postgres
 
                                 if (getAllDetails)
                                 {
+                                    if (op.Attributes?.applicationtype != null)
+                                    {
+                                        SetOperationRelatedType(op, domain);
+                                    }
+                                    
                                     var parameters = reader["argument_types"].ToString();
                                     if (!string.IsNullOrEmpty(parameters))
                                     {
                                         op.Parameters.AddRange(ReadParameters(parameters, domain, op));
-                                        if (op.Attributes?.applicationtype != null)
+                                        if (op.RelatedType != null)
                                         {
-                                            UpdateParameterNullabilityFromApplicationType(op, domain);
+                                            UpdateParameterNullabilityFromApplicationType(op);
                                         }
                                     }
 
@@ -1709,22 +1714,16 @@ AND KCU1.TABLE_SCHEMA = '{type.Namespace}'
             }
         }
 
-        private void UpdateParameterNullabilityFromApplicationType(Operation op, Domain domain)
+        private void UpdateParameterNullabilityFromApplicationType(Operation op)
         {
-            var appTypeName = op.Attributes.applicationtype.ToString();
-            var appType = domain.Types.FirstOrDefault(t => t.Name == appTypeName);
-            if (appType == null)
+            if (op.RelatedType == null)
             {
-                Log.Error($"Unable to find application type {appTypeName} for operation {op.Name}");
                 return;
             }
-
-            op.RelatedType = appType;
-
+            
             foreach (var prm in op.Parameters)
             {
-                
-                var fld = appType.Fields.FirstOrDefault(f => f.Name == prm.Name);
+                var fld = op.RelatedType.Fields.FirstOrDefault(f => f.Name == prm.Name);
                 if (fld != null)
                 {
                     UpdateParamFromField(prm, fld);
@@ -1739,7 +1738,7 @@ AND KCU1.TABLE_SCHEMA = '{type.Namespace}'
                     {
                         // since this matching above is done by name, it misses some things e.g. where the parameter is called id_param and the field is called id.
                         // here we 'fall back' to try to fix that
-                        var paramFld = appType.Fields.FirstOrDefault(f => f.Name + "_param" == prm.Name);
+                        var paramFld = op.RelatedType.Fields.FirstOrDefault(f => f.Name + "_param" == prm.Name);
                         if (paramFld != null)
                         {
                             UpdateParamFromField(prm, paramFld);
@@ -1747,7 +1746,18 @@ AND KCU1.TABLE_SCHEMA = '{type.Namespace}'
                     }
                 }
             }
+        }
 
+        private void SetOperationRelatedType(Operation op, Domain domain)
+        {
+            var appTypeName = op.Attributes.applicationtype.ToString();
+            var appType = domain.Types.FirstOrDefault(t => t.Name == appTypeName);
+            if (appType == null)
+            {
+                Log.Error($"Unable to find application type {appTypeName} for operation {op.Name}");
+            }
+
+            op.RelatedType = appType;
         }
 
         private static void UpdateParamFromField(Parameter prm, Field fld)
