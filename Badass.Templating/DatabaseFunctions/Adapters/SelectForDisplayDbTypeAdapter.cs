@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Badass.Model;
 using Badass.Templating.DatabaseFunctions.Adapters.Fields;
+using Serilog;
 
 namespace Badass.Templating.DatabaseFunctions.Adapters
 {
@@ -13,7 +15,15 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
 
         public SelectForDisplayDbTypeAdapter(ApplicationType applicationType, string operation, Domain domain) : base(applicationType, operation, OperationType.Select, domain)
         {
-            _aliases.Add(ShortName, applicationType.Fields.First(f => f.IsIdentity));
+            try
+            {
+                _aliases.Add(ShortName, applicationType.Fields.First(f => f.IsIdentity));
+            }
+            catch (Exception)
+            {
+                Log.Error("Unable to create SelectForDisplayDbTypeAdapter - {TypeName} has no identity fields", applicationType.Name);
+                throw;
+            }
         }
 
         public List<IPseudoField> DisplayAllFields
