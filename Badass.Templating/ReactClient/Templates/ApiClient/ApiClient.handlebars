@@ -19,9 +19,9 @@ import { {{cs_name Name}} } from './{{cs_name Name}}'
 
 export class {{cs_name Name}}ApiClient {
 
-	{{#each Operations}}
-	{{#if UsesModel}}
-	public async {{cml_case BareName}}(model : {{#if ../IsAttachment}}FormData{{else}}{{cs_name Name}}Model{{/if}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>  {
+	{{#each ApiOperations}}
+	{{#if HasCustomType}}
+	public async {{cml_case BareName}}(model : {{#if ../IsAttachment}}FormData{{else}}{{cs_name CustomType.Name}} | null{{/if}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>  {
 		var uri = 'api/{{kb_case ../Name}}/{{cs_name BareName}}';
 		console.log("calling {{Name}} on " + uri);
 		{{#if ../IsAttachment}}

@@ -248,7 +248,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
     }
 	{{else}}
     handleSubmit(fields : any) {
-        {{#if CurrentOperation.UsesCustomType}}
+        {{#if CurrentOperation.HasCustomType}}
         console.log(fields);
         {{/if}}
 		{{#if CurrentOperation.UsesModel}}

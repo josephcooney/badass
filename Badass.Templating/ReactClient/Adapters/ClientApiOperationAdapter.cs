@@ -14,17 +14,7 @@ namespace Badass.Templating.ReactClient.Adapters
         }
 
         public bool HasCustomType => UsesModel || Parameters.Any(p => p.IsCustomTypeOrCustomArray);
-
-
-
-        public bool UsesCustomType
-        {
-            get
-            {
-                return UsesModel || Parameters.Any(p => p.IsCustomTypeOrCustomArray);
-            }
-        }
-
+        
         public List<Field> EditableLinkingFields
         {
             get
