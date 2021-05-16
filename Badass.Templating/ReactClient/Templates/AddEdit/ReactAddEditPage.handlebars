@@ -220,9 +220,9 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 	{{#if IsAttachment}}
     handleSubmit(fields : any) {
 		var formData = new FormData();
-		{{#each CurrentOperation.UserProvidedParameters}}
+		{{#each CurrentOperation.UserInputFields}}
 		if (fields.{{cml_case Name}}){
-			{{#if RelatedTypeField.IsFile}}
+			{{#if Field.RelatedTypeField.IsFile}}
 			formData.append('{{cml_case Name}}',fields.{{cml_case Name}});		
 			{{else}}
 			formData.append('{{cml_case Name}}',fields.{{cml_case Name}}.toString());		
@@ -345,7 +345,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 								<Field id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" component="textarea" className={'form-control' + (getIn(errors, '{{NameWithPathCamelCase}}' && getIn(touched, '{{NameWithPathCamelCase}}') ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" />  
 									{{else}}
 									{{#if IsFile}}
-								<input type="file" id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" className={'form-control' + (errors.contents && touched.contents ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" onChange={(event: any) => {
+								<input type="file" id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" className={'form-control' + (getIn(errors, '{{NameWithPathCamelCase}}') && getIn(touched, '{{NameWithPathCamelCase}}') ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" onChange={(event: any) => {
                                     setFieldValue("contents", event.currentTarget.files[0]);
                                 }} />  
 									{{else}}
