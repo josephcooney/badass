@@ -23,12 +23,12 @@ namespace {{cs_name Namespace}}.Controllers
 	[Route("api/{{kb_case Name}}")]
     public partial class {{cs_name Name}}ApiController : {{{ControllerBaseClassName}}}
     {
-        private {{cs_name Name}}Repository _repository;
+        private I{{cs_name Name}}Repository _repository;
         IUserService _userService;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AttachmentService _attachmentService;
 
-        public {{cs_name Name}}ApiController({{cs_name Name}}Repository repository, IUserService userService, IWebHostEnvironment hostingEnvironment, AttachmentService attachmentService)
+        public {{cs_name Name}}ApiController(I{{cs_name Name}}Repository repository, IUserService userService, IWebHostEnvironment hostingEnvironment, AttachmentService attachmentService)
         {
             _repository = repository;
             _userService = userService;
