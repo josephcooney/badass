@@ -104,7 +104,7 @@ namespace Badass.Templating.ReactClient.Adapters
 
         public List<DisplayFieldAdapter> UserEditableDisplayFields
         {
-            get { return DisplayFields.Where(f => f.IsUserEditable()).ToList(); }
+            get { return DisplayFields.Where(f => f.IsCallerProvided).ToList(); }
         }
 
         public bool HasDisplayField => _type.DisplayField != null;

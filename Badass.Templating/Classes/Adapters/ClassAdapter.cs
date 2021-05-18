@@ -73,7 +73,7 @@ namespace Badass.Templating.Classes
 
         public bool CanDelete => _type is ApplicationType && ((ApplicationType)_type).DeleteType != DeleteType.None;
 
-        public List<ClassFieldAdapter> UserEditableFields => Fields.Where(f => f.IsUserEditable()).ToList();
+        public List<ClassFieldAdapter> UserEditableFields => Fields.Where(f => f.IsCallerProvided).ToList();
 
         public List<ClassFieldAdapter> UserEditableReferenceFields => UserEditableFields
             .Where(a => a.ReferencesType != null && !a.ReferencesType.IsSearchable && a.ReferencesType.DisplayField != null && !a.ReferencesType.Ignore)

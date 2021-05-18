@@ -74,7 +74,7 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
             get
             {
                 var list = new List<IPseudoField>();
-                list.AddRange(_applicationType.Fields.Where(a => a.IsUserEditable()).Select(a => new DbFieldAdapter(a, this)).OrderBy(f => f.Order));
+                list.AddRange(_applicationType.Fields.Where(a => a.IsCallerProvided).Select(a => new DbFieldAdapter(a, this)).OrderBy(f => f.Order));
                 return list;
             }
         }

@@ -52,12 +52,11 @@ namespace Badass.Model
         public Type ClrType { get; set; }
 
         public string ProviderTypeName { get; set; }
+        
+        public bool IsCallerProvided => !IsAutoAssignedIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
 
-        // TODO - convert this to a property
-        public bool IsUserEditable()
-        {
-            return !IsAutoAssignedIdentity && !IsTrackingDate && !IsDelete && !IsTrackingUser && !IsSearch && !IsExcludedFromResults;
-        }
+        public bool IsUserEditable => IsCallerProvided && !IsAttachmentThumbnail && !IsAttachmentContentType;
+
         
         public bool IsTrackingDate => IsDateTime && (Name == CreatedFieldName || Name == ModifiedFieldName || Name == SoftDeleteFieldName);
 
@@ -100,8 +99,8 @@ namespace Badass.Model
         {
             get
             {
-                return Type is ApplicationType && Attributes?.isContentType == true || (((ApplicationType) Type).IsAttachment && ClrType == typeof(string) &&
-                       Name == ContentTypeFieldName);
+                return Attributes?.isContentType == true || (UnderlyingType.IsAttachment && ClrType == typeof(string) &&
+                                                             Name == ContentTypeFieldName);
             }
         }
 
@@ -109,8 +108,8 @@ namespace Badass.Model
         {
             get
             {
-                return Type is ApplicationType && (Attributes?.type == ThumbnailFieldType || ((ApplicationType)Type).IsAttachment && IsFile &&
-                                                                                             Name == ThumbnailFieldName);
+                return Attributes?.type == ThumbnailFieldType || (UnderlyingType.IsAttachment && IsFile &&
+                                                                  Name == ThumbnailFieldName);
             }
         }
 
@@ -150,6 +149,29 @@ namespace Badass.Model
                 if (Type is ResultType)
                 {
                     return ((ResultType) Type).RelatedType?.Fields.FirstOrDefault(f => f.Name == Name);
+                }
+
+                if (Type is ApplicationType)
+                {
+                    return this;
+                }
+                
+                return null;
+            }
+        }
+
+        public ApplicationType UnderlyingType
+        {
+            get
+            {
+                if (Type is ApplicationType type)
+                {
+                    return type;
+                }
+
+                if (Type is ResultType resType)
+                {
+                    return resType.RelatedType;
                 }
 
                 return null;

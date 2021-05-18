@@ -37,7 +37,7 @@ namespace Badass.Templating.ReactClient.Adapters
                             var idField = _underlyingType.Fields.FirstOrDefault(f => f.Name == nameWithoutDisplaySuffix);
                             if (idField != null)
                             {
-                                if (idField.IsUserEditable()) // not sure why we check to see if the Id field is user editable
+                                if (idField.IsCallerProvided) // not sure why we check to see if the Id field is user editable
                                 {
                                     displayFields.Add(new DisplayFieldAdapter(field, Util.HumanizeName(idField), idField, _domain));
                                 }
@@ -61,7 +61,7 @@ namespace Badass.Templating.ReactClient.Adapters
                             continue;
                         }
 
-                        if (underlyingField.IsUserEditable())
+                        if (underlyingField.IsCallerProvided)
                         {
                             displayFields.Add(new DisplayFieldAdapter(field, Util.HumanizeName(field)));
                         }

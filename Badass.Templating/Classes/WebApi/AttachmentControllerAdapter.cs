@@ -17,7 +17,7 @@ namespace Badass.Templating.Classes.WebApi
         {
             get { return _type.Fields.Where(f => f.IsFile && !f.IsAttachmentThumbnail).Select(f => new FieldAdapter(f)).SingleOrDefault(); }
         }
-
+        
         public FieldAdapter AttachmentFieldContentType
         {
             get { return _type.Fields.Where(f => f.IsAttachmentContentType).Select(f => new FieldAdapter(f)).SingleOrDefault(); }

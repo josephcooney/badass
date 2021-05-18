@@ -47,7 +47,7 @@ namespace Badass.Model
         {
             get
             {
-                return Fields.Count(f => f.HasReferenceType) > 1 && !Fields.Any(f => f.IsUserEditable() && !f.HasReferenceType);
+                return Fields.Count(f => f.HasReferenceType) > 1 && !Fields.Any(f => f.IsCallerProvided && !f.HasReferenceType);
             }
         }
 

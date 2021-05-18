@@ -41,7 +41,7 @@ namespace Badass.Templating.Classes
             get
             {
                 return _parameter?.Attributes?.userEditable == true || IsCustomType || IsCustomArrayType || (_parameter.RelatedTypeField != null &&
-                                                                       _parameter.RelatedTypeField.IsUserEditable());
+                                                                       _parameter.RelatedTypeField.IsCallerProvided);
             }
         }
 

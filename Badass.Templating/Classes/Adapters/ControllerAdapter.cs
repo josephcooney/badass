@@ -42,7 +42,7 @@ namespace Badass.Templating.Classes.Adapters
         {
             get
             {
-                var fields = _type.Fields.Where(f => f.IsUserEditable()).Select(f => new FieldAdapter(f)).ToList();
+                var fields = _type.Fields.Where(f => f.IsCallerProvided).Select(f => new FieldAdapter(f)).ToList();
                 if (CreatedByField != null)
                 {
                     fields.Add(CreatedByField);
@@ -55,7 +55,7 @@ namespace Badass.Templating.Classes.Adapters
         {
             get
             {
-                var fields = _type.Fields.Where(f => f.IsUserEditable()).Union(_type.Fields.Where(f2 => f2.IsIdentity)).Select(f => new FieldAdapter(f)).ToList();
+                var fields = _type.Fields.Where(f => f.IsCallerProvided).Union(_type.Fields.Where(f2 => f2.IsIdentity)).Select(f => new FieldAdapter(f)).ToList();
                 if (ModifiedByField != null)
                 {
                     fields.Add(ModifiedByField);
