@@ -9,7 +9,9 @@ namespace {{cs_name Namespace}}.Models
 	{
 		{{#each UserProvidedParameters}}
 		{{#if RelatedTypeField.IsFile}}
-		public IFormFile {{cs_name Name}} {get; set;}
+            {{#if RelatedTypeField.IsAttachmentData}}
+        public IFormFile {{cs_name Name}} {get; set;}
+            {{/if}}
 		{{else}}
         {{#if HasSize}}[MaxLength({{Size}})]{{/if}}{{#if IsRequired}}[Required]{{/if}}
 		public {{format_clr_type ClrType}} {{cs_name Name}} {get; set;}
