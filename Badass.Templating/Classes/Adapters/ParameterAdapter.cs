@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
+using Badass.Templating.Classes.Adapters;
 
 namespace Badass.Templating.Classes
 {
@@ -127,5 +128,18 @@ namespace Badass.Templating.Classes
                 return null;
             }
         }
+
+        public ClientCustomTypeModel ClientCustomType
+        {
+            get
+            {
+                if (IsCustomTypeOrCustomArray)
+                {
+                    return new ClientCustomTypeModel(CustomType);
+                }
+
+                return null;
+            }
+        } 
     }
 }

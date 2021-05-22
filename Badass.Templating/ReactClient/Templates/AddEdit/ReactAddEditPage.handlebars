@@ -111,7 +111,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 			fetched: null,
 			{{/if}}
 			{{else}}
-			{{#each CurrentOperation.UserProvidedParameters}}
+			{{#each CurrentOperation.UserEditableParameters}}
 			{{#if RelatedTypeField.HasReferenceType}}
 			{{#unless RelatedTypeField.ReferencesType.IsReferenceData}}
 			{{cml_case Name}}: this.{{cml_case Name}},
@@ -121,7 +121,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 			{{else}}
                 {{#if IsCustomTypeOrCustomArray}}
             {{cml_case Name}}: {
-                    {{#each CustomType.Fields}}
+                    {{#each ClientCustomType.Fields}}
                         {{#if HasReferenceType}}
                             {{#unless ReferencesType.IsReferenceData}}
                 {{cml_case Name}}: this.{{cml_case Name}},
@@ -254,7 +254,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 		{{#if CurrentOperation.UsesModel}}
 		this.api.{{cml_case OperationName}}(fields).then(data => {
         {{else}}
-            this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserProvidedParameters}}{{#if IsCustomArrayType}}[fields.{{cml_case Name}}]{{else}}fields.{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
+            this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserEditableParameters}}{{#if IsCustomArrayType}}[fields.{{cml_case Name}}]{{else}}fields.{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
 		{{/if}}
 			{{#if AssociateViaLink}}
 			if (data.parsedBody) {
