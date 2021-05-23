@@ -128,12 +128,7 @@ export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}Detai
 				{{cml_case Name}}Contents = <Loading />;			
 			}
 			else {
-				if (this.state.{{cml_case Name}}Data) {
-					{{cml_case Name}}Contents = <{{cs_name SelectAllType.Name}}List data={ this.state.{{cml_case Name}}Data } linkedType='{{../Name}}' linkedId={this.state.data ? this.state.data.id : null} />;
-				}
-				else {
-					{{cml_case Name}}Contents = <p>There are no {{HumanizedNamePlural}} for this {{../HumanizedName}}</p> 
-				}			
+                {{cml_case Name}}Contents = <{{cs_name SelectAllType.Name}}List data={ this.state.{{cml_case Name}}Data } linkedType='{{../Name}}' linkedId={this.state.data ? this.state.data.id : null} />;		
 			}
         }
 		{{/each}}
