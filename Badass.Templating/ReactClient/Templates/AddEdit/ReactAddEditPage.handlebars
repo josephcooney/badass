@@ -220,7 +220,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 	{{#if IsAttachment}}
     handleSubmit(fields : any) {
 		var formData = new FormData();
-		{{#each CurrentOperation.UserInputFields}}
+		{{#each CurrentOperation.ClientSuppliedFields}}
 		if (fields.{{NameWithPathCamelCase}}){
 			{{#if Field.RelatedTypeField.IsFile}}
 			formData.append('{{cml_case Name}}',fields.{{NameWithPathCamelCase}});		
@@ -254,7 +254,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 		{{#if CurrentOperation.UsesModel}}
 		this.api.{{cml_case OperationName}}(fields).then(data => {
         {{else}}
-            this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserEditableParameters}}{{#if IsCustomArrayType}}[fields.{{cml_case Name}}]{{else}}fields.{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
+            this.api.{{cml_case OperationName}}({{#each CurrentOperation.UserProvidedParameters}}{{#if IsCustomArrayType}}[fields.{{cml_case Name}}]{{else}}fields.{{cml_case Name}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}}).then(data => { 
 		{{/if}}
 			{{#if AssociateViaLink}}
 			if (data.parsedBody) {

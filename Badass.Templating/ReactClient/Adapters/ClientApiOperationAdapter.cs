@@ -55,6 +55,38 @@ namespace Badass.Templating.ReactClient.Adapters
                 return fields;
             }
         }
+
+        public List<UserInputFieldModel> ClientSuppliedFields
+        {
+            get
+            {
+                var fields = UserInputFields;
+                if (_op.ChangesData && !_op.CreatesNew)
+                {
+                    foreach (var parameter in Parameters)
+                    {
+                        if (parameter.IsCustomTypeOrCustomArray)
+                        {
+                            foreach (var field in parameter.CustomType.Fields.Where(f => f.IsIdentity))
+                            {
+                                // this only handles 1 level of nesting of fields
+                                fields.Add(new UserInputFieldModel()
+                                    {Field = field, Name = field.Name, RelativeStatePath = parameter.Name + "."});
+                            }
+                        }
+                        else
+                        {
+                            if (parameter.RelatedTypeField?.IsIdentity == true)
+                            {
+                                fields.Add(new UserInputFieldModel{Field = parameter.RelatedTypeField, Name = parameter.Name, Parameter = parameter});
+                            }
+                        }
+                    }
+                }
+
+                return fields;
+            }
+        }
     }
 
     public class UserInputFieldModel
