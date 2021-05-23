@@ -326,7 +326,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 							<Field type="checkbox" id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" className={'form-check-input' + (getIn(errors, '{{NameWithPathCamelCase}}') && getIn(touched, '{{NameWithPathCamelCase}}') ? ' is-invalid' : '')} checked={ values.{{NameWithPathSafeCamelCase}} } onChange={(e:any) => {
 								setFieldValue('{{NameWithPathCamelCase}}', e.target.checked);
                             }}/>
-							<label className="form-check-label" htmlFor="{{NameWithPathCamelCase}}">{{#if Field.IsRequired}}<span className='required-indicator'>*</span>{{/if}}{{hmn}}</label>
+							<label className="form-check-label" htmlFor="{{NameWithPathCamelCase}}">{{#if Field.IsRequired}}<span className='required-indicator'>*</span>{{/if}}{{hmn Name}}</label>
 							<ErrorMessage name="{{NameWithPathCamelCase}}" component="div" className="invalid-feedback" />
 						</div>
 						{{else}}
