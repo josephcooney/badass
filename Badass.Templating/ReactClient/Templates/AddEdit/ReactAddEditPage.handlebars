@@ -221,11 +221,11 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
     handleSubmit(fields : any) {
 		var formData = new FormData();
 		{{#each CurrentOperation.UserInputFields}}
-		if (fields.{{cml_case Name}}){
+		if (fields.{{NameWithPathCamelCase}}){
 			{{#if Field.RelatedTypeField.IsFile}}
-			formData.append('{{cml_case Name}}',fields.{{cml_case Name}});		
+			formData.append('{{cml_case Name}}',fields.{{NameWithPathCamelCase}});		
 			{{else}}
-			formData.append('{{cml_case Name}}',fields.{{cml_case Name}}.toString());		
+			formData.append('{{cml_case Name}}',fields.{{NameWithPathCamelCase}}.toString());		
 			{{/if}}
 		}
 		{{/each}}
@@ -346,7 +346,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 									{{else}}
 									{{#if IsFile}}
 								<input type="file" id="{{NameWithPathCamelCase}}" name="{{NameWithPathCamelCase}}" className={'form-control' + (getIn(errors, '{{NameWithPathCamelCase}}') && getIn(touched, '{{NameWithPathCamelCase}}') ? ' is-invalid' : '')} placeholder="Enter {{hmn Name}}" onChange={(event: any) => {
-                                    setFieldValue("contents", event.currentTarget.files[0]);
+                                    setFieldValue("{{NameWithPathCamelCase}}", event.currentTarget.files[0]);
                                 }} />  
 									{{else}}
 										{{#if IsRating}}

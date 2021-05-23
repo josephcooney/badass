@@ -39,7 +39,7 @@ namespace Badass.Templating.ReactClient.Adapters
                 {
                     if (parameter.IsCustomTypeOrCustomArray)
                     {
-                        foreach (var field in parameter.CustomType.Fields)
+                        foreach (var field in parameter.ClientCustomType.Fields)
                         {
                             // this only handles 1 level of nesting of fields
                             fields.Add(new UserInputFieldModel()
