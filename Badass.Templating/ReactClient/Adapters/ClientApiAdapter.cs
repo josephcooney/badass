@@ -51,7 +51,7 @@ namespace Badass.Templating.ReactClient.Adapters
         {
             get
             {
-                var selectAllOp = this.Operations.FirstOrDefault(op => op.Name.EndsWith(DbFunctionGenerator.SelectAllForDisplayFunctionName));
+                var selectAllOp = Operations.FirstOrDefault(op => op.Name.EndsWith(DbFunctionGenerator.SelectAllForDisplayFunctionName));
                 // TODO - fall back to "select_all" operation?
                 if (selectAllOp == null)
                 {
@@ -65,7 +65,7 @@ namespace Badass.Templating.ReactClient.Adapters
         {
             get
             {
-                var selectForDisplayOp = this.Operations.FirstOrDefault(op => op.Name.EndsWith(DbFunctionGenerator.SelectForDisplayFunctionName));
+                var selectForDisplayOp = Operations.FirstOrDefault(op => op.Name.StartsWith(_applicationType.Name + "_" + DbFunctionGenerator.SelectForDisplayFunctionName));
                 if (selectForDisplayOp != null)
                 {
                     return selectForDisplayOp.SimpleReturnType;
