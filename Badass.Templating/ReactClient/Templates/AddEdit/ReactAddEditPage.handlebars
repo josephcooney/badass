@@ -300,8 +300,8 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 				{{#each LinkedDetails}}
 				if (linked[0] == "{{Name}}") {
 					var {{cml_case LinkingType.Name}}Client = new {{cs_name LinkingType.Name}}ApiClient();
-					var {{cml_case LinkingType.Name}}Model: {{cs_name LinkingType.Name}}InsertModel = { {{cml_case LinkedTypeIdFieldName}}: linked[1], {{cml_case ../Name}}Id: id };
-					{{cml_case LinkingType.Name}}Client.insert({{cml_case LinkingType.Name}}Model);
+					var {{cml_case LinkingType.Name}}ToAdd: {{cs_name LinkingType.Name}}New = { {{cml_case LinkingTypeIdField.Name}}: linked[1] as {{get_ts_type LinkingTypeIdField.ClrType}}, {{cml_case CurrentTypeIdField.Name}}: id as {{get_ts_type CurrentTypeIdField.ClrType}} };
+					{{cml_case LinkingType.Name}}Client.insert({{cml_case LinkingType.Name}}ToAdd);
 				}
 				{{/each}}
 			}		
