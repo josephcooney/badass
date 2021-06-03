@@ -184,7 +184,7 @@ export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}Detai
     }
 
 	{{#each LinkedDetails}}
-	async get{{cs_name Name}}Details(id: number) {
+	async get{{cs_name Name}}Details(id: {{get_ts_type CurrentTypeIdField.ClrType}}) {
 		await this.{{cml_case Name}}Api.selectVia{{cs_name ../Name}}Id(id).then(data => {
 			var responseBody = data.parsedBody;
 			if (responseBody) {
