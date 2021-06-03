@@ -11,6 +11,7 @@ namespace Badass.Templating.DatabaseFunctions
     {
         public const string SqlExtension = ".sql";
         public const string SelectAllForDisplayFunctionName = "select_all_for_display";
+        public const string SelectForDisplayFunctionName = "select_for_display";
         public const string SearchFunctionName = "search";
         public const string InsertFunctionName = "insert";
         public const string UpdateFunctionName = "update";

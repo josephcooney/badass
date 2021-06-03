@@ -36,7 +36,7 @@ import { {{cs_name SelectAllType.Name}} } from './{{cs_name SelectAllType.Name}}
 import { linkedItem } from '../../linked-items';
 {{#each LinkedDetails}}
 import { {{cs_name LinkingType.Name}}ApiClient } from '../{{kb_case LinkingType.Name}}/{{cml_case LinkingType.Name}}ApiClient';
-import { {{cs_name LinkingType.Name}}InsertModel } from '../{{kb_case LinkingType.Name}}/{{cs_name LinkingType.Name}}InsertModel';
+import { {{cs_name LinkingType.Name}}New } from '../{{kb_case LinkingType.Name}}/{{cs_name LinkingType.Name}}New';
 {{/each}}
 {{/if}}
 {{#each CurrentOperation.ParameterReferenceTypes}}
@@ -300,8 +300,8 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 				{{#each LinkedDetails}}
 				if (linked[0] == "{{Name}}") {
 					var {{cml_case LinkingType.Name}}Client = new {{cs_name LinkingType.Name}}ApiClient();
-					var {{cml_case LinkingType.Name}}Model: {{cs_name LinkingType.Name}}InsertModel = { {{cml_case LinkedTypeIdFieldName}}: linked[1], {{cml_case ../Name}}Id: id };
-					{{cml_case LinkingType.Name}}Client.insert({{cml_case LinkingType.Name}}Model);
+					var {{cml_case LinkingType.Name}}ToAdd: {{cs_name LinkingType.Name}}New = { {{cml_case LinkingTypeIdField.Name}}: linked[1] as {{get_ts_type LinkingTypeIdField.ClrType}}, {{cml_case CurrentTypeIdField.Name}}: id as {{get_ts_type CurrentTypeIdField.ClrType}} };
+					{{cml_case LinkingType.Name}}Client.insert({{cml_case LinkingType.Name}}ToAdd);
 				}
 				{{/each}}
 			}		

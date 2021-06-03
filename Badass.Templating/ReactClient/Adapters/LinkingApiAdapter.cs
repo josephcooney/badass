@@ -15,12 +15,17 @@ namespace Badass.Templating.ReactClient.Adapters
         }
 
         public ClassAdapter LinkingType { get; }
-
-        public string LinkedTypeIdFieldName
+        
+        public Field LinkingTypeIdField
         {
-            get { return _linkingType.Fields.First(f => f.HasReferenceType && f.ReferencesType == base._type).Name; }
+            get { return _linkingType.Fields.First(f => f.HasReferenceType && f.ReferencesType == base._type); }
         }
 
+        public Field CurrentTypeIdField
+        {
+            get { return _linkingType.Fields.First(f => f.HasReferenceType && f.ReferencesType != base._type); }
+        }
+        
         public override SimpleType SelectAllType { get { return base.SelectAllType; } } // TODO - need to get 'select by' operation that links the two types, and return the result of that
     }
 }

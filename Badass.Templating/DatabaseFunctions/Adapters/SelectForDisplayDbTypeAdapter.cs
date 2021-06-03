@@ -19,9 +19,9 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
             {
                 _aliases.Add(ShortName, applicationType.Fields.First(f => f.IsIdentity));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Log.Error("Unable to create SelectForDisplayDbTypeAdapter - {TypeName} has no identity fields", applicationType.Name);
+                Log.Error(ex, "Unexpected error creating SelectForDisplayDbTypeAdapter for {Name}. It may be missing an identity field.", applicationType.Name);
                 throw;
             }
         }

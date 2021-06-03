@@ -41,7 +41,7 @@ namespace Badass.Templating.ReactClient.Adapters
                     var otherSideOfLink = link.Fields.Where(f => f.HasReferenceType && f.ReferencesType != _type && !f.ReferencesType.IsSecurityPrincipal).Select(f => f.ReferencesType);
                     if (otherSideOfLink.Count() > 1)
                     {
-                        Console.WriteLine("Warning: link type links to multiple 'other' things"); // templates have not bee designed for this
+                        Console.WriteLine("Warning: link type links to multiple 'other' things"); // templates have not been designed for this
                     }
                     else
                     {

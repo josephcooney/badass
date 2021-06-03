@@ -5,6 +5,7 @@ using Badass.Templating.Classes;
 using Badass.Templating.Classes.Adapters;
 using Badass.Templating.DatabaseFunctions;
 using Badass.Templating.DatabaseFunctions.Adapters;
+using Serilog;
 
 namespace Badass.Templating.ReactClient.Adapters
 {
@@ -51,8 +52,27 @@ namespace Badass.Templating.ReactClient.Adapters
         {
             get
             {
-                var selectAllOp = this.Operations.FirstOrDefault(op => op.Name.EndsWith(DbFunctionGenerator.SelectAllForDisplayFunctionName));
+                var selectAllOp = Operations.FirstOrDefault(op => op.Name.EndsWith(DbFunctionGenerator.SelectAllForDisplayFunctionName));
+                // TODO - fall back to "select_all" operation?
+                if (selectAllOp == null)
+                {
+                    Log.Warning("Unable to find 'select all' operation for type {TypeName}", _applicationType.Name);
+                }
                 return selectAllOp?.SimpleReturnType;
+            }
+        }
+
+        public virtual SimpleType DetailType
+        {
+            get
+            {
+                var selectForDisplayOp = Operations.FirstOrDefault(op => op.Name.StartsWith(_applicationType.Name + "_" + DbFunctionGenerator.SelectForDisplayFunctionName));
+                if (selectForDisplayOp != null)
+                {
+                    return selectForDisplayOp.SimpleReturnType;
+                }
+
+                return this._applicationType;
             }
         }
 
