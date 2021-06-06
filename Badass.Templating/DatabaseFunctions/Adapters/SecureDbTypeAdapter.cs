@@ -13,7 +13,7 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
 
         public string OwnershipExpression
         {
-            get { return GenerateOwnershipExpression("current_setting('app.user_id', 't')::" + UserIdField.ProviderTypeName); }
+            get { return GenerateOwnershipExpression("current_setting('app.user_id', 't')::" + UserIdField?.ProviderTypeName); }
         }
 
         private string GenerateOwnershipExpression(string currentUserIdentifier)

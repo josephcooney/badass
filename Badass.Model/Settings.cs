@@ -74,6 +74,7 @@ namespace Badass.Model
 
     public enum WebUIType
     {
+        Unknown,
         MVC,
         React
     }

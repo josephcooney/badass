@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
 using Badass.Templating.DatabaseFunctions.Adapters;
+using Serilog;
 using Constraint = Badass.Model.Constraint;
 
 namespace Badass.Templating.DatabaseFunctions
@@ -24,11 +25,17 @@ namespace Badass.Templating.DatabaseFunctions
 
             var files = new List<CodeFile>();
 
+            var skipPolicyGeneration = domain.UserType == null;
+            if (skipPolicyGeneration)
+            {
+                Log.Warning("Skipping security policy generation because no domain user type is defined");
+            }
+            
             foreach (var type in domain.FilteredTypes)
             {
                 if (!type.Ignore)
                 {
-                    if (settings.GenerateSecurityPolicies && type.Attributes?.createPolicy != false)
+                    if (settings.GenerateSecurityPolicies && type.Attributes?.createPolicy != false && !skipPolicyGeneration)
                     {
                         files.Add(GenerateSecurityPoicy(type, domain));
                     }

@@ -93,7 +93,7 @@ namespace Badass.Console
         {
             var s = new Settings(_fileSystem);
             s.NewAppSettings = new NewAppSettings();
-            s.WebUIType = WebUIType.MVC;
+            s.WebUIType = WebUIType.React;
 
             var os = new OptionSet() {
                 "Usage: dotnet Badass.Console.dll -r VALUE <Options>",
@@ -113,7 +113,7 @@ namespace Badass.Console
                 { "no-policy", "Globally disable generation of security policies", p => { if (p != null) s.GenerateSecurityPolicies = false; }  },
                 { "no-test-repo", "Disable generation of test repositories", t => { if (t != null) s.GenerateTestRepos = false; }},
                 { "r|root=", "the root folder to generate code into.", r => s.RootDirectory = r },
-                { "react", "Change the web UI generated to be React", r => {if (r != null) s.WebUIType = WebUIType.React; } },
+                { "react", "Set the web UI generated to be React", r => {if (r != null) s.WebUIType = WebUIType.React; } },
                 { "test-data=", "Generate test data of the specified size for empty tables.", t => s.TestDataSize = int.Parse(t) },
                 { "tmplt=", "Template project directory", t => { if (t != null) { s.NewAppSettings.TemplateProjectDirectory = t; } }},
                 { "t|type=", "Only generate for a single type (for debugging)", t => s.TypeName = t },

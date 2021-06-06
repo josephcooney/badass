@@ -41,14 +41,15 @@ namespace Badass.Model
 
         public List<string> ExcludedSchemas => Settings.ExcludedSchemas;
 
+        public ApplicationType UserType => Types.SingleOrDefault(t => t.IsSecurityPrincipal);
+        
         public Field UserIdentity
         {
             get
             {
-                var userType = Types.SingleOrDefault(t => t.IsSecurityPrincipal);
-                if (userType != null)
+                if (UserType != null)
                 {
-                    var id = userType.Fields.Single(f => f.IsIdentity);
+                    var id = UserType.Fields.Single(f => f.IsIdentity);
                     return id;
                 }
 
