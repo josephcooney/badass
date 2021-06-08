@@ -12,7 +12,7 @@ insert into "user" (id, name, is_system, user_name, created, created_by) values 
 
 ALTER SEQUENCE user_id_seq RESTART WITH 2;
 
-COMMENT ON TABLE public.user IS '{"ui":false, "isSecurityPrincipal":true, "createPolicy":false}';
+COMMENT ON TABLE public.user IS '{"noAddUI":true, "noEditUI":true, "isSecurityPrincipal":true, "createPolicy":false}';
 
 create table government_area (
      id serial primary key not null,
@@ -91,11 +91,99 @@ create table address (
      location point,
      validation_status_id int references address_validation_status(id),
      error_message text,
+     search_content tsvector,
      created_by int not null references "user"(id),
      created timestamp with time zone not null,
      modified_by int references "user"(id),
      modified timestamp with time zone
 );
 
+create table waste_type (
+    id serial primary key not null,
+    name text not null,
+    created_by int not null references "user"(id),
+    created timestamp with time zone not null,
+    modified_by int references "user"(id),
+    modified timestamp with time zone
+);
+
+create table bin_size (
+    id serial primary key not null,
+    name text not null,
+    created_by int not null references "user"(id),
+    created timestamp with time zone not null,
+    modified_by int references "user"(id),
+    modified timestamp with time zone
+);
+
+create table service_type (
+    id serial primary key not null,
+    name text not null,
+    created_by int not null references "user"(id),
+    created timestamp with time zone not null,
+    modified_by int references "user"(id),
+    modified timestamp with time zone
+);
+
+create table bin (
+    id serial primary key not null,
+    address_id int references address(id),
+    waste_type_id int not null references waste_type(id),
+    bin_size_id int not null references bin_size(id),
+    service_type_id int not null references service_type(id),
+    created_by int not null references "user"(id),
+    created timestamp with time zone not null,
+    modified_by int references "user"(id),
+    modified timestamp with time zone
+);
+
+DO
+$$
+    BEGIN
+        IF NOT EXISTS (
+                SELECT
+                FROM
+                    pg_catalog.pg_roles
+                WHERE
+                        rolname = 'web_app_role') THEN
+
+            CREATE ROLE web_app_role WITH
+                NOLOGIN
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                INHERIT
+                NOREPLICATION
+                CONNECTION LIMIT -1;
+        END IF;
+    END
+$$;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO web_app_role;
+
+DO
+$$
+    declare user_pwd text;
+    BEGIN
+        user_pwd = MD5(random()::text);
+
+        raise notice 'bin_web_user password set to %', user_pwd;
+
+        DROP ROLE if EXISTS survey_web_user;
+        EXECUTE format('CREATE USER bin_web_user PASSWORD %L', user_pwd);
+
+    END
+$$;
+
+GRANT web_app_role TO bin_web_user;
+
+grant usage, select on user_id_seq to web_app_role;
+grant usage, select on government_area_id_seq to web_app_role;
+grant usage, select on address_file_id_seq to web_app_role;
+grant usage, select on address_file_column_id_seq to web_app_role;
+grant usage, select on file_import_status_id_seq to web_app_role;
+grant usage, select on file_import_id_seq to web_app_role;
+grant usage, select on address_validation_status_id_seq to web_app_role;
+grant usage, select on address_id_seq to web_app_role;
 
 

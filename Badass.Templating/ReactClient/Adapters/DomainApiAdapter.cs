@@ -23,7 +23,7 @@ namespace Badass.Templating.ReactClient.Adapters
             get
             {
                 // owned by the user, and without any relations to anything else - 'root' objects in the graph
-                return _domain.Types.Where(t => !t.Ignore && t.Fields.Any(f => f.HasReferenceType && f.ReferencesType.IsSecurityPrincipal) && !t.Fields.Any(f => f.HasReferenceType && !f.ReferencesType.IsSecurityPrincipal) || t.Important).OrderBy(t => t.Name).Select(t => new ClientApiAdapter(t, _domain)).ToList();
+                return _domain.Types.Where(t => !t.Ignore && t.GenerateUI && t.Fields.Any(f => f.HasReferenceType && f.ReferencesType.IsSecurityPrincipal) && !t.Fields.Any(f => f.HasReferenceType && !f.ReferencesType.IsSecurityPrincipal) || t.Important).OrderBy(t => t.Name).Select(t => new ClientApiAdapter(t, _domain)).ToList();
             }
         }
     }

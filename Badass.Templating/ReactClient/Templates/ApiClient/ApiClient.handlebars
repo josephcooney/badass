@@ -17,7 +17,11 @@ import { {{cs_name Name}} } from './{{cs_name Name}}'
     import { {{cs_name Item1.Name}} } from '../{{kb_case Item2.Name}}/{{cs_name Item1.Name}}'
 {{/each}}
 
-export class {{cs_name Name}}ApiClient {
+export interface I{{cs_name Name}}ApiClient {
+
+}
+
+export class {{cs_name Name}}ApiClient implements I{{cs_name Name}}ApiClient {
 
 	{{#each ApiOperations}}
 	{{#if HasCustomType}}
