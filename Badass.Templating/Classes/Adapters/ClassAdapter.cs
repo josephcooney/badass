@@ -106,7 +106,7 @@ namespace Badass.Templating.Classes
                     return false;
                 }
 
-                return !t.IsReferenceData && !t.IsSecurityPrincipal && !t.IsLink && !t.Ignore && !t.IsAttachment;
+                return !t.IsReferenceData && !t.IsLink && !t.Ignore && !t.IsAttachment;
             }
         }
     }
