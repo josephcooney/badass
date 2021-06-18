@@ -61,7 +61,7 @@ namespace Badass.Templating.ReactClient.Adapters
             get
             {
                 var types = _domain.Types.Where(t =>
-                    t.Fields.Any(f => f.HasReferenceType && f.ReferencesType == _type) && !t.IsLink && t != (ApplicationType)this._type).OrderBy(t => t.Name);
+                    t.Fields.Any(f => f.HasReferenceType && f.ReferencesType == _type && !f.IsTrackingUser) && !t.IsLink && t != (ApplicationType)this._type).OrderBy(t => t.Name);
 
                 return types.Select(t =>
                         new LinkByFieldClientApiAdapter(t, _domain,
