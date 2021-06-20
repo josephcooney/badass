@@ -33,7 +33,7 @@ namespace Badass.Templating.ReactClient.Adapters
             get
             {
                 var types = _domain.Types.Where(t =>
-                    t.Fields.Any(f => f.HasReferenceType && f.ReferencesType == _type));
+                    t.Fields.Any(f => f.HasReferenceType && f.ReferencesType == _type && !f.IsTrackingUser));
 
                 var linkTypes = new List<LinkingApiAdapter>();
                 foreach (var link in types.Where(t => t.IsLink))
@@ -41,7 +41,7 @@ namespace Badass.Templating.ReactClient.Adapters
                     var otherSideOfLink = link.Fields.Where(f => f.HasReferenceType && f.ReferencesType != _type && !f.ReferencesType.IsSecurityPrincipal).Select(f => f.ReferencesType);
                     if (otherSideOfLink.Count() > 1)
                     {
-                        Log.Warning("Link type links to multiple 'other' things. Templates do not support this."); // templates have not been designed for this
+                        Log.Warning("Looking for links to {TypeName} - Link type {LinkTypeName} links to multiple 'other' things. Templates do not support this.", _type.Name, link.Name); // templates have not been designed for this
                     }
                     else
                     {

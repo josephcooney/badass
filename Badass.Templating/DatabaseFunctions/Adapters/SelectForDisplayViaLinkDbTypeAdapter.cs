@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Badass.Model;
+using Serilog;
 
 namespace Badass.Templating.DatabaseFunctions.Adapters
 {
@@ -44,7 +45,21 @@ namespace Badass.Templating.DatabaseFunctions.Adapters
         {
             get
             {
-                return _linkingType.Fields.Where(f => f.HasReferenceType && f.ReferencesType != this._applicationType && !f.ReferencesType.IsSecurityPrincipal).Select(f => new DbFieldAdapter(f, this)).SingleOrDefault();
+                var fields = _linkingType.Fields
+                    .Where(f => f.HasReferenceType && f.ReferencesType != _applicationType &&
+                                !f.ReferencesType.IsSecurityPrincipal).Select(f => new DbFieldAdapter(f, this));
+                if (fields.Count() > 1)
+                {
+                    var fieldNames = string.Join(',', fields.Select(f => f.Name));
+                    
+                    Log.Error("Cannot determine linking type from {Name} to {LinkingTypeName}. It has multiple links {FieldNames}.", _applicationType.Name, _linkingType.Name, fieldNames);
+                    throw new InvalidOperationException(
+                        $"Cannot determine linking type from {_applicationType.Name} to {_linkingType.Name}. It has multiple links via fields " + fieldNames);
+                }
+                else
+                {
+                    return fields.SingleOrDefault();
+                }
             }
         }
 

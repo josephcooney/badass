@@ -169,7 +169,7 @@ $$
 
         raise notice 'bin_web_user password set to %', user_pwd;
 
-        DROP ROLE if EXISTS survey_web_user;
+        DROP ROLE if EXISTS bin_web_user;
         EXECUTE format('CREATE USER bin_web_user PASSWORD %L', user_pwd);
 
     END
@@ -185,5 +185,11 @@ grant usage, select on file_import_status_id_seq to web_app_role;
 grant usage, select on file_import_id_seq to web_app_role;
 grant usage, select on address_validation_status_id_seq to web_app_role;
 grant usage, select on address_id_seq to web_app_role;
+grant usage, select on waste_type_id_seq to web_app_role;
+grant usage, select on bin_size_id_seq to web_app_role;
+grant usage, select on service_type_id_seq to web_app_role;
+grant usage, select on bin_id_seq to web_app_role;
+
+
 
 

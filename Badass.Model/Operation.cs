@@ -41,11 +41,20 @@ namespace Badass.Model
         {
             get
             {
-                return Parameters.Where(p =>
-                    p.RelatedTypeField?.IsTrackingUser != true &&
-                    p.RelatedTypeField?.IsAttachmentContentType != true &&
-                    p.RelatedTypeField?.IsAttachmentThumbnail != true &&
-                    !p.IsSecurityUser).ToList();
+                if (ChangesData || CreatesNew)
+                {
+                    return Parameters.Where(p =>
+                        p.RelatedTypeField?.IsTrackingUser != true &&
+                        p.RelatedTypeField?.IsAttachmentContentType != true &&
+                        p.RelatedTypeField?.IsAttachmentThumbnail != true &&
+                        !p.IsSecurityUser).ToList();
+                }
+                else
+                {
+                    return Parameters.Where(p =>
+                        p.RelatedTypeField?.IsAttachmentThumbnail != true &&
+                        !p.IsSecurityUser).ToList();
+                }
             }
         }
 
