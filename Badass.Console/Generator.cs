@@ -60,7 +60,7 @@ namespace Badass.Console
 
         public void Generate(ITypeProvider typeProvider)
         {
-            Log.Information($"Starting Code Generation");
+            Log.Information("Starting Code Generation in {RootDirectory}", _settings.RootDirectory);
 
             if (_settings.NewAppSettings?.CreateNew == true)
             {

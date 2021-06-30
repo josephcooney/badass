@@ -168,3 +168,9 @@ Postgres SQL Syntax for adding comments to fields is
 ```sql
 COMMENT ON COLUMN public.foo.bar IS '{"rank": 1}';
 ```
+
+### Switching to AAD for Auth ###
+The generated solution uses IdentityServer for Authentication by default. To switch to AAD for authentication perform the following steps.
+- add a reference to nuget package `Microsoft.Identity.Web`
+- modify startup.cs to remove IdentityServer calls
+More info is available [in this quick-start](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp)

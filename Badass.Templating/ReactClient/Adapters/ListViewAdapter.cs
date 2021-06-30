@@ -77,7 +77,7 @@ namespace Badass.Templating.ReactClient.Adapters
         // the operations exposed to the template by the ListViewAdapter are only ones that don't take any parameters
         public override List<OperationAdapter> Operations
         {
-            get { return _domain.Operations.Where(op => op.Returns.SimpleReturnType == _type && op.Parameters.Count(p => !p.IsSecurityUser) == 0).Select(o => new OperationAdapter(o, base._domain, _underlyingType)).ToList(); }
+            get { return _domain.Operations.Where(op => op.Returns.SimpleReturnType == _type && !op.SingleResult && op.Parameters.Count(p => !p.IsSecurityUser) == 0).Select(o => new OperationAdapter(o, base._domain, _underlyingType)).ToList(); }
         }
 
         public bool HasOperations => Operations.Count > 0;

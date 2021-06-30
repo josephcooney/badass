@@ -28,6 +28,7 @@ namespace {{cs_name Namespace}}.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AttachmentService _attachmentService;
 
+        {{#if GenerateConstructor}}
         public {{cs_name Name}}ApiController(I{{cs_name Name}}Repository repository, IUserService userService, IWebHostEnvironment hostingEnvironment, AttachmentService attachmentService)
         {
             _repository = repository;
@@ -35,6 +36,7 @@ namespace {{cs_name Namespace}}.Controllers
             _hostingEnvironment = hostingEnvironment;
             _attachmentService = attachmentService;
         }
+        {{/if}}        
 
         {{#unless AllowAnonGet}}[Authorize]{{/unless}}
 		[HttpGet("{id}")]
@@ -132,7 +134,7 @@ namespace {{cs_name Namespace}}.Controllers
             {{/each}}    
             {{#unless NoResult}}var {{cml_case BareName}}Result = {{/unless}}await _repository.{{cs_name BareName}}Async({{#each Parameters}}{{#if IsCurrentUser}}{{#if IsNullable}}userId{{else}}userId.Value{{/if}}{{else}}{{#if RelatedTypeField.IsAttachmentThumbnail}}_attachmentService.CreateThumbnail(contents, contentType){{else}}{{#if RelatedTypeField.IsFile}}contents{{else}}{{#if RelatedTypeField.IsAttachmentContentType}}contentType{{else}}{{cml_case Name}}{{/if}}{{/if}}{{/if}}{{/if}}{{#unless @last}}, {{/unless}}{{/each}});
             {{#if ApiHooks}}
-            return await After{{cs_name BareName}}(requestUserId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
+            return await After{{cs_name BareName}}(userId, {{#unless NoResult}}{{cml_case BareName}}Result, {{/unless}}{{#each UserProvidedParameters}}{{cml_case Name}}{{#unless @last}}, {{/unless}}{{/each}});
             {{else}}
                 {{#if NoResult}}
             return Ok();
