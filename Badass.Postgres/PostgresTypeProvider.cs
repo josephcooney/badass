@@ -1521,7 +1521,7 @@ namespace Badass.Postgres
                 }  
             }
             
-            var parameter = new Parameter(domain) {Name = n.Name, ProviderTypeName = n.Type.Name, ClrType = type };
+            var parameter = new Parameter(domain, operation) {Name = n.Name, ProviderTypeName = n.Type.Name, ClrType = type };
             return parameter;
         }
 

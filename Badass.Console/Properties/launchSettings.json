@@ -2,7 +2,7 @@
   "profiles": {
     "Generator.Console": {
       "commandName": "Project",
-      "commandLineArgs": "-u -no-policy -c bins -del -x hangfire"
+      "commandLineArgs": "-u -c survey"
     }
   }
 }

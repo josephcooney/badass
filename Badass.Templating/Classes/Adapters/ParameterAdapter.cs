@@ -10,7 +10,7 @@ namespace Badass.Templating.Classes
     {
         private readonly Parameter _parameter;
 
-        public ParameterAdapter(Domain domain, Parameter parameter) : base(domain)
+        public ParameterAdapter(Domain domain, Parameter parameter) : base(domain, parameter.Operation)
         {
             _parameter = parameter;
         }

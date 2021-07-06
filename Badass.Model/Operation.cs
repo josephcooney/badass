@@ -41,7 +41,7 @@ namespace Badass.Model
         {
             get
             {
-                if (ChangesData || CreatesNew)
+                if (ChangesOrCreatesData)
                 {
                     return Parameters.Where(p =>
                         p.RelatedTypeField?.IsTrackingUser != true &&
@@ -58,6 +58,8 @@ namespace Badass.Model
             }
         }
 
+        public bool ChangesOrCreatesData => ChangesData || CreatesNew;
+        
         public OperationReturn Returns { get; set; }
 
         public bool Ignore => Attributes?.ignore == true;

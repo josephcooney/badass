@@ -7,10 +7,13 @@ namespace Badass.Model
     {
         protected readonly Domain _domain;
 
-        public Parameter(Domain domain)
+        public Parameter(Domain domain, Operation operation)
         {
             _domain = domain;
+            Operation = operation;
         }
+        
+        public Operation Operation { get; }
         
         public dynamic Attributes { get; set; }
 
@@ -65,7 +68,7 @@ namespace Badass.Model
         }
 
         public bool IsCurrentUser => IsSecurityUser || (RelatedTypeField != null && RelatedTypeField.IsTrackingUser);
-
+        
         private static bool ClrTypeIsNullable(Type type)
         {
             return !type.IsValueType || type.IsArray || Nullable.GetUnderlyingType(type) != null;

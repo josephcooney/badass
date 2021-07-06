@@ -174,7 +174,7 @@ namespace Badass.OpenApi
                     // TODO - find or create a domain type to match this
                 }
 
-                var parameter = new Parameter(domain) {Name = apiParameter.Name, ClrType = clrType, Order = index, Attributes = new JObject()};
+                var parameter = new Parameter(domain, domainOp) {Name = apiParameter.Name, ClrType = clrType, Order = index, Attributes = new JObject()};
                 parameter.Attributes.userEditable = true;
                 domainOp.Parameters.Add(parameter);
                 index++;

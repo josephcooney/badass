@@ -65,6 +65,8 @@ namespace Badass.Templating.Classes.Adapters
             get { return UserProvidedParameters.Where(p => p.UserEditable).OrderBy(p => p.RelatedTypeField?.Rank).ToList(); }
         }
 
+        public bool ChangesOrCreatesData => _op.ChangesOrCreatesData;
+        
         public string ReturnTypeName
         {
             get
