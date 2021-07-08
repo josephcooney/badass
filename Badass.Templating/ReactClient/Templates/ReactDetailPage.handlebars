@@ -11,15 +11,23 @@ import Stars from '../../controls/rating/stars';
 import DateTimeDisplay from '../../controls/DateTimeDisplay';
 import Thumbnail from '../../controls/thumbnail';
 {{#each RelatedDetails}}
-import { {{cs_name Name}}ApiClient } from '../{{kb_case Name}}/{{cml_case Name}}ApiClient';
+import { {{ClientApiTypeName}}, {{ClientApiInterfaceName}} } from '../{{kb_case Name}}/{{cml_case Name}}ApiClient';
 import { {{cs_name SelectAllType.Name}} } from '../{{kb_case Name}}/{{cs_name SelectAllType.Name}}';
 import { {{cs_name SelectAllType.Name}}List } from '../{{kb_case Name}}/list/{{cml_case SelectAllType.Name}}List';
 {{/each}}
 
+interface {{cs_name Name}}DetailProps {
+    match?: any;
+    api?: {{ClientApiInterfaceName}} | null;
+{{#each RelatedDetails}}
+    {{cml_case Name}}Api?: {{ClientApiInterfaceName}} | null;
+{{/each}}
+}
+
 interface {{cs_name Name}}DetailState {
     data: {{cs_name DetailType.Name}} | null;
 	{{#each RelatedDetails}}
-	{{cml_case Name}}Data: {{cs_name SelectAllType.Name}}[] | null;
+    {{cml_case Name}}Data: {{cs_name SelectAllType.Name}}[] | null;
 	{{/each}}
     loading: boolean;
     error: boolean;
@@ -28,17 +36,16 @@ interface {{cs_name Name}}DetailState {
     {{cml_case Name}}Error: boolean;
 	{{/each}}
     message?: string;
-    api?: {{ClientApiInterfaceName}} | null;
 }
 
-export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}DetailState> {
+export class {{cs_name Name}}Detail extends Component<{{cs_name Name}}DetailProps, {{cs_name Name}}DetailState> {
 
-    private api : {{ClientApiInterfaceName}} = new {{cs_name Name}}ApiClient();
+    private api : {{ClientApiInterfaceName}} = this.props.api ? this.props.api : new {{ClientApiTypeName}}();
 	{{#each RelatedDetails}}
-    private {{cml_case Name}}Api : {{cs_name Name}}ApiClient = new {{cs_name Name}}ApiClient();
+    private {{cml_case Name}}Api : {{ClientApiInterfaceName}} = this.props.{{cml_case Name}}Api ? this.props.{{cml_case Name}}Api : new {{ClientApiTypeName}}();
 	{{/each}}
 
-    constructor(props: any) {
+    constructor(props: {{cs_name Name}}DetailProps) {
         super(props);
         this.state = { 
 		    data: null, 
@@ -53,12 +60,11 @@ export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}Detai
     }
 
     componentDidMount() {
-		const { id } = this.props.match.params;
+        const { id } = this.props.match.params;
         this.getItemDetails(id);
 		{{#each RelatedDetails}}
-		this.get{{cs_name Name}}Details(id);
+        this.get{{cs_name Name}}Details(id);
 		{{/each}}
-		console.log(this.props.history.location);
     }
 
     static render{{cs_name Name}}Detail(data: {{cs_name DetailType.Name}}) {
