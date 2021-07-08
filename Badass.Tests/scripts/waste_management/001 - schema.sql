@@ -8,7 +8,8 @@
                         CONSTRAINT user_name_unique UNIQUE (user_name)
 );
 
-insert into "user" (id, name, is_system, user_name, created, created_by) values (1, 'System', true, 'System', clock_timestamp(), 1);
+insert into "user" (id, name, is_system, user_name, created, created_by) 
+values (1, 'System', true, 'System', clock_timestamp(), 1);
 
 ALTER SEQUENCE user_id_seq RESTART WITH 2;
 
@@ -54,6 +55,20 @@ create table file_import_status (
                                     modified timestamp with time zone
 );
 
+insert into file_import_status(id, name, created_by, created)
+values (1, 'Created', 1, clock_timestamp());
+
+insert into file_import_status(id, name, created_by, created)
+values (2, 'In Progress', 1, clock_timestamp());
+
+insert into file_import_status(id, name, created_by, created)
+values (3, 'Completed', 1, clock_timestamp());
+
+insert into file_import_status(id, name, created_by, created)
+values (4, 'Error', 1, clock_timestamp());
+
+ALTER SEQUENCE file_import_status_id_seq RESTART WITH 5; -- users probably shouldn't be adding values here anyway, but...
+
 create table file_import (
                              id serial primary key not null,
                              address_file_id int not null references address_file(id),
@@ -62,13 +77,17 @@ create table file_import (
                              street_name_col_id int not null references address_file_column(id),
                              suburb_locale_col_id int not null references address_file_column(id),
                              post_code_col_id int not null references address_file_column(id),
-                             file_import_status_id int not null references file_import_status(id),
+                             file_import_status_id int not null references file_import_status(id) default 1, -- default to "created"
                              completed timestamp,
                              created_by int not null references "user"(id),
                              created timestamp with time zone not null,
                              modified_by int references "user"(id),
                              modified timestamp with time zone
 );
+
+COMMENT ON COLUMN public.file_import.file_import_status_id IS '{"add": false, "edit":false}';
+COMMENT ON COLUMN public.file_import.completed IS '{"add": false, "edit":false}';
+COMMENT ON TABLE public.file_import IS '{"apiHooks":"modify", "apiConstructor":"none"}';
 
 create table address_validation_status (
                                            id serial primary key not null,

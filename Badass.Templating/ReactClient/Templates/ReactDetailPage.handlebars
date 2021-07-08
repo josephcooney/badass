@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom'
 import { {{cs_name DetailType.Name}} } from './{{cs_name DetailType.Name}}';
-import { {{cs_name Name}}ApiClient } from './{{cml_case Name}}ApiClient';
+import { {{ClientApiTypeName}}, {{ClientApiInterfaceName}} } from './{{cml_case Name}}ApiClient';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faTrash, faEdit, faEye } from '@fortawesome/free-solid-svg-icons';
 import { Loading } from '../../controls/loading';
@@ -22,19 +22,20 @@ interface {{cs_name Name}}DetailState {
 	{{cml_case Name}}Data: {{cs_name SelectAllType.Name}}[] | null;
 	{{/each}}
     loading: boolean;
-	error: boolean;
+    error: boolean;
 	{{#each RelatedDetails}}
-	loading{{cs_name Name}}: boolean;
-	{{cml_case Name}}Error: boolean;
+    loading{{cs_name Name}}: boolean;
+    {{cml_case Name}}Error: boolean;
 	{{/each}}
     message?: string;
+    api?: {{ClientApiInterfaceName}} | null;
 }
 
 export class {{cs_name Name}}Detail extends Component<any, {{cs_name Name}}DetailState> {
 
-    private api : {{cs_name Name}}ApiClient = new {{cs_name Name}}ApiClient();
+    private api : {{ClientApiInterfaceName}} = new {{cs_name Name}}ApiClient();
 	{{#each RelatedDetails}}
-	private {{cml_case Name}}Api : {{cs_name Name}}ApiClient = new {{cs_name Name}}ApiClient();
+    private {{cml_case Name}}Api : {{cs_name Name}}ApiClient = new {{cs_name Name}}ApiClient();
 	{{/each}}
 
     constructor(props: any) {

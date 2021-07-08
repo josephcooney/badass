@@ -20,6 +20,10 @@ namespace Badass.Templating.ReactClient.Adapters
             _applicationType = type;
         }
 
+        public string ClientApiTypeName => Util.CSharpNameFromName(_type.Name) + "ApiClient";
+
+        public string ClientApiInterfaceName => "I" + ClientApiTypeName;
+        
         public List<SimpleType> DistinctOperationReturnTypes
         {
             get

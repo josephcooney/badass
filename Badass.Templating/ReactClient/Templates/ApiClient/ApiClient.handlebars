@@ -17,11 +17,17 @@ import { {{cs_name Name}} } from './{{cs_name Name}}'
     import { {{cs_name Item1.Name}} } from '../{{kb_case Item2.Name}}/{{cs_name Item1.Name}}'
 {{/each}}
 
-export interface I{{cs_name Name}}ApiClient {
-
+export interface {{ClientApiInterfaceName}} {
+{{#each ApiOperations}}
+    {{#if HasCustomType}}
+        {{cml_case BareName}}(model : {{#if ../IsAttachment}}FormData{{else}}{{cs_name CustomType.Name}} | null{{/if}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>;
+    {{else}}
+        {{cml_case BareName}}({{#each UserProvidedParameters}}{{cml_case Name}} : {{ResolvedTypescriptType}} | null {{#unless @last}}, {{/unless}}{{/each}}) : Promise<IHttpResponse<{{TypeScriptReturn}}>>;
+    {{/if}}    
+    {{/each}}    
 }
 
-export class {{cs_name Name}}ApiClient implements I{{cs_name Name}}ApiClient {
+export class {{ClientApiTypeName}} implements {{ClientApiInterfaceName}} {
 
 	{{#each ApiOperations}}
 	{{#if HasCustomType}}
