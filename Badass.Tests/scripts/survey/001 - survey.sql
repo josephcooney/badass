@@ -279,7 +279,8 @@ create table question (
 	notes text,
 	display_order int,
 	required bool,
-	deleted_date timestamp with time zone
+	deleted_date timestamp with time zone,
+    search_content tsvector
 );
 
 COMMENT ON TABLE public.question IS '{"security":{"anon":["read", "list"]}}';

@@ -133,7 +133,7 @@ namespace Badass.Templating.ReactClient
                 }
             }
 
-            foreach (var srchOp in domain.Operations.Where(o => o.RelatedType != null).Select(o => new OperationAdapter(o, domain, o.RelatedType)).Where(o => o.RelatedType?.GenerateUI == true && o.IsSearch))
+            foreach (var srchOp in domain.Operations.Where(o => o.RelatedType != null).Select(o => new ClientApiOperationAdapter(o, domain, o.RelatedType)).Where(o => o.RelatedType?.GenerateUI == true && o.IsSearch))
             {
                 if (srchOp.RelatedType != null && domain.FilteredTypes.Contains(srchOp.RelatedType))
                 {

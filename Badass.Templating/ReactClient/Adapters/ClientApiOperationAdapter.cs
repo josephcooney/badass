@@ -14,6 +14,8 @@ namespace Badass.Templating.ReactClient.Adapters
         }
 
         public bool HasCustomType => UsesModel || Parameters.Any(p => p.IsCustomTypeOrCustomArray);
+
+        public ClientApiAdapter ClientApi => new ClientApiAdapter(_type, _domain);
         
         public List<Field> EditableLinkingFields
         {

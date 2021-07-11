@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import { {{cs_name SelectAllType.Name}} } from './{{cs_name SelectAllType.Name}}';
-import { {{cs_name Name}}ApiClient } from './{{cml_case Name}}ApiClient';
+import { {{ClientApiTypeName}}, {{ClientApiInterfaceName}} } from './{{cml_case Name}}ApiClient';
 
 interface {{cs_name Name}}SelectState {
     data: {{cs_name SelectAllType.Name}}[];
@@ -17,10 +17,11 @@ interface {{cs_name Name}}SelectProps {
     onChange: any;
     field: any; 
     className: string;
+    api?: {{ClientApiInterfaceName}} | null;
 }
 
 export class {{cs_name Name}}Select extends Component<{{cs_name Name}}SelectProps, {{cs_name Name}}SelectState> {
-    private api : {{cs_name Name}}ApiClient = new {{cs_name Name}}ApiClient();
+    private api : {{ClientApiInterfaceName}} = this.props.api ? this.props.api : new {{ClientApiTypeName}}();
 
     constructor(props: {{cs_name Name}}SelectProps ) {
         super(props);

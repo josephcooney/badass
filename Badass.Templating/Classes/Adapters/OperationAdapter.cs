@@ -16,7 +16,7 @@ namespace Badass.Templating.Classes.Adapters
 
         protected readonly Operation _op;
         protected readonly Domain _domain;
-        private readonly ApplicationType _type;
+        protected readonly ApplicationType _type;
 
         public OperationAdapter(Operation op, Domain domain, ApplicationType type)
         {
