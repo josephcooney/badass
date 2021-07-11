@@ -14,7 +14,7 @@ import RatingInput  from '../../controls/rating/ratingInput';
 
 // sub-components for {{cs_name Name}} 
 import { {{cs_name Name}} } from './{{cs_name Name}}';
-import { {{cs_name Name}}ApiClient } from './{{cml_case Name}}ApiClient';
+import { {{ClientApiInterfaceName}}, {{ClientApiTypeName}} } from './{{cml_case Name}}ApiClient';
 import { {{cs_name Name}}Validate } from './{{cml_case Name}}Validate';
 import {{cs_name Name}}{{OperationNameFriendly}}Rendering from './{{cml_case Name}}{{OperationNameFriendly}}Rendering';
 {{#if CurrentOperation.UsesModel}}
@@ -77,11 +77,12 @@ export interface I{{cs_name Name}}{{OperationNameFriendly}}Props {
     {{#each CurrentOperation.EditableLinkingFields}}
     {{cml_case Name}} : {{get_ts_type ClrType}} | null;
     {{/each}}
+    api? : {{ClientApiInterfaceName}} | null;
 }
 
 export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_name Name}}{{OperationNameFriendly}}Props,I{{cs_name Name}}{{OperationNameFriendly}}State> {
 
-    private api: {{cs_name Name}}ApiClient = new {{cs_name Name}}ApiClient();
+    private api: {{ClientApiInterfaceName}} = this.props.api ? this.props.api : new {{ClientApiTypeName}}();
 	private validation: {{cs_name Name}}Validate = new {{cs_name Name}}Validate();
 	private rendering: {{cs_name Name}}{{OperationNameFriendly}}Rendering = new {{cs_name Name}}{{OperationNameFriendly}}Rendering();
 	private qry: any = this.props && this.props.location ? queryString.parse(this.props.location.search) : null;
