@@ -35,7 +35,7 @@ import { {{cs_name SelectAllType.Name}} } from './{{cs_name SelectAllType.Name}}
 // linking with other types    
 import { linkedItem } from '../../linked-items';
 {{#each LinkedDetails}}
-import { {{cs_name LinkingType.Name}}ApiClient } from '../{{kb_case LinkingType.Name}}/{{cml_case LinkingType.Name}}ApiClient';
+import { {{LinkingType.ClientApiInterfaceName}}, {{LinkingType.ClientApiTypeName}} } from '../{{kb_case LinkingType.Name}}/{{cml_case LinkingType.Name}}ApiClient';
 import { {{cs_name LinkingType.Name}}New } from '../{{kb_case LinkingType.Name}}/{{cs_name LinkingType.Name}}New';
 {{/each}}
 {{/if}}
@@ -78,6 +78,9 @@ export interface I{{cs_name Name}}{{OperationNameFriendly}}Props {
     {{cml_case Name}} : {{get_ts_type ClrType}} | null;
     {{/each}}
     api? : {{ClientApiInterfaceName}} | null;
+    {{#each LinkedDetails}}
+    {{cml_case LinkingType.Name}}Client? : {{LinkingType.ClientApiInterfaceName}} | null;
+    {{/each}}
 }
 
 export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_name Name}}{{OperationNameFriendly}}Props,I{{cs_name Name}}{{OperationNameFriendly}}State> {
@@ -300,7 +303,7 @@ export class {{cs_name Name}}{{OperationNameFriendly}} extends Component<I{{cs_n
 			if (linked) {
 				{{#each LinkedDetails}}
 				if (linked[0] == "{{Name}}") {
-					var {{cml_case LinkingType.Name}}Client = new {{cs_name LinkingType.Name}}ApiClient();
+					var {{cml_case LinkingType.Name}}Client = this.props.{{cs_name LinkingType.Name}}Client ? this.props.{{cs_name LinkingType.Name}}Client : new {{LinkingType.ClientApiTypeName}}();
 					var {{cml_case LinkingType.Name}}ToAdd: {{cs_name LinkingType.Name}}New = { {{cml_case LinkingTypeIdField.Name}}: linked[1] as {{get_ts_type LinkingTypeIdField.ClrType}}, {{cml_case CurrentTypeIdField.Name}}: id as {{get_ts_type CurrentTypeIdField.ClrType}} };
 					{{cml_case LinkingType.Name}}Client.insert({{cml_case LinkingType.Name}}ToAdd);
 				}

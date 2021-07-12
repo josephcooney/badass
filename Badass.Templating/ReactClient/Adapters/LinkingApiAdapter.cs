@@ -11,10 +11,10 @@ namespace Badass.Templating.ReactClient.Adapters
         public LinkingApiAdapter(ApplicationType type, Domain domain, ApplicationType linkingType) : base(type, domain)
         {
             _linkingType = linkingType;
-            LinkingType = new ClassAdapter(linkingType, domain);
+            LinkingType = new ClientApiAdapter(linkingType, domain);
         }
 
-        public ClassAdapter LinkingType { get; }
+        public ClientApiAdapter LinkingType { get; }
         
         public Field LinkingTypeIdField
         {

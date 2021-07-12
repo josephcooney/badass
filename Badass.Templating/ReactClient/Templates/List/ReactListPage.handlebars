@@ -5,7 +5,7 @@ import { {{cs_name Name}}Row } from './{{cml_case Name}}Row';
 import { {{cs_name Name}}Header } from './{{cml_case Name}}Header';
 
 import { AnimateIn} from "../../../controls/animate-in";
-import { {{cs_name UnderlyingType.Name}}ApiClient } from '../{{cml_case UnderlyingType.Name}}ApiClient';
+import { {{UnderlyingType.ClientApiInterfaceName}}, {{UnderlyingType.ClientApiTypeName}} } from '../{{cml_case UnderlyingType.Name}}ApiClient';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -15,22 +15,23 @@ import {{cs_name Name}}ListRendering from './{{cml_case Name}}ListRendering';
 export interface {{cs_name Name}}ListState {
     data: {{cs_name Name}}[];
     loading: boolean;
-	error: boolean;
+    error: boolean;
     message?: string;
 }
 
 interface {{cs_name Name}}ListProps {
     data?: {{cs_name Name}}[] | null;
-	hideHeading?: boolean | null;
-	hideAddButton? : boolean | null;
-	linkedType? : string | null;
-	linkedId? : number | string | null;
+    hideHeading?: boolean | null;
+    hideAddButton? : boolean | null;
+    linkedType? : string | null;
+    linkedId? : number | string | null;
+    api? : {{UnderlyingType.ClientApiInterfaceName}} | null;
 }
 
 export class {{cs_name Name}}List extends Component<{{cs_name Name}}ListProps, {{cs_name Name}}ListState> {
 
-    private api : {{cs_name UnderlyingType.Name}}ApiClient = new {{cs_name UnderlyingType.Name}}ApiClient();
-	private rendering: {{cs_name Name}}ListRendering = new {{cs_name Name}}ListRendering();
+    private api : {{UnderlyingType.ClientApiInterfaceName}} = this.props.api ? this.props.api : new {{UnderlyingType.ClientApiTypeName}}();
+    private rendering: {{cs_name Name}}ListRendering = new {{cs_name Name}}ListRendering();
 
     constructor(props: {{cs_name Name}}ListProps) {
         super(props);
